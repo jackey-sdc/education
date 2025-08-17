@@ -1,0 +1,128 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f9;
+}
+
+.clock-container {
+    text-align: center;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.control-group {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-group label {
+    width: 60px;
+    text-align: right;
+    margin-right: 10px;
+}
+
+.control-group input[type="number"] {
+    width: 60px;
+    margin-left: 10px;
+}
+
+.clock {
+    width: 200px;
+    height: 200px;
+    border: 5px solid #333;
+    border-radius: 50%;
+    position: relative;
+    /* margin: 20px auto; */
+    background-color: #fff;
+}
+
+.clock-number {
+    position: absolute;
+    bottom: 50%;
+    left: 48%;
+    transform-origin: 50% 100%;
+    width: 0px;
+    height: 20px; 
+    font-size: 14px;
+    font-weight: bold; 
+    text-align: center; 
+    line-height: 40px;
+    color: #333;
+}
+
+.hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: 50% 100%;
+    background-color: #333;
+}
+
+.hour-hand {
+    width: 6px;
+    height: 60px;
+    margin-left: -3px;
+}
+
+.minute-hand {
+    width: 4px;
+    height: 80px;
+    margin-left: -2px;
+    background-color: #1E90FF;
+}
+
+.second-hand {
+    width: 2px;
+    height: 90px;
+    margin-left: -1px;
+    background-color: red;
+}
+
+.controls {
+    margin-top: 20px;
+}
+
+.controls label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.controls input {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* 时钟刻度样式 */
+.clock-marks {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.mark {
+    position: absolute;
+    width: 2px;
+    left: 50%;
+    top: 10px;
+    transform-origin: 50% 90px;
+    margin-left: -1px;
+}
+
+.mark-hour {
+    height: 15px;
+    width: 4px;
+    background-color: #000;
+}
+
+.mark-minute {
+    height: 8px;
+    background-color: #666;
+}

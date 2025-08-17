@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时分秒学习动画</title>
+    <link rel="stylesheet" href="clock.css">
+</head>
+<body>
+    <div class="clock-container">
+        <div class="clock">
+            <!-- 时钟刻度 -->
+            <div class="clock-marks">
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+                <div class="mark mark-hour"></div>
+            </div>
+            <!-- 时钟指针 -->
+            <div class="hand hour-hand" id="hour-hand"></div>
+            <div class="hand minute-hand" id="minute-hand"></div>
+            <div class="hand second-hand" id="second-hand"></div>
+        </div>
+        <div class="controls">
+            <div class="control-group">
+                <label for="hour-slider">时</label>
+                <input type="range" id="hour-slider" min="0" max="12" value="0">
+                <input type="number" id="hour-input" min="0" max="12" value="0">
+            </div>
+            <div class="control-group">
+                <label for="minute-slider">分</label>
+                <input type="range" id="minute-slider" min="0" max="60" value="0">
+                <input type="number" id="minute-input" min="0" max="60" value="0">
+            </div>
+            <div class="control-group">
+                <label for="second-slider">秒</label>
+                <input type="range" id="second-slider" min="0" max="60" value="0">
+                <input type="number" id="second-input" min="0" max="60" value="0">
+            </div>
+        </div>
+    </div>
+    <script src="clock.js"></script>
+</body>
+</html>
