@@ -1,20 +1,20 @@
 {
-  "path": "e:\\D盘\\UGit\\education\\education\\primary\\ball_collision",
-  "desc": "多球碰撞物理实验，支持2-10个球体的弹性碰撞模拟，可调节球体数量、大小、速度和颜色，完全符合物理定律（动量守恒和能量守恒）。",
-  "id": "328d5722a85d436290a2e5b2042f33a5",
+  "path": "e:\\D盘\\UGit\\education\\education",
+  "desc": "教育实验平台 - 一个美观、高端的教育实验集成平台，包含天文、物理和时钟学习等多种交互式实验。",
+  "id": "4cdac95c20e0467f851a585f139c86c0",
   "data": {
-    "spaceKey": "328d5722a85d436290a2e5b2042f33a5",
+    "spaceKey": "4cdac95c20e0467f851a585f139c86c0",
     "connections": {
-      "webIDE": "https://328d5722a85d436290a2e5b2042f33a5.codebuddy.cloudstudio.club",
-      "preview": "https://328d5722a85d436290a2e5b2042f33a5--{port}.codebuddy.cloudstudio.club",
-      "api": "https://328d5722a85d436290a2e5b2042f33a5--api.codebuddy.cloudstudio.club",
-      "pty": "https://328d5722a85d436290a2e5b2042f33a5--pty.codebuddy.cloudstudio.club"
+      "webIDE": "https://4cdac95c20e0467f851a585f139c86c0.codebuddy.cloudstudio.club",
+      "preview": "https://4cdac95c20e0467f851a585f139c86c0--{port}.codebuddy.cloudstudio.club",
+      "api": "https://4cdac95c20e0467f851a585f139c86c0--api.codebuddy.cloudstudio.club",
+      "pty": "https://4cdac95c20e0467f851a585f139c86c0--pty.codebuddy.cloudstudio.club"
     }
   },
   "config": {
-    "api": "https://328d5722a85d436290a2e5b2042f33a5--api.codebuddy.cloudstudio.club",
-    "pty": "https://328d5722a85d436290a2e5b2042f33a5--pty.codebuddy.cloudstudio.club",
+    "api": "https://4cdac95c20e0467f851a585f139c86c0--api.codebuddy.cloudstudio.club",
+    "pty": "https://4cdac95c20e0467f851a585f139c86c0--pty.codebuddy.cloudstudio.club",
     "region": "ap-shanghai",
-    "spaceKey": "328d5722a85d436290a2e5b2042f33a5"
+    "spaceKey": "4cdac95c20e0467f851a585f139c86c0"
   }
 }
