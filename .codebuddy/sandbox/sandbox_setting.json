@@ -1,0 +1,20 @@
+{
+  "path": "e:\\D盘\\UGit\\education\\education\\primary\\ball_collision",
+  "desc": "多球碰撞物理实验，支持2-10个球体的弹性碰撞模拟，可调节球体数量、大小、速度和颜色，完全符合物理定律（动量守恒和能量守恒）。",
+  "id": "328d5722a85d436290a2e5b2042f33a5",
+  "data": {
+    "spaceKey": "328d5722a85d436290a2e5b2042f33a5",
+    "connections": {
+      "webIDE": "https://328d5722a85d436290a2e5b2042f33a5.codebuddy.cloudstudio.club",
+      "preview": "https://328d5722a85d436290a2e5b2042f33a5--{port}.codebuddy.cloudstudio.club",
+      "api": "https://328d5722a85d436290a2e5b2042f33a5--api.codebuddy.cloudstudio.club",
+      "pty": "https://328d5722a85d436290a2e5b2042f33a5--pty.codebuddy.cloudstudio.club"
+    }
+  },
+  "config": {
+    "api": "https://328d5722a85d436290a2e5b2042f33a5--api.codebuddy.cloudstudio.club",
+    "pty": "https://328d5722a85d436290a2e5b2042f33a5--pty.codebuddy.cloudstudio.club",
+    "region": "ap-shanghai",
+    "spaceKey": "328d5722a85d436290a2e5b2042f33a5"
+  }
+}

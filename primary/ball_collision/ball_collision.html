@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多球碰撞实验</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>多球碰撞物理实验</h1>
+        
+        <div class="global-controls">
+            <div class="control-item">
+                <label for="ball-count">球体数量:</label>
+                <input type="range" id="ball-count" min="2" max="10" value="2" step="1">
+                <span id="ball-count-value">2</span>
+            </div>
+            <button id="add-ball-btn">添加一个球</button>
+            <button id="remove-ball-btn">删除一个球</button>
+        </div>
+        
+        <div class="controls" id="ball-controls">
+            <!-- 球体控制面板将由JavaScript动态生成 -->
+        </div>
+        
+        <div class="simulation-controls">
+            <button id="start-btn">开始</button>
+            <button id="reset-btn">重置</button>
+            <button id="random-btn">随机参数</button>
+        </div>
+        
+        <canvas id="simulation-canvas"></canvas>
+        
+        <div class="info">
+            <h3>实验说明</h3>
+            <p>本实验模拟了多个球体在二维平面上的弹性碰撞。</p>
+            <p>您可以调整球体数量（2-10个），以及每个球的半径、速度和颜色。</p>
+            <p>点击"开始"按钮观察碰撞过程，碰撞遵循动量守恒和能量守恒的物理定律。</p>
+            <p>点击"随机参数"可以快速生成随机的球体参数。</p>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
