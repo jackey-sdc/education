@@ -1,0 +1,121 @@
+.circuit-animation {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.circuit-animation .animation-canvas-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  background: var(--background-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+}
+
+.circuit-animation .animation-canvas {
+  background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+  border-radius: var(--radius-md);
+  max-width: 100%;
+  height: auto;
+}
+
+.circuit-animation .animation-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.circuit-animation .control-row {
+  display: flex;
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.circuit-animation .control-group {
+  flex: 1;
+  min-width: 150px;
+}
+
+.circuit-animation .control-group label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.circuit-animation .control-label {
+  min-width: 100px;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.circuit-animation .control-select {
+  flex: 1;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.circuit-animation .control-group input[type="range"] {
+  flex: 1;
+  height: 6px;
+  background: var(--background-secondary);
+  border-radius: 3px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.circuit-animation .control-group input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.circuit-animation .animation-formula {
+  padding: var(--spacing-md);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid #10B981;
+  border-radius: var(--radius-md);
+}
+
+.circuit-animation .animation-formula h4 {
+  font-size: var(--font-size-sm);
+  color: #10B981;
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+.circuit-animation .formula-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.circuit-animation .formula-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.circuit-animation .formula {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.circuit-animation .formula-desc {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}

@@ -4,6 +4,17 @@ import { QuadraticFunctionAnimation } from '../components/animations'
 import { FreeFallAnimation } from '../components/animations'
 import { ReactionAnimation } from '../components/animations'
 import FunctionGraphAnimation from '../components/animations/math/FunctionGraphAnimation'
+import GeometryAnimation from '../components/animations/math/GeometryAnimation'
+import VectorAnimation from '../components/animations/math/VectorAnimation'
+import SequenceAnimation from '../components/animations/math/SequenceAnimation'
+import ProbabilityAnimation from '../components/animations/math/ProbabilityAnimation'
+import MechanicsAnimation from '../components/animations/physics/MechanicsAnimation'
+import SpringAnimation from '../components/animations/physics/SpringAnimation'
+import CircuitAnimation from '../components/animations/physics/CircuitAnimation'
+import OpticsAnimation from '../components/animations/physics/OpticsAnimation'
+import SoundWaveAnimation from '../components/animations/physics/SoundWaveAnimation'
+import MoleAnimation from '../components/animations/chemistry/MoleAnimation'
+import AcidBaseAnimation from '../components/animations/chemistry/AcidBaseAnimation'
 import { getAnimationForProblem } from '../components/animations/knowledgeMapping'
 import './Problem.css'
 
@@ -194,6 +205,39 @@ const Problem = () => {
             )}
             {animationMapping && animationMapping.component === 'FunctionGraphAnimation' && (
               <FunctionGraphAnimation problemData={animationMapping.problemData} />
+            )}
+            {animationMapping && animationMapping.component === 'GeometryAnimation' && (
+              <GeometryAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'VectorAnimation' && (
+              <VectorAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'SequenceAnimation' && (
+              <SequenceAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'ProbabilityAnimation' && (
+              <ProbabilityAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'MechanicsAnimation' && (
+              <MechanicsAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'SpringAnimation' && (
+              <SpringAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'CircuitAnimation' && (
+              <CircuitAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'OpticsAnimation' && (
+              <OpticsAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'SoundWaveAnimation' && (
+              <SoundWaveAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'MoleAnimation' && (
+              <MoleAnimation {...animationMapping.problemData.initialParams} />
+            )}
+            {animationMapping && animationMapping.component === 'AcidBaseAnimation' && (
+              <AcidBaseAnimation {...animationMapping.problemData.initialParams} />
             )}
             {animationMapping && animationMapping.component === 'GenericAnimation' && (
               <div className="generic-animation-placeholder">
