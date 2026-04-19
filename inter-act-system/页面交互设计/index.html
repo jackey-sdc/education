@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交互式科学教育辅助系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #262626;
+        }
+        
+        /* 顶部导航栏 */
+        .navbar {
+            background-color: #1890ff;
+            color: white;
+            padding: 16px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-menu li {
+            margin-left: 24px;
+        }
+        
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .nav-menu a:hover {
+            text-decoration: underline;
+        }
+        
+        /* 主内容区 */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        /* 学科选择卡片 */
+        .subject-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .subject-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subject-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .subject-card h3 {
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: #1890ff;
+        }
+        
+        .subject-card p {
+            color: #8c8c8c;
+            margin-bottom: 16px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: #1890ff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #40a9ff;
+        }
+        
+        /* 热门题目 */
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 24px;
+            color: #262626;
+        }
+        
+        .problem-list {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .problem-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .problem-item:last-child {
+            border-bottom: none;
+        }
+        
+        .problem-info h4 {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .problem-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: #8c8c8c;
+        }
+        
+        .difficulty {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        .difficulty-easy {
+            background-color: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .difficulty-medium {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        .difficulty-hard {
+            background-color: #fff1f0;
+            color: #f5222d;
+        }
+        
+        /* 应用案例 */
+        .case-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .case-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .case-image {
+            height: 180px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #1890ff;
+        }
+        
+        .case-content {
+            padding: 16px;
+        }
+        
+        .case-content h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .case-content p {
+            color: #8c8c8c;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        
+        /* 解题页面 */
+        .problem-page {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 24px;
+        }
+        
+        .problem-detail {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            padding: 24px;
+        }
+        
+        .problem-content {
+            margin-bottom: 24px;
+        }
+        
+        .problem-content h2 {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .problem-content p {
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+        
+        .knowledge-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        
+        .knowledge-tag {
+            padding: 4px 12px;
+            background-color: #e6f7ff;
+            color: #1890ff;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .solution-steps {
+            margin-bottom: 24px;
+        }
+        
+        .solution-steps h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .step {
+            margin-bottom: 16px;
+            padding: 12px;
+            background-color: #fafafa;
+            border-radius: 4px;
+        }
+        
+        .step-number {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1890ff;
+        }
+        
+        .animation-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            padding: 24px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .animation-title {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+        
+        .animation-canvas {
+            flex: 1;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #1890ff;
+            margin-bottom: 16px;
+        }
+        
+        .animation-controls {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .control-group label {
+            font-size: 14px;
+            color: #8c8c8c;
+        }
+        
+        .control-group input {
+            padding: 8px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            width: 120px;
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: #1890ff;
+            border: 1px solid #1890ff;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e6f7ff;
+        }
+        
+        /* 学习中心 */
+        .learning-center {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            padding: 24px;
+        }
+        
+        .learning-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1890ff;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #8c8c8c;
+        }
+        
+        .knowledge-radar {
+            margin-bottom: 32px;
+        }
+        
+        .radar-container {
+            height: 300px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #1890ff;
+        }
+        
+        .recent-records {
+            margin-bottom: 32px;
+        }
+        
+        .record-item {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .record-item:last-child {
+            border-bottom: none;
+        }
+        
+        .record-info h4 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .record-meta {
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+        
+        .record-result {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .result-success {
+            background-color: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .result-failure {
+            background-color: #fff1f0;
+            color: #f5222d;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-menu li {
+                margin: 0 12px;
+            }
+            
+            .problem-page {
+                grid-template-columns: 1fr;
+            }
+            
+            .learning-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .subject-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .case-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .learning-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">交互式科学教育辅助系统</div>
+            <ul class="nav-menu">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#problem">解题中心</a></li>
+                <li><a href="#learning">学习中心</a></li>
+                <li><a href="#cases">应用案例</a></li>
+                <li><a href="#teacher">教师控制台</a></li>
+                <li><a href="#login">登录</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- 主内容区 -->
+    <div class="main-container">
+        <!-- 首页 -->
+        <section id="home">
+            <h1 class="section-title">欢迎使用交互式科学教育辅助系统</h1>
+            
+            <!-- 学科选择卡片 -->
+            <div class="subject-cards">
+                <div class="subject-card">
+                    <div class="subject-icon">📐</div>
+                    <h3>数学</h3>
+                    <p>几何图形变换、函数图像绘制、概率分布可视化</p>
+                    <a href="#math" class="btn btn-primary">开始学习</a>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">⚡</div>
+                    <h3>物理</h3>
+                    <p>力学运动模拟、电磁现象可视化、光学实验模拟</p>
+                    <a href="#physics" class="btn btn-primary">开始学习</a>
+                </div>
+                <div class="subject-card">
+                    <div class="subject-icon">🧪</div>
+                    <h3>化学</h3>
+                    <p>分子结构展示、化学反应过程、元素周期表交互</p>
+                    <a href="#chemistry" class="btn btn-primary">开始学习</a>
+                </div>
+            </div>
+            
+            <!-- 热门题目 -->
+            <h2 class="section-title">热门题目</h2>
+            <div class="problem-list">
+                <div class="problem-item">
+                    <div class="problem-info">
+                        <h4>二次函数图像与性质</h4>
+                        <div class="problem-meta">
+                            <span>数学</span>
+                            <span class="difficulty difficulty-medium">中等</span>
+                            <span>10分钟</span>
+                        </div>
+                    </div>
+                    <a href="#problem1" class="btn btn-primary">开始解题</a>
+                </div>
+                <div class="problem-item">
+                    <div class="problem-info">
+                        <h4>牛顿第二定律应用</h4>
+                        <div class="problem-meta">
+                            <span>物理</span>
+                            <span class="difficulty difficulty-medium">中等</span>
+                            <span>15分钟</span>
+                        </div>
+                    </div>
+                    <a href="#problem2" class="btn btn-primary">开始解题</a>
+                </div>
+                <div class="problem-item">
+                    <div class="problem-info">
+                        <h4>化学平衡移动</h4>
+                        <div class="problem-meta">
+                            <span>化学</span>
+                            <span class="difficulty difficulty-hard">困难</span>
+                            <span>20分钟</span>
+                        </div>
+                    </div>
+                    <a href="#problem3" class="btn btn-primary">开始解题</a>
+                </div>
+            </div>
+            
+            <!-- 应用案例 -->
+            <h2 class="section-title">应用案例</h2>
+            <div class="case-list">
+                <div class="case-card">
+                    <div class="case-image">🏗️</div>
+                    <div class="case-content">
+                        <h3>建筑中的几何应用</h3>
+                        <p>几何图形在建筑设计中的应用，包括结构稳定性和美学设计</p>
+                        <a href="#case1" class="btn btn-secondary">查看详情</a>
+                    </div>
+                </div>
+                <div class="case-card">
+                    <div class="case-image">🚀</div>
+                    <div class="case-content">
+                        <h3>火箭发射中的物理原理</h3>
+                        <p>牛顿运动定律在火箭发射中的应用，包括推力计算和轨道设计</p>
+                        <a href="#case2" class="btn btn-secondary">查看详情</a>
+                    </div>
+                </div>
+                <div class="case-card">
+                    <div class="case-image">💊</div>
+                    <div class="case-content">
+                        <h3>药物合成中的化学原理</h3>
+                        <p>有机化学反应在药物合成中的应用，包括分子结构设计和反应优化</p>
+                        <a href="#case3" class="btn btn-secondary">查看详情</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 解题页面 -->
+        <section id="problem1" style="display: none;">
+            <h1 class="section-title">解题中心</h1>
+            <div class="problem-page">
+                <div class="problem-detail">
+                    <div class="problem-content">
+                        <h2>二次函数图像与性质</h2>
+                        <p>已知二次函数  f(x) = ax^2 + bx + c  的图像经过点  (0, 3) ，且当  x = 1  时取得最小值  2 ，求函数的解析式。</p>
+                    </div>
+                    <div class="knowledge-tags">
+                        <span class="knowledge-tag">二次函数</span>
+                        <span class="knowledge-tag">顶点式</span>
+                        <span class="knowledge-tag">最小值</span>
+                    </div>
+                    <div class="solution-steps">
+                        <h3>解题步骤</h3>
+                        <div class="step">
+                            <div class="step-number">步骤 1：确定二次函数的顶点式</div>
+                            <p>由于二次函数在  x = 1  时取得最小值，因此顶点坐标为  (1, 2) ，可以设函数的顶点式为  f(x) = a(x - 1)^2 + 2 。</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">步骤 2：利用已知点求参数  a </div>
+                            <p>函数图像经过点  (0, 3) ，代入顶点式得： 3 = a(0 - 1)^2 + 2 ，解得  a = 1 。</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">步骤 3：展开顶点式得到一般式</div>
+                            <p>将  a = 1  代入顶点式，展开得： f(x) = (x - 1)^2 + 2 = x^2 - 2x + 3 。</p>
+                        </div>
+                    </div>
+                    <div style="margin-top: 24px;">
+                        <a href="#home" class="btn btn-secondary">返回首页</a>
+                    </div>
+                </div>
+                <div class="animation-container">
+                    <h3 class="animation-title">二次函数图像</h3>
+                    <div class="animation-canvas" id="quadratic-animation">
+                        <!-- 动画内容将通过JavaScript生成 -->
+                        二次函数图像动画
+                    </div>
+                    <div class="animation-controls">
+                        <div class="control-group">
+                            <label for="a-value">a值：</label>
+                            <input type="number" id="a-value" value="1" min="-5" max="5" step="0.1">
+                        </div>
+                        <div class="control-group">
+                            <label for="b-value">b值：</label>
+                            <input type="number" id="b-value" value="-2" min="-10" max="10" step="0.1">
+                        </div>
+                        <div class="control-group">
+                            <label for="c-value">c值：</label>
+                            <input type="number" id="c-value" value="3" min="-10" max="10" step="0.1">
+                        </div>
+                        <button class="btn btn-primary" onclick="updateAnimation()">更新图像</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 学习中心 -->
+        <section id="learning" style="display: none;">
+            <h1 class="section-title">学习中心</h1>
+            <div class="learning-center">
+                <div class="learning-stats">
+                    <div class="stat-card">
+                        <div class="stat-value">42</div>
+                        <div class="stat-label">已解题目</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">85%</div>
+                        <div class="stat-label">正确率</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">学习时长（小时）</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">掌握知识点</div>
+                    </div>
+                </div>
+                <div class="knowledge-radar">
+                    <h3 class="section-title">知识点掌握情况</h3>
+                    <div class="radar-container">
+                        <!-- 雷达图将通过JavaScript生成 -->
+                        知识点掌握雷达图
+                    </div>
+                </div>
+                <div class="recent-records">
+                    <h3 class="section-title">最近解题记录</h3>
+                    <div class="record-item">
+                        <div class="record-info">
+                            <h4>二次函数图像与性质</h4>
+                            <div class="record-meta">2026-04-19 14:30</div>
+                        </div>
+                        <span class="record-result result-success">正确</span>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-info">
+                            <h4>牛顿第二定律应用</h4>
+                            <div class="record-meta">2026-04-19 13:15</div>
+                        </div>
+                        <span class="record-result result-success">正确</span>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-info">
+                            <h4>化学平衡移动</h4>
+                            <div class="record-meta">2026-04-19 11:45</div>
+                        </div>
+                        <span class="record-result result-failure">错误</span>
+                    </div>
+                </div>
+                <div style="margin-top: 24px;">
+                    <a href="#home" class="btn btn-secondary">返回首页</a>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <script>
+        // 简单的页面导航
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            
+            // 处理导航点击
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    
+                    // 隐藏所有 sections
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // 显示目标 section
+                    const targetSection = document.querySelector(targetId);
+                    if (targetSection) {
+                        targetSection.style.display = 'block';
+                    }
+                });
+            });
+            
+            // 处理学科卡片点击
+            const subjectCards = document.querySelectorAll('.subject-card');
+            subjectCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const link = this.querySelector('a');
+                    if (link) {
+                        link.click();
+                    }
+                });
+            });
+            
+            // 处理题目点击
+            const problemItems = document.querySelectorAll('.problem-item');
+            problemItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const link = this.querySelector('a');
+                    if (link) {
+                        link.click();
+                    }
+                });
+            });
+        });
+        
+        // 简单的动画更新函数
+        function updateAnimation() {
+            const a = parseFloat(document.getElementById('a-value').value);
+            const b = parseFloat(document.getElementById('b-value').value);
+            const c = parseFloat(document.getElementById('c-value').value);
+            
+            const canvas = document.getElementById('quadratic-animation');
+            canvas.textContent = `二次函数：f(x) = ${a}x² + ${b}x + ${c}`;
+            
+            // 这里可以添加实际的Canvas绘制代码
+            // 由于是原型，暂时只更新文本
+        }
+    </script>
+</body>
+</html>
