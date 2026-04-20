@@ -21,10 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 挂载静态文件
-if os.path.exists("../frontend/build"):
-    app.mount("/", StaticFiles(directory="../frontend/build", html=True), name="static")
-
 # 导入API路由
 from app.api import problems, solutions, animations, cases, users, learning
 
@@ -35,6 +31,10 @@ app.include_router(animations.router, prefix="/api/animations", tags=["animation
 app.include_router(cases.router, prefix="/api/cases", tags=["cases"])
 app.include_router(users.router, prefix="/api/users", tags=["users"])
 app.include_router(learning.router, prefix="/api/learning", tags=["learning"])
+
+# 挂载静态文件（必须在API路由注册之后，避免路径冲突）
+if os.path.exists("../frontend/build"):
+    app.mount("/static", StaticFiles(directory="../frontend/build", html=True), name="static")
 
 # 根路径
 @app.get("/")

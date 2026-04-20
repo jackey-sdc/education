@@ -43,7 +43,7 @@ async def create_case(
     db: Session = Depends(get_db)
 ):
     """创建案例"""
-    db_case = Case(**case.dict())
+    db_case = Case(**case.model_dump())
     db.add(db_case)
     db.commit()
     db.refresh(db_case)
@@ -60,7 +60,7 @@ async def update_case(
     if not db_case:
         raise HTTPException(status_code=404, detail="案例不存在")
     
-    for key, value in case.dict(exclude_unset=True).items():
+    for key, value in case.model_dump(exclude_unset=True).items():
         setattr(db_case, key, value)
     
     db.commit()

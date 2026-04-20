@@ -164,7 +164,7 @@ const OpticsAnimation = ({}) => {
     ctx.strokeStyle = 'rgba(16, 185, 129, 0.6)'
     ctx.beginPath()
     ctx.moveTo(objectX, objectY)
-    ctx.lineTo(mirrorX + (reflectedX - mirrorX) * rayAnimOffset, mirrorX + (objectY - mirrorX) * rayAnimOffset)
+    ctx.lineTo(mirrorX + (reflectedX - mirrorX) * rayAnimOffset, objectY + (axisY - objectY) * rayAnimOffset)
     ctx.stroke()
 
     // 光线3: 通过焦点的光线

@@ -40,7 +40,7 @@ async def create_solution(
     db: Session = Depends(get_db)
 ):
     """创建解决方案"""
-    db_solution = Solution(**solution.dict())
+    db_solution = Solution(**solution.model_dump())
     db.add(db_solution)
     db.commit()
     db.refresh(db_solution)
@@ -57,7 +57,7 @@ async def update_solution(
     if not db_solution:
         raise HTTPException(status_code=404, detail="解决方案不存在")
     
-    for key, value in solution.dict(exclude_unset=True).items():
+    for key, value in solution.model_dump(exclude_unset=True).items():
         setattr(db_solution, key, value)
     
     db.commit()

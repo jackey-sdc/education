@@ -293,7 +293,7 @@ const ProbabilityAnimation = ({}) => {
         <button className="btn-primary" onClick={handleStart} disabled={running}>▶ 开始</button>
         <button className="btn-secondary" onClick={handleStop} disabled={!running}>⏸ 暂停</button>
         <button className="btn-outline" onClick={handleReset}>🔄 重置</button>
-        <button className="btn-outline" onClick={() => runMultipleTrials(100)}>�➕ 100次</button>
+        <button className="btn-outline" onClick={() => runMultipleTrials(100)}>➕ 100次</button>
       </div>
 
       <div className="animation-formula">

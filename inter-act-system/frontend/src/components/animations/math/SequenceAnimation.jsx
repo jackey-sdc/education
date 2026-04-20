@@ -237,7 +237,7 @@ const SequenceAnimation = ({}) => {
                 <span className="formula-desc">求和公式</span>
               </div>
               <div className="formula-item">
-                <span className="formula">Sn = n·2a₁+(n-1)d/2</span>
+                <span className="formula">Sn = n[2a₁+(n-1)d]/2</span>
                 <span className="formula-desc">求和公式2</span>
               </div>
             </>

@@ -30,7 +30,8 @@ const AcidBaseAnimation = ({}) => {
 
     ctx.clearRect(0, 0, width, height)
 
-    const { acidConcentration, acidVolume, baseConcentration, currentBaseVolume } = reactionState
+    const { currentBaseVolume } = reactionState
+    const { acidConcentration, acidVolume, baseConcentration } = params
 
     // 计算 pH
     const molesH = acidConcentration * acidVolume / 1000
@@ -278,7 +279,19 @@ const AcidBaseAnimation = ({}) => {
           </div>
           <div className="data-item highlight">
             <span className="data-label">当前pH</span>
-            <span className="data-value">{reactionState.ph.toFixed(2)}</span>
+            <span className="data-value">{(() => {
+              const mH = params.acidConcentration * params.acidVolume / 1000
+              const mOH = params.baseConcentration * reactionState.currentBaseVolume / 1000
+              const remaining = Math.max(0, mH - mOH)
+              if (remaining > 0) {
+                const hc = remaining / ((params.acidVolume + reactionState.currentBaseVolume) / 1000)
+                return (-Math.log10(hc)).toFixed(2)
+              } else if (mOH > mH) {
+                const ohc = (mOH - mH) / ((params.acidVolume + reactionState.currentBaseVolume) / 1000)
+                return (14 + Math.log10(ohc)).toFixed(2)
+              }
+              return '7.00'
+            })()}</span>
           </div>
           <div className="data-item">
             <span className="data-label">状态</span>
@@ -288,7 +301,7 @@ const AcidBaseAnimation = ({}) => {
       </div>
 
       <div className="animation-formula">
-        <h4">🧪 酸碱滴定公式</h4>
+        <h4>🧪 酸碱滴定公式</h4>
         <div className="formula-grid">
           <div className="formula-item">
             <span className="formula">pH = -log[H⁺]</span>

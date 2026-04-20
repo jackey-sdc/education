@@ -38,7 +38,7 @@ async def create_learning_record(
     db: Session = Depends(get_db)
 ):
     """创建学习记录"""
-    db_record = LearningRecord(**record.dict())
+    db_record = LearningRecord(**record.model_dump())
     db.add(db_record)
     db.commit()
     db.refresh(db_record)
@@ -55,7 +55,7 @@ async def update_learning_record(
     if not db_record:
         raise HTTPException(status_code=404, detail="学习记录不存在")
     
-    for key, value in record.dict(exclude_unset=True).items():
+    for key, value in record.model_dump(exclude_unset=True).items():
         setattr(db_record, key, value)
     
     db.commit()
@@ -103,7 +103,7 @@ async def create_progress(
         return existing
     else:
         # 创建新进度
-        db_progress = Progress(**progress.dict())
+        db_progress = Progress(**progress.model_dump())
         db.add(db_progress)
         db.commit()
         db.refresh(db_progress)
@@ -120,7 +120,7 @@ async def update_progress(
     if not db_progress:
         raise HTTPException(status_code=404, detail="学习进度不存在")
     
-    if progress.mastery_level:
+    if progress.mastery_level is not None:
         db_progress.mastery_level = progress.mastery_level
     
     db.commit()
@@ -157,7 +157,7 @@ async def create_problem_attempt(
     db: Session = Depends(get_db)
 ):
     """创建问题尝试"""
-    db_attempt = ProblemAttempt(**attempt.dict())
+    db_attempt = ProblemAttempt(**attempt.model_dump())
     db.add(db_attempt)
     db.commit()
     db.refresh(db_attempt)

@@ -142,6 +142,7 @@ const SoundWaveAnimation = ({}) => {
   useEffect(() => {
     const animate = () => {
       setPhase(prev => prev + 0.02 * params.speed)
+      animationRef.current = requestAnimationFrame(animate)
     }
     animationRef.current = requestAnimationFrame(animate)
     return () => {

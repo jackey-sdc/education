@@ -52,58 +52,68 @@ const MoleAnimation = ({}) => {
     const modelCenterX = 120
     const modelCenterY = 130
     const atomRadius = 20
-
-    // 氧原子（红色）
-    ctx.fillStyle = '#EF4444'
-    ctx.beginPath()
-    ctx.arc(modelCenterX, modelCenterY, atomRadius, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.strokeStyle = '#B91C1C'
-    ctx.lineWidth = 2
-    ctx.stroke()
-    ctx.fillStyle = '#FFFFFF'
-    ctx.font = 'bold 12px Inter'
-    ctx.fillText('O', modelCenterX, modelCenterY + 4)
-
-    // 氢原子（白色）
-    const hAngle1 = -Math.PI / 4
-    const hAngle2 = Math.PI + Math.PI / 4
     const bondLength = 35
 
-    ctx.fillStyle = '#FFFFFF'
-    ctx.strokeStyle = '#9CA3AF'
-    ctx.lineWidth = 2
+    const drawAtom = (x, y, radius, color, borderColor, label) => {
+      ctx.fillStyle = color
+      ctx.beginPath()
+      ctx.arc(x, y, radius, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.strokeStyle = borderColor
+      ctx.lineWidth = 2
+      ctx.stroke()
+      ctx.fillStyle = color === '#FFFFFF' ? '#374151' : '#FFFFFF'
+      ctx.font = `bold ${radius > 15 ? 12 : 10}px Inter`
+      ctx.fillText(label, x, y + 4)
+    }
 
-    // H1
-    const h1x = modelCenterX + Math.cos(hAngle1) * bondLength
-    const h1y = modelCenterY + Math.sin(hAngle1) * bondLength
-    ctx.beginPath()
-    ctx.arc(h1x, h1y, atomRadius * 0.7, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.stroke()
-    ctx.fillStyle = '#374151'
-    ctx.font = 'bold 10px Inter'
-    ctx.fillText('H', h1x, h1y + 3)
+    const drawBond = (x1, y1, x2, y2) => {
+      ctx.strokeStyle = '#6B7280'
+      ctx.lineWidth = 3
+      ctx.beginPath()
+      ctx.moveTo(x1, y1)
+      ctx.lineTo(x2, y2)
+      ctx.stroke()
+    }
 
-    // H2
-    const h2x = modelCenterX + Math.cos(hAngle2) * bondLength
-    const h2y = modelCenterY + Math.sin(hAngle2) * bondLength
-    ctx.beginPath()
-    ctx.arc(h2x, h2y, atomRadius * 0.7, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.stroke()
-    ctx.fillStyle = '#374151'
-    ctx.fillText('H', h2x, h2y + 3)
-
-    // 化学键
-    ctx.strokeStyle = '#6B7280'
-    ctx.lineWidth = 3
-    ctx.beginPath()
-    ctx.moveTo(modelCenterX + atomRadius, modelCenterY)
-    ctx.lineTo(h1x - atomRadius * 0.7, h1y)
-    ctx.moveTo(modelCenterX - atomRadius, modelCenterY)
-    ctx.lineTo(h2x + atomRadius * 0.7, h2y)
-    ctx.stroke()
+    if (substance === 'water') {
+      drawAtom(modelCenterX, modelCenterY, atomRadius, '#EF4444', '#B91C1C', 'O')
+      const h1x = modelCenterX + Math.cos(-Math.PI / 4) * bondLength
+      const h1y = modelCenterY + Math.sin(-Math.PI / 4) * bondLength
+      const h2x = modelCenterX + Math.cos(Math.PI + Math.PI / 4) * bondLength
+      const h2y = modelCenterY + Math.sin(Math.PI + Math.PI / 4) * bondLength
+      drawAtom(h1x, h1y, atomRadius * 0.7, '#FFFFFF', '#9CA3AF', 'H')
+      drawAtom(h2x, h2y, atomRadius * 0.7, '#FFFFFF', '#9CA3AF', 'H')
+      drawBond(modelCenterX + atomRadius * 0.7, modelCenterY - atomRadius * 0.5, h1x, h1y)
+      drawBond(modelCenterX - atomRadius * 0.7, modelCenterY + atomRadius * 0.5, h2x, h2y)
+    } else if (substance === 'oxygen') {
+      drawAtom(modelCenterX - 18, modelCenterY, atomRadius, '#EF4444', '#B91C1C', 'O')
+      drawAtom(modelCenterX + 18, modelCenterY, atomRadius, '#EF4444', '#B91C1C', 'O')
+      drawBond(modelCenterX - 18 + atomRadius, modelCenterY, modelCenterX + 18 - atomRadius, modelCenterY)
+    } else if (substance === 'carbon') {
+      drawAtom(modelCenterX, modelCenterY, atomRadius, '#374151', '#1F2937', 'C')
+      drawAtom(modelCenterX - 30, modelCenterY, atomRadius * 0.85, '#EF4444', '#B91C1C', 'O')
+      drawAtom(modelCenterX + 30, modelCenterY, atomRadius * 0.85, '#EF4444', '#B91C1C', 'O')
+      drawBond(modelCenterX - atomRadius, modelCenterY, modelCenterX - 30 + atomRadius * 0.85, modelCenterY)
+      drawBond(modelCenterX + atomRadius, modelCenterY, modelCenterX + 30 - atomRadius * 0.85, modelCenterY)
+    } else if (substance === 'nitrogen') {
+      drawAtom(modelCenterX - 18, modelCenterY, atomRadius, '#3B82F6', '#1D4ED8', 'N')
+      drawAtom(modelCenterX + 18, modelCenterY, atomRadius, '#3B82F6', '#1D4ED8', 'N')
+      drawBond(modelCenterX - 18 + atomRadius, modelCenterY, modelCenterX + 18 - atomRadius, modelCenterY)
+    } else if (substance === 'hydrogen') {
+      drawAtom(modelCenterX - 15, modelCenterY, atomRadius * 0.7, '#FFFFFF', '#9CA3AF', 'H')
+      drawAtom(modelCenterX + 15, modelCenterY, atomRadius * 0.7, '#FFFFFF', '#9CA3AF', 'H')
+      drawBond(modelCenterX - 15 + atomRadius * 0.7, modelCenterY, modelCenterX + 15 - atomRadius * 0.7, modelCenterY)
+    } else if (substance === 'methane') {
+      drawAtom(modelCenterX, modelCenterY, atomRadius, '#374151', '#1F2937', 'C')
+      const angles = [-Math.PI / 4, Math.PI / 4, Math.PI * 3 / 4, -Math.PI * 3 / 4]
+      angles.forEach(a => {
+        const hx = modelCenterX + Math.cos(a) * bondLength
+        const hy = modelCenterY + Math.sin(a) * bondLength
+        drawAtom(hx, hy, atomRadius * 0.6, '#FFFFFF', '#9CA3AF', 'H')
+        drawBond(modelCenterX + Math.cos(a) * atomRadius, modelCenterY + Math.sin(a) * atomRadius, hx, hy)
+      })
+    }
 
     // 分子数量可视化
     const particleBoxX = 250

@@ -4,6 +4,7 @@ import './SpringAnimation.css'
 const SpringAnimation = ({}) => {
   const canvasRef = useRef(null)
   const animationRef = useRef(null)
+  const playingRef = useRef(false)
   const [params, setParams] = useState({
     mass: 2,
     springConstant: 50,
@@ -20,6 +21,7 @@ const SpringAnimation = ({}) => {
 
   const resetAnimation = useCallback(() => {
     setIsPlaying(false)
+    playingRef.current = false
     setState({ displacement: params.amplitude, velocity: 0, time: 0 })
     setTrajectory([])
     if (animationRef.current) {
@@ -223,6 +225,7 @@ const SpringAnimation = ({}) => {
   const startSimulation = () => {
     resetAnimation()
     setIsPlaying(true)
+    playingRef.current = true
     setState({ displacement: params.amplitude, velocity: 0, time: 0 })
 
     const animate = () => {
@@ -241,6 +244,7 @@ const SpringAnimation = ({}) => {
 
         if (newTime > 20) {
           setIsPlaying(false)
+          playingRef.current = false
         }
 
         setTrajectory(trajectory => [...trajectory.slice(-199), { time: newTime, displacement: newDisplacement }])
@@ -252,7 +256,7 @@ const SpringAnimation = ({}) => {
         }
       })
 
-      if (isPlaying) {
+      if (playingRef.current) {
         animationRef.current = requestAnimationFrame(animate)
       }
     }

@@ -4,6 +4,7 @@ import './MechanicsAnimation.css'
 const MechanicsAnimation = ({}) => {
   const canvasRef = useRef(null)
   const animationRef = useRef(null)
+  const playingRef = useRef(false)
   const [params, setParams] = useState({
     mass: 5,
     force: 20,
@@ -20,6 +21,7 @@ const MechanicsAnimation = ({}) => {
 
   const resetAnimation = useCallback(() => {
     setIsPlaying(false)
+    playingRef.current = false
     setState({ position: 50, velocity: 0, time: 0 })
     setTrajectory([])
     if (animationRef.current) {
@@ -193,6 +195,7 @@ const MechanicsAnimation = ({}) => {
   const startSimulation = () => {
     resetAnimation()
     setIsPlaying(true)
+    playingRef.current = true
 
     const animate = () => {
       setState(prev => {
@@ -212,6 +215,7 @@ const MechanicsAnimation = ({}) => {
 
         if (newPosition >= 100 || newPosition <= 0) {
           setIsPlaying(false)
+          playingRef.current = false
           return { ...prev, velocity: 0 }
         }
 
@@ -224,7 +228,7 @@ const MechanicsAnimation = ({}) => {
         }
       })
 
-      if (isPlaying) {
+      if (playingRef.current) {
         animationRef.current = requestAnimationFrame(animate)
       }
     }

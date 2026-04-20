@@ -40,7 +40,7 @@ async def create_animation(
     db: Session = Depends(get_db)
 ):
     """创建动画"""
-    db_animation = Animation(**animation.dict())
+    db_animation = Animation(**animation.model_dump())
     db.add(db_animation)
     db.commit()
     db.refresh(db_animation)
@@ -57,7 +57,7 @@ async def update_animation(
     if not db_animation:
         raise HTTPException(status_code=404, detail="动画不存在")
     
-    for key, value in animation.dict(exclude_unset=True).items():
+    for key, value in animation.model_dump(exclude_unset=True).items():
         setattr(db_animation, key, value)
     
     db.commit()

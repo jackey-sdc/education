@@ -9,33 +9,50 @@ const LearningCenter = () => {
   const [progress, setProgress] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // 模拟数据
+  const allProblems = [
+    {
+      problem_id: 1,
+      content: "已知二次函数 f(x) = ax² + bx + c 的图像经过点 (0, 3)，且当 x = 1 时取得最小值 2，求函数的解析式。",
+      subject: "math",
+      difficulty: "medium",
+      knowledge_points: ["二次函数", "顶点式"]
+    },
+    {
+      problem_id: 2,
+      content: "一个物体从高处自由下落，经过2秒落地，求下落的高度。（重力加速度g=9.8m/s²）",
+      subject: "physics",
+      difficulty: "easy",
+      knowledge_points: ["自由落体", "重力加速度"]
+    },
+    {
+      problem_id: 3,
+      content: "将1mol H2和1mol O2混合点燃，完全反应后生成多少摩尔的H2O？",
+      subject: "chemistry",
+      difficulty: "medium",
+      knowledge_points: ["化学反应", "摩尔计算"]
+    },
+    {
+      problem_id: 4,
+      content: "已知一次函数 f(x) = kx + b 的图像经过点 (1, 2) 和 (3, 4)，求函数的解析式。",
+      subject: "math",
+      difficulty: "easy",
+      knowledge_points: ["一次函数", "线性关系"]
+    },
+    {
+      problem_id: 5,
+      content: "已知sin x = 1/2，求x在[0, 2π]内的解。",
+      subject: "math",
+      difficulty: "medium",
+      knowledge_points: ["三角函数", "正弦函数"]
+    }
+  ]
+
   useEffect(() => {
-    // 模拟API请求
     setTimeout(() => {
-      setProblems([
-        {
-          problem_id: 1,
-          content: "已知二次函数 f(x) = ax² + bx + c 的图像经过点 (0, 3)，且当 x = 1 时取得最小值 2，求函数的解析式。",
-          subject: "math",
-          difficulty: "medium",
-          knowledge_points: ["二次函数", "顶点式"]
-        },
-        {
-          problem_id: 2,
-          content: "一个物体从高处自由下落，经过2秒落地，求下落的高度。（重力加速度g=9.8m/s²）",
-          subject: "physics",
-          difficulty: "easy",
-          knowledge_points: ["自由落体", "重力加速度"]
-        },
-        {
-          problem_id: 3,
-          content: "将1mol H2和1mol O2混合点燃，完全反应后生成多少摩尔的H2O？",
-          subject: "chemistry",
-          difficulty: "medium",
-          knowledge_points: ["化学反应", "摩尔计算"]
-        }
-      ])
+      const filtered = subject === 'all'
+        ? allProblems
+        : allProblems.filter(p => p.subject === subject)
+      setProblems(filtered)
       
       setProgress({
         total_problems: 10,

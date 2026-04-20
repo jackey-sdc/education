@@ -128,10 +128,11 @@ const FreeFallAnimation = ({ height: initHeight = 100, gravity: initGravity = 9.
         const currentVelocity = params.gravity * newTime
 
         if (fallDistance >= params.height) {
+          const finalTime = Math.sqrt(2 * params.height / params.gravity)
           setDistance(params.height)
-          setVelocity(currentVelocity)
+          setVelocity(params.gravity * finalTime)
           setIsPlaying(false)
-          return params.height
+          return finalTime
         }
 
         setDistance(fallDistance)

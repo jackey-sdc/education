@@ -16,12 +16,18 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // 模拟登录状态
-  const isLoggedIn = false
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'))
+
+  useEffect(() => {
+    const checkAuth = () => setIsLoggedIn(!!localStorage.getItem('token'))
+    window.addEventListener('storage', checkAuth)
+    return () => window.removeEventListener('storage', checkAuth)
+  }, [])
 
   const handleLogout = (e) => {
     e.preventDefault()
-    // 这里应该清除token和用户信息
+    localStorage.removeItem('token')
+    setIsLoggedIn(false)
     navigate('/login')
   }
 
