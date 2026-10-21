@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>角的度量</title>
+<style>
+:root{
+    --accent:#f08a24;
+    --accent-l:#fff2e2;
+    --accent-d:#c96f12;
+}
+
+  :root{
+    --ink:#20304a; --ink2:#4b5f7d; --blue:#2f6fd0; --blue-l:#e8f1ff;
+    --orange:#f08a24; --orange-l:#fff2e2; --green:#1f9d6b; --green-l:#e6f7ef;
+    --purple:#7a4fd6; --purple-l:#f1ebff; --red:#d94a4a; --red-l:#fdecec;
+    --teal:#0e8fa8; --teal-l:#e4f6f9;
+    --card:#ffffff; --line:#e3e9f2; --bg:#f4f7fc;
+    --shadow:0 6px 18px rgba(31,52,90,.08);
+    --accent:#2f6fd0; --accent-l:#e8f1ff; --accent-d:#1f5bb0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+    line-height:1.75;font-size:16px}
+  header{background:linear-gradient(135deg,var(--accent-d),var(--accent) 55%,#7a4fd6);
+    color:#fff;padding:32px 20px 28px;text-align:center}
+  header h1{margin:0 0 6px;font-size:30px;letter-spacing:1px}
+  header p{margin:0;opacity:.94;font-size:15px}
+  .badges{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .badges span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+    padding:3px 12px;border-radius:999px;font-size:13px}
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(31,52,90,.05)}
+  nav .inner{max-width:1080px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:8px 14px}
+  nav a{flex:0 0 auto;text-decoration:none;color:var(--ink2);font-size:14px;font-weight:600;
+    padding:7px 13px;border-radius:999px;white-space:nowrap}
+  nav a:hover{background:var(--accent-l);color:var(--accent)}
+  main{max-width:1080px;margin:0 auto;padding:26px 16px 80px}
+  section{margin-bottom:34px}
+  h2.section{font-size:22px;margin:0 0 16px;display:flex;align-items:center;gap:10px;
+    padding-left:12px;border-left:6px solid var(--accent)}
+  h2.section .num{background:var(--accent);color:#fff;font-size:14px;width:26px;height:26px;
+    border-radius:8px;display:grid;place-items:center;font-weight:700}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;
+    box-shadow:var(--shadow);margin-bottom:18px}
+  .card h3{margin:0 0 6px;font-size:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card h3 .tag{font-size:12px;background:var(--accent-l);color:var(--accent);padding:2px 9px;
+    border-radius:999px;font-weight:700}
+  .lead{color:var(--ink2);font-size:15px;margin:0 0 14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:880px){.grid2,.grid3{grid-template-columns:1fr}}
+  .stage{background:#fbfcff;border:1px dashed #cfdcee;border-radius:14px;padding:12px;
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center}
+  .stage svg{max-width:100%;height:auto;display:block}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+  button,.btn{font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent);
+    color:#fff;border:none;border-radius:10px;padding:8px 15px;transition:transform .08s ease,filter .15s ease}
+  button:hover{filter:brightness(1.07)} button:active{transform:translateY(1px)}
+  button.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}
+  button.soft{background:var(--orange)} button.green{background:var(--green)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  input[type=range]{accent-color:var(--accent);width:190px;height:26px}
+  input[type=text],input[type=number]{font:inherit;font-size:15px;padding:6px 10px;border:1.5px solid var(--line);
+    border-radius:8px;outline:none}
+  input[type=text]:focus,input[type=number]:focus{border-color:var(--accent)}
+  .pill{display:inline-block;background:var(--orange-l);color:#b35c00;font-weight:700;
+    padding:4px 12px;border-radius:999px;font-size:14px}
+  .klist{margin:8px 0 0;padding-left:20px;color:var(--ink2);font-size:15px}
+  .klist li{margin:3px 0}
+  .tip{background:var(--accent-l);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;
+    margin-top:12px;font-size:14.5px;color:#26456f}
+  .tip b{color:var(--accent)}
+  .tip.warn{background:var(--orange-l);border-color:var(--orange);color:#8a4a00}
+  .tip.warn b{color:#b35c00}
+  .tip.ok{background:var(--green-l);border-color:var(--green);color:#126b47}
+  .tip.ok b{color:var(--green)}
+  .num-display{font-size:30px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;
+    background:var(--accent-l);padding:4px 16px;border-radius:12px;display:inline-block}
+  table.plain{border-collapse:collapse;width:100%;font-size:14.5px}
+  table.plain th,table.plain td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+  table.plain th{background:var(--accent-l);color:var(--accent)}
+  table.plain td.l,table.plain th.l{text-align:left}
+  /* ---- 练习 ---- */
+  .q{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;background:#fff}
+  .q .qt{font-weight:600;margin-bottom:9px;font-size:15.5px}
+  .q .qt .qno{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;
+    background:var(--purple-l);color:var(--purple);font-size:13px;font-weight:800;margin-right:8px}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{border:1.5px solid var(--line);border-radius:10px;padding:8px 13px;cursor:pointer;
+    background:#fcfdff;font-size:15px;transition:.15s;display:flex;gap:9px;align-items:flex-start}
+  .opt:hover{border-color:var(--accent);background:var(--accent-l)}
+  .opt .k{font-weight:800;color:var(--ink2)}
+  .opt.right{border-color:var(--green);background:var(--green-l)}
+  .opt.right .k{color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:var(--red-l)}
+  .opt.wrong .k{color:var(--red)}
+  .opt.locked{cursor:default}
+  .fb{margin-top:9px;font-size:14px;padding:8px 12px;border-radius:9px;display:none}
+  .fb.show{display:block}
+  .fb.good{background:var(--green-l);color:#126b47}
+  .fb.bad{background:var(--red-l);color:#9b2f2f}
+  .fb .why{display:block;margin-top:4px;color:var(--ink2)}
+  .score{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--accent-l);
+    border-radius:12px;padding:10px 16px;margin-bottom:14px;font-size:15px}
+  .score b{font-size:19px;color:var(--accent)}
+  details.answers{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow)}
+  details.answers summary{cursor:pointer;font-weight:700;color:var(--accent);font-size:16px;outline:none}
+  details.answers[open] summary{margin-bottom:10px;color:var(--orange)}
+  .ans-item{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .ans-item:last-child{border-bottom:none}
+  .ans-item b{color:var(--orange)}
+  /* ---- 通用小组件 ---- */
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .tab{font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink2)}
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .stepper{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .stepper .dot{width:30px;height:30px;border-radius:50%;background:var(--line);color:var(--ink2);
+    display:grid;place-items:center;font-weight:800;font-size:14px}
+  .stepper .dot.on{background:var(--accent);color:#fff}
+  .stepper .dot.done{background:var(--green-l);color:var(--green)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);margin-top:8px}
+  .legend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:5px;vertical-align:-2px}
+  .hstack{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .chip{display:inline-block;background:#fff;border:1.5px solid var(--line);border-radius:999px;
+    padding:3px 12px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .note{font-size:13.5px;color:var(--ink2);margin-top:8px}
+  .big-num{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+  .cell-hl{background:var(--accent-l);border-radius:6px;padding:2px 8px;font-weight:800;color:var(--accent);
+    display:inline-block}
+  .card-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .toggle-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  @media print{
+    header,nav,.controls,.tabs,.score .btn{display:none!important}
+    body{background:#fff}
+    .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+    details.answers{display:block}
+    details.answers summary{display:none}
+    .q{break-inside:avoid}
+  }
+
+</style>
+</head>
+<body>
+<header>
+  <h1>角的度量</h1>
+  <p>人教版（2024年审定）四年级数学上册 · 第二单元 · 线的认识 / 角的再认识 / 量角器与画角 / 角的计算</p>
+  <div class="badges"><span>8 个课时</span>
+    <span>5 个动画模块</span>
+    <span>分层练习 40 题</span>
+    <span>含答案解析</span></div>
+</header>
+<nav><div class="inner">    <a href="#s-line">① 线段·射线·直线</a>
+    <a href="#s-angle">② 角的再认识</a>
+    <a href="#s-measure">③ 量角器（核心）</a>
+    <a href="#s-draw">④ 画角</a>
+    <a href="#s-calc">⑤ 角的计算</a>
+    <a href="#quiz">分层练习</a>
+    <a href="#answers">答案解析</a></div></nav>
+<main>
+<section id="s-line">
+  <h2 class="section"><span class="num">1</span>线段、射线、直线</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>端点有几个？能不能延伸？</h3>
+    <p class="lead">点"延伸"按钮，看看线段、射线、直线在延伸时有什么不一样。</p>
+    <div class="controls">
+      <button id="btnLineExtend">▶ 延伸</button>
+      <button class="ghost" id="btnLineReset">重置</button>
+    </div>
+    <div class="stage" id="lineStage" style="flex-direction:column"></div>
+    <div id="lineNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-angle">
+  <h2 class="section"><span class="num">2</span>角的再认识</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>一条边不动，另一条边转起来</h3>
+    <p class="lead">拖动滑块，让角的一条边转动，看看角的大小怎么变化，角又属于哪一类。</p>
+    <div class="controls">
+      <input type="range" id="angRange" min="0" max="360" value="60">
+      <span class="pill" id="angLabel">60°</span>
+      <button class="ghost" id="btnAngReset">重置</button>
+    </div>
+    <div class="stage" id="angStage"></div>
+    <div id="angNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">动画</span>角的大小与边画多长有关吗？</h3>
+    <p class="lead">点"把边拉长"，看看角有没有变。</p>
+    <div class="controls">
+      <button id="btnAngStretch">🔧 把边拉长</button>
+      <button class="ghost" id="btnAngStretchReset">复原</button>
+    </div>
+    <div class="stage" id="angStretchStage"></div>
+    <div id="angStretchNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-measure">
+  <h2 class="section"><span class="num">3</span>角的度量：用量角器量角</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>三步法 + 内外圈</h3>
+    <p class="lead">拖动滑块改变角的度数，看量角器怎么工作：
+      <b>① 中心与角的顶点重合 → ② 0 刻度线与角的一条边重合 → ③ 另一边所对的刻度就是这个角的度数</b>。
+      <br><b>教学口径</b>：量角器<b>内圈 0° 在右端</b>、<b>外圈 0° 在左端</b>；<b>锐角读内圈，钝角读外圈</b>。</p>
+    <div class="controls">
+      <input type="range" id="pmRange" min="10" max="170" value="40">
+      <span class="pill" id="pmLabel">40°</span>
+      <button id="btnPmStep">▶ 一步步量</button>
+      <button class="ghost" id="btnPmReset">重置</button>
+    </div>
+    <div class="stepper" id="pmSteps"></div>
+    <div class="stage" id="pmStage"></div>
+    <div id="pmNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">易错</span>115° 为什么常被读成 65°？</h3>
+    <p class="lead">量钝角时，如果把内圈当外圈读，就会把 115° 读成 65°。点"对比"看看两个圈分别指着多少。</p>
+    <div class="controls">
+      <button id="btnTrap">🔍 对比内外圈</button>
+    </div>
+    <div class="stage" id="trapStage"></div>
+    <div id="trapNote" class="tip warn"></div>
+  </div>
+</section>
+
+<section id="s-draw">
+  <h2 class="section"><span class="num">4</span>画角</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>用尺规画一个 65° 的角</h3>
+    <p class="lead">点"下一步"，看画角的三个步骤：<b>画弧 → 交点连线 → 标度数</b>。画角的道理和量角器一样——都靠"弧"和"半径相等"。</p>
+    <div class="controls">
+      <input type="range" id="drRange" min="25" max="150" value="65">
+      <span class="pill" id="drLabel">65°</span>
+      <button id="btnDrStep">▶ 下一步</button>
+      <button class="ghost" id="btnDrAll">完整演示</button>
+      <button class="ghost" id="btnDrReset">重置</button>
+    </div>
+    <div class="stepper" id="drSteps"></div>
+    <div class="stage" id="drStage"></div>
+    <div id="drNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-calc">
+  <h2 class="section"><span class="num">5</span>角的计算：拼角与和差</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>半圆被分成三个角</h3>
+    <p class="lead">拖动两个滑块改变 ∠1 和 ∠2，看看 ∠3 是怎么算出来的（平角 = 180°）。</p>
+    <div class="controls">
+      <span class="pill" id="calcLabel">—</span>
+      <input type="range" id="c1Range" min="10" max="160" value="60">
+      <input type="range" id="c2Range" min="10" max="160" value="50">
+      <button class="ghost" id="btnCalcReset">重置</button>
+    </div>
+    <div class="stage" id="calcStage"></div>
+    <div id="calcNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第一档</span>巩固基础</h3>
+      <span class="note">线与角 · 分类 · 量角器读数</span>
+    </div>
+    <div class="score">已答对 <b id="scoreBasic">0</b> / <span id="totalBasic">0</span> 题
+      <button class="ghost" id="btnResetBasic">重做本档</button></div>
+    <div id="basicBlock"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第二档</span>动手操作</h3>
+      <span class="note">看图量角 · 画角 · 拼角</span>
+    </div>
+    <div class="score">已答对 <b id="scoreHand">0</b> / <span id="totalHand">0</span> 题
+      <button class="ghost" id="btnResetHand">重做本档</button></div>
+    <div id="handBlock"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第三档</span>扩展思维</h3>
+      <span class="note">钟面角 · 推理 · 易错辨析</span>
+    </div>
+    <div class="score">已答对 <b id="scoreExt">0</b> / <span id="totalExt">0</span> 题
+      <button class="ghost" id="btnResetExt">重做本档</button></div>
+    <div id="extBlock"></div>
+  </div>
+
+<section id="answers">
+  <details class="answers">
+    <summary>📖 答案与解析（讲评时展开 / 可直接打印）</summary>
+    <div id="answerKey"></div>
+  </details>
+</section>
+
+</section>
+
+<section id="answers">
+  <details class="answers">
+    <summary>📖 答案与解析（讲评时展开 / 可直接打印）</summary>
+    <div id="answerKey"></div>
+  </details>
+</section>
+
+
+</main>
+<footer style="max-width:1080px;margin:0 auto;padding:0 16px 40px;color:var(--ink2);font-size:14px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px">
+  <div>人教版（2024年审定）四年级数学上册 · 第二单元动画课件</div>
+  <div class="hstack"><a class="chip" href="../u1_big_number/index.html">← 上一单元</a><a class="chip" href="../u3_multiply/index.html">下一单元 →</a></div>
+</footer>
+<script>
+/* ==========================================================================
+   共享引擎：DOM/SVG 工具 + 分层练习引擎 + 答案区生成
+   —— 所有单元课件共用（构建时内联进各自的 index.html）
+   ========================================================================== */
+'use strict';
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+
+/* ---------------- SVG 基础 ---------------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+function s(tag, attrs, parent){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in (attrs||{})) if (attrs[k] !== undefined && attrs[k] !== null) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function clear(node){ while(node && node.firstChild) node.removeChild(node.firstChild); }
+
+/* 角度约定：数学正方向 = 逆时针为正；SVG 的 y 轴向下，换算时翻 y */
+function polar(cx, cy, r, deg){
+  const a = deg * Math.PI / 180;
+  return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+}
+/* 数学逆时针弧：sweep 固定 0；large-arc-flag 由跨角是否大于 180° 决定 */
+function arcPoints(cx, cy, r, startDeg, spanDeg){
+  const p1 = polar(cx, cy, r, startDeg), p2 = polar(cx, cy, r, startDeg + spanDeg);
+  const large = spanDeg > 180 ? 1 : 0;
+  return { p1, p2, d:`M ${p1[0]} ${p1[1]} A ${r} ${r} 0 ${large} 0 ${p2[0]} ${p2[1]}` };
+}
+/* 圆周数字：沿切向旋转 + 白色描边光晕，避免被射线/指针压住 */
+function haloText(parent, x, y, str, deg, opt){
+  const o = Object.assign({size:13, fill:'#20304a', rot:true}, opt||{});
+  const t = s('text', {x, y, 'font-size':o.size, fill:o.fill, 'text-anchor':'middle',
+    'dominant-baseline':'central', 'paint-order':'stroke', stroke:'#fff',
+    'stroke-width':3.5, 'stroke-linejoin':'round'}, parent);
+  if (o.rot && deg !== undefined && deg !== null) t.setAttribute('transform', `rotate(${deg - 90} ${x} ${y})`);
+  t.textContent = str;
+  return t;
+}
+function label(parent, x, y, str, opt){
+  const o = Object.assign({size:14, fill:'#20304a', anchor:'middle', weight:600}, opt||{});
+  const t = s('text', {x, y, 'font-size':o.size, fill:o.fill, 'text-anchor':o.anchor,
+    'font-weight':o.weight}, parent);
+  t.textContent = str;
+  return t;
+}
+function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+
+/* ---------------- 画一个角（通用） ---------------- */
+/* vertex=(vx,vy)，a1/a2 为两条边的极角（度，逆时针为正） */
+function drawAngle(svg, vx, vy, a1, a2, opt){
+  const o = Object.assign({r:120, color:'#2f6fd0', arc:true, arcColor:'#f08a24',
+    arcR:34, label:null, lw:3, dash:null}, opt||{});
+  const p1 = polar(vx, vy, o.r, a1), p2 = polar(vx, vy, o.r, a2);
+  s('line', {x1:vx, y1:vy, x2:p1[0], y2:p1[1], stroke:o.color, 'stroke-width':o.lw,
+    'stroke-linecap':'round', 'stroke-dasharray':o.dash || ''}, svg);
+  s('line', {x1:vx, y1:vy, x2:p2[0], y2:p2[1], stroke:o.color, 'stroke-width':o.lw,
+    'stroke-linecap':'round', 'stroke-dasharray':o.dash || ''}, svg);
+  if (o.arc){
+    let start = a1, span = a2 - a1;
+    if (span < 0){ start = a2; span = -span; }   /* 走短弧 */
+    if (span > 360) span = 360;
+    const arc = arcPoints(vx, vy, o.arcR, start, span);
+    s('path', {d:arc.d, fill:'none', stroke:o.arcColor, 'stroke-width':3.5,
+      'stroke-linecap':'round'}, svg);
+    const mid = polar(vx, vy, o.arcR, start + span/2);
+    if (o.label) haloText(svg, mid[0], mid[1], o.label, null, {size:15, fill:'#b35c00'});
+  }
+  s('circle', {cx:vx, cy:vy, r:4.5, fill:o.color}, svg);
+  return {p1, p2};
+}
+
+/* ---------------- 答案归一化 ---------------- */
+const CN_D = {'零':0,'〇':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9};
+const CN_U = {'十':10,'百':100,'千':1000};
+/* 中文数字 → 阿拉伯数字（支持 三千五百万 / 十二万 / 3千万 / 3.5万 等混写） */
+function cn2num(str){
+  const toks = str.match(/\d+(?:\.\d+)?|[零〇一二两三四五六七八九十百千万亿]/g) || [];
+  let out = 0, section = 0, num = 0;
+  for (const t of toks){
+    if (/^\d/.test(t)) num = parseFloat(t);
+    else if (t in CN_D) num = CN_D[t];
+    else if (t in CN_U){ section += (num || 1) * CN_U[t]; num = 0; }
+    else if (t === '万'){ section = (section + num) * 10000; out += section; section = 0; num = 0; }
+    else if (t === '亿'){ out = (out + section + num) * 100000000; section = 0; num = 0; }
+  }
+  return out + section + num;
+}
+function norm(v){
+  let t = String(v).trim();
+  t = t.replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+  if (/[零〇一二两三四五六七八九十百千万亿]/.test(t)){
+    const v2 = cn2num(t); t = (Number.isFinite(v2) ? String(v2) : t);
+  }
+  t = t.replace(/\s/g, '')
+       .replace(/[，。、；：]/g, '')
+       .replace(/[，,]/g, '')
+       .replace(/[．。]/g, '.')
+       .replace(/[（(]/g, '(').replace(/[）)]/g, ')')
+       .replace(/[×xX*]/g, '*').replace(/[÷]/g, '/')
+       .replace(/[＝=]/g, '=')
+       .replace(/[约≈]/g, '')
+       .replace(/[度°]/g, '')
+       .replace(/平方千米/g, 'km2').replace(/平方千米/g, 'km2')
+       .replace(/平方厘米/g, 'cm2').replace(/平方分米/g, 'dm2').replace(/平方米/g, 'm2')
+       .replace(/平方毫米/g, 'mm2')
+       .replace(/千米|公里/g, 'km').replace(/米/g, 'm')
+       .replace(/公顷/g, 'ha')
+       .replace(/时/g, 'h').replace(/分/g, 'min').replace(/秒/g, 's')
+       .replace(/元/g, 'yuan');
+  return t;
+}
+
+/* ==========================================================================
+   练习引擎
+   item: { q, opts?[], a:index | index[] | string | string[], why, hint }
+   ========================================================================== */
+const LETTERS = ['A','B','C','D','E','F'];
+function makeCounter(scoreId, totalId, total){
+  return { ok:0, total, scoreEl:$(scoreId), totalEl:$(totalId) };
+}
+function updateCounter(c){
+  if (!c) return;
+  if (c.scoreEl) c.scoreEl.textContent = c.ok;
+  if (c.totalEl) c.totalEl.textContent = c.total;
+}
+
+/* 把一组题目渲染进 host；返回重做函数 */
+function mountQuizInto(host, items, c, prefix, offset){
+  clear(host);
+  const state = items.map(()=>({done:false, ok:false}));
+  const isChoice = it => Array.isArray(it.opts) && it.opts.length;
+  const optsOf  = it => (it.opts||[]).map(o => typeof o === 'string' ? o : (o.t || ''));
+
+  items.forEach((q, i) => {
+    const box = document.createElement('div'); box.className = 'q';
+    const qt = document.createElement('div'); qt.className = 'qt';
+    qt.innerHTML = `<span class="qno">${prefix}${i + 1 + offset}</span>${q.q}`;
+    box.appendChild(qt);
+    const fb = document.createElement('div'); fb.className = 'fb';
+
+    if (isChoice(q)){
+      const opts = document.createElement('div'); opts.className = 'opts';
+      optsOf(q).forEach((o, k) => {
+        const d = document.createElement('div'); d.className = 'opt'; d.dataset.k = k;
+        d.innerHTML = `<span class="k">${LETTERS[k]}.</span><span>${o}</span>`;
+        d.addEventListener('click', () => choose(k, d));
+        opts.appendChild(d);
+      });
+      box.appendChild(opts);
+    } else {
+      /* 填空题：按题干中的空数渲染输入框（多空题逐空作答、逐空比对） */
+      const answers = Array.isArray(q.a) ? q.a : [q.a];
+      const blanks = (q.q.match(/（\s*）/g) || []).length;
+      const n = Math.max(1, blanks);
+      const wrap = document.createElement('div'); wrap.className = 'controls';
+      const inputs = [];
+      for (let k = 0; k < n; k++){
+        const inp = document.createElement('input'); inp.type = 'text';
+        inp.placeholder = n > 1 ? `第 ${k+1} 空` : '答案填这里';
+        inp.style.cssText = `width:${n > 1 ? 96 : 180}px;text-align:center;font-weight:700`;
+        wrap.appendChild(inp); inputs.push(inp);
+      }
+      const btn = document.createElement('button'); btn.className = 'ghost'; btn.textContent = '检查';
+      wrap.appendChild(btn); box.appendChild(wrap);
+      const check = () => {
+        if (state[i].done) return;
+        const ok = (n === 1)
+          ? answers.some(a => norm(a) === norm(inputs[0].value))
+          : (answers.length >= n && inputs.every((inp, k) => norm(inp.value) === norm(answers[k])));
+        inputs.forEach(inp => inp.classList.add(ok ? 'ok' : 'no'));
+        if (ok){
+          state[i].done = true; state[i].ok = true; c.ok++; updateCounter(c);
+          inputs.forEach(inp => inp.readOnly = true);
+          fb.className = 'fb show good';
+          fb.innerHTML = `✅ 答对了！${q.why ? '<span class="why">💡 ' + q.why + '</span>' : ''}`;
+        } else {
+          fb.className = 'fb show bad';
+          fb.innerHTML = `❌ 答案不对，再想想～<span class="why">💡 提示：${q.hint || '回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
+        }
+      };
+      btn.addEventListener('click', check);
+      inputs.forEach(inp => inp.addEventListener('keydown', e => { if (e.key === 'Enter') check(); }));
+    }
+    box.appendChild(fb); host.appendChild(box);
+
+    function choose(k, el){
+      if (state[i].done) return;
+      const answer = Array.isArray(q.a) ? q.a : [q.a];
+      if (answer.includes(k)){
+        state[i].done = true; state[i].ok = true; c.ok++; updateCounter(c);
+        [...el.parentElement.children].forEach(x => {
+          x.classList.add('locked');
+          if (+x.dataset.k === k) x.classList.add('right');
+        });
+        fb.className = 'fb show good';
+        fb.innerHTML = `✅ 答对了！${q.why ? '<span class="why">💡 ' + q.why + '</span>' : ''}`;
+      } else {
+        el.classList.add('wrong');
+        fb.className = 'fb show bad';
+        fb.innerHTML = `❌ 再想想～<span class="why">💡 提示：${q.hint || '回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
+      }
+    }
+  });
+
+  return function reset(){
+    c.ok -= state.filter(x => x.ok).length;
+    state.forEach(x => { x.done = false; x.ok = false; });
+    mountQuizInto(host, items, c, prefix, offset);
+    updateCounter(c);
+  };
+}
+
+/* 答案区：按分组渲染 */
+function renderAnswers(hostSel, groups){
+  const host = $(hostSel); if (!host) return;
+  let html = '';
+  groups.forEach(g => {
+    html += `<h4 style="margin:16px 0 6px;color:var(--accent)">${g.title}</h4>`;
+    g.items.forEach((q, i) => {
+      const ans = (Array.isArray(q.opts) && q.opts.length)
+        ? (Array.isArray(q.a) ? q.a : [q.a]).map(k => `${LETTERS[k]}. ${q.opts[k]}`).join(' / ')
+        : (Array.isArray(q.a) ? q.a.join(' 或 ') : q.a);
+      html += `<div class="ans-item"><b>${g.prefix || ''}${i + 1}. ${ans}</b> —— ${q.why || ''}</div>`;
+    });
+  });
+  host.innerHTML = html;
+}
+
+/* 标准装配：三档练习（巩固 / 动手 / 扩展） */
+function bootCourse(groups){
+  const resets = [], answerGroups = [];
+  groups.forEach(g => {
+    const items = [].concat(g.choice || [], g.fill || []);
+    const c = makeCounter(g.score, g.total, items.length);
+    const host = $(g.host);
+    if (!host) return;
+    /* 一次性挂载全部题目：mountQuizInto 内部会 clear(host)，
+       若分两次挂载，后一次（填空）会把前一次（选择）整块覆盖掉。 */
+    mountQuizInto(host, items, c, g.prefix || '', 0);
+    const resetFn = () => {
+      c.ok = 0; updateCounter(c);
+      mountQuizInto(host, items, c, g.prefix || '', 0);
+    };
+    resets.push(resetFn);
+    answerGroups.push({title:g.title, prefix:g.prefix || '', items});
+    updateCounter(c);
+  });
+  renderAnswers('#answerKey', answerGroups);
+  /* 暴露题目数据，便于自动化测试与二次开发 */
+  window.__QUIZ_DATA__ = groups.map(g => ({
+    key: g.key, title: g.title, prefix: g.prefix || '',
+    choice: g.choice || [], fill: g.fill || []
+  }));
+  window.__ANSWER_KEY__ = answerGroups;
+  groups.forEach((g, i) => {
+    const btn = $(g.reset); if (btn) btn.addEventListener('click', () => resets[i] && resets[i]());
+  });
+}
+
+</script>
+<script>
+(function(){
+/* ==========================================================================
+   第二单元 角的度量 —— 交互模块
+   角度约定：数学正方向 = 逆时针；polar() 换算时翻 y；圆弧一律用 arcPoints()
+   教学口径：量角器内圈 0° 在右端、外圈 0° 在左端；锐角读内圈、钝角读外圈
+   ========================================================================== */
+
+/* ==========================================================================
+   ① 线段 / 射线 / 直线
+   ========================================================================== */
+(function initLine(){
+  const stage = $('#lineStage'), note = $('#lineNote');
+  let step = 0;
+  const KINDS = [
+    {name:'线段', ends:2, dir:0},
+    {name:'射线', ends:1, dir:1},
+    {name:'直线', ends:0, dir:2}
+  ];
+  function render(){
+    stage.innerHTML = '';
+    const W = 460, H = 150;
+    const svg = s('svg', {viewBox:`0 0 ${W} ${H}`, width:W, height:H});
+    stage.appendChild(svg);
+    KINDS.forEach((k, i) => {
+      const y = 44 + i * 52, x0 = 150, len = 90 + step * 55;
+      const g = s('g', {}, svg);
+      if (k.name === '线段'){
+        s('line', {x1:x0, y1:y, x2:x0+len, y2:y, stroke:'#2f6fd0', 'stroke-width':4, 'stroke-linecap':'round'}, g);
+        s('circle', {cx:x0, cy:y, r:6, fill:'#20304a'}, g);
+        s('circle', {cx:x0+len, cy:y, r:6, fill:'#20304a'}, g);
+        if (step > 0){
+          s('line', {x1:x0-len*0.6, y1:y, x2:x0, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+          s('line', {x1:x0+len, y1:y, x2:x0+len+len*0.6, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+        }
+      } else if (k.name === '射线'){
+        s('line', {x1:x0, y1:y, x2:x0+len, y2:y, stroke:'#1f9d6b', 'stroke-width':4, 'stroke-linecap':'round'}, g);
+        s('circle', {cx:x0, cy:y, r:6, fill:'#20304a'}, g);
+        if (step > 0){
+          s('line', {x1:x0+len, y1:y, x2:x0+len+len*0.8, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+        }
+        const p = polar(x0, y, 14, 0);
+        s('polygon', {points:`${x0+len+16},${y} ${p[0]},${p[1]-9} ${p[0]},${p[1]+9}`, fill:'#1f9d6b'}, g);
+      } else {
+        s('line', {x1:x0-len, y1:y, x2:x0+len, y2:y, stroke:'#7a4fd6', 'stroke-width':4, 'stroke-linecap':'round'}, g);
+        [x0-len, x0+len].forEach(x => {
+          const p = polar(x, y, 14, x === x0+len ? 0 : 180);
+          s('polygon', {points:`${x+(x===x0+len?16:-16)},${y} ${p[0]},${p[1]-9} ${p[0]},${p[1]+9}`, fill:'#7a4fd6'}, g);
+        });
+        if (step > 0){
+          s('line', {x1:x0-len-len*0.7, y1:y, x2:x0-len, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+          s('line', {x1:x0+len, y1:y, x2:x0+len+len*0.7, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+        }
+      }
+      label(svg, 120, y + 6, k.name, {size:16, anchor:'end', fill:'#20304a'});
+    });
+    const msgs = [
+      '线段有 <b>2 个端点</b>，可以量出长度；射线有 <b>1 个端点</b>；直线<b>没有端点</b>。点"延伸"看它们怎么变。',
+      '线段：<b>不能</b>再延长——两个端点是它的一部分。',
+      '射线：可以向<b>一个方向</b>无限延伸。',
+      '直线：可以向<b>两个方向</b>无限延伸。'
+    ];
+    note.innerHTML = msgs[Math.min(step, msgs.length-1)];
+  }
+  $('#btnLineExtend').addEventListener('click', () => { step = (step + 1) % 4; render(); });
+  $('#btnLineReset').addEventListener('click', () => { step = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ② 角的再认识
+   ========================================================================== */
+(function initAngle(){
+  const range = $('#angRange'), lab = $('#angLabel'), stage = $('#angStage'), note = $('#angNote');
+  function classify(t){
+    if (t === 0) return ['这个角的两条边重合了，还不能叫角。', 'var(--ink2)'];
+    if (t < 90) return ['<b>锐角</b>：大于 0° 而小于 90° 的角。', 'var(--green)'];
+    if (t === 90) return ['<b>直角</b>：两条边互相垂直，张成 90°。', 'var(--accent)'];
+    if (t < 180) return ['<b>钝角</b>：大于 90° 而小于 180° 的角。', 'var(--orange)'];
+    if (t === 180) return ['<b>平角</b>：两条边成一条直线，张成 180°。', 'var(--purple)'];
+    if (t < 360) return ['比平角还大的角，本单元暂不研究。', 'var(--ink2)'];
+    return ['<b>周角</b>：一条边绕顶点转了一整圈，张成 360°。', 'var(--red)'];
+  }
+  function render(){
+    const t = +range.value;
+    lab.textContent = t + '°';
+    stage.innerHTML = '';
+    const svg = s('svg', {viewBox:'0 0 420 300', width:420, height:300});
+    stage.appendChild(svg);
+    const cx = 200, cy = 250;
+    s('circle', {cx, cy, r:6, fill:'#20304a'}, svg);
+    drawAngle(svg, cx, cy, 0, t, {r:150, color:'#2f6fd0', arcColor:'#f08a24', arcR:40, label:t + '°'});
+    /* 标出两条边 */
+    const pA = polar(cx, cy, 160, 0), pB = polar(cx, cy, 160, t);
+    label(svg, pA[0], pA[1] + 16, 'OA', {size:14, fill:'#4b5f7d'});
+    label(svg, pB[0] + (t > 90 ? -14 : 10), pB[1] - 8, 'OB', {size:14, fill:'#4b5f7d'});
+    const [msg, color] = classify(t);
+    note.innerHTML = `这个角是 ${t}°。${msg}`;
+    note.style.borderLeftColor = color;
+  }
+  range.addEventListener('input', render);
+  $('#btnAngReset').addEventListener('click', () => { range.value = 60; render(); });
+  render();
+})();
+
+/* 角的大小与边长无关 */
+(function initStretch(){
+  const stage = $('#angStretchStage'), note = $('#angStretchNote');
+  let long = false;
+  function render(){
+    stage.innerHTML = '';
+    const svg = s('svg', {viewBox:'0 0 460 260', width:460, height:260});
+    stage.appendChild(svg);
+    const r = long ? 210 : 110;
+    const cx = 90, cy = 210;
+    drawAngle(svg, cx, cy, 0, 55, {r, color:'#2f6fd0', arcColor:'#f08a24', arcR:34, label:'55°'});
+    label(svg, cx + 70, cy + 26, long ? '边变长了' : '边比较短', {size:15, fill:'#4b5f7d'});
+    note.innerHTML = long
+      ? '两条边都<b>拉长</b>了，可是角的大小还是 <b>55°</b>——<b>角的大小与边画多长没有关系</b>，只与两条边张开的程度有关。'
+      : '点"把边拉长"，比较两次的度数。';
+  }
+  $('#btnAngStretch').addEventListener('click', () => { long = !long; render(); });
+  $('#btnAngStretchReset').addEventListener('click', () => { long = false; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ③ 量角器
+   ========================================================================== */
+/* 画一个量角器：内圈 0 在右端、外圈 0 在左端 */
+function drawProtractor(svg, cx, cy, R){
+  const g = s('g', {}, svg);
+  /* 半圆外框 */
+  s('path', {d:`M ${cx-R} ${cy} A ${R} ${R} 0 0 1 ${cx+R} ${cy}`, fill:'rgba(240,138,36,.10)',
+    stroke:'#f08a24', 'stroke-width':2}, g);
+  /* 0 刻度线（左右两条） */
+  s('line', {x1:cx-R, y1:cy, x2:cx+R, y2:cy, stroke:'#c96f12', 'stroke-width':1.2, 'stroke-dasharray':'5 5'}, g);
+  const rIn = R - 44, rIn2 = R - 26;     /* 内圈刻度 */
+  const rOut = R + 3, rOut2 = R + 16;    /* 外圈刻度 */
+  for (let v = 0; v <= 180; v++){
+    const big = (v % 10 === 0), mid = (v % 5 === 0);
+    /* 内圈：值 v 在几何角 φ = v */
+    const p1 = polar(cx, cy, rIn, v), p2 = polar(cx, cy, big ? rIn2 : (mid ? rIn2 - 4 : rIn2 - 2), v);
+    s('line', {x1:p1[0], y1:p1[1], x2:p2[0], y2:p2[1], stroke:'#b35c00', 'stroke-width':big ? 1.4 : 0.7}, g);
+    /* 外圈：值 v 在几何角 φ = 180 - v */
+    const q1 = polar(cx, cy, rOut, 180 - v), q2 = polar(cx, cy, big ? rOut2 : (mid ? rOut2 - 3 : rOut2 - 1.5), 180 - v);
+    s('line', {x1:q1[0], y1:q1[1], x2:q2[0], y2:q2[1], stroke:'#b35c00', 'stroke-width':big ? 1.4 : 0.7}, g);
+  }
+  /* 数字：内圈在内侧（每 10°），外圈在外侧（每 10°） */
+  for (let v = 0; v <= 180; v += 10){
+    const ip = polar(cx, cy, R - 60, v);
+    haloText(g, ip[0], ip[1], v, null, {size:11, fill:'#b35c00', rot:false});
+    const op = polar(cx, cy, R + 32, 180 - v);
+    haloText(g, op[0], op[1], v, null, {size:12, fill:'#b35c00', rot:false});
+  }
+  return g;
+}
+/* 高亮某一圈在 [from,to] 范围内的读数区 */
+function highlightScale(g, cx, cy, R, ring, from, to, color){
+  const rr = ring === 'inner' ? R - 46 : R + 22;
+  const a = arcPoints(cx, cy, rr, from, to - from);
+  s('path', {d:a.d, fill:'none', stroke:color, 'stroke-width':10, 'stroke-linecap':'round', opacity:.85}, g);
+  /* 读数落在"弧的末端"——也就是另一边射线与刻度圈相交的位置 */
+  const end = polar(cx, cy, rr, to);
+  const txt = polar(cx, cy, rr + (ring === 'inner' ? -42 : 26), to);
+  return {end, txt};
+}
+(function initMeasure(){
+  const range = $('#pmRange'), lab = $('#pmLabel'), stage = $('#pmStage'),
+        note = $('#pmNote'), steps = $('#pmSteps');
+  let step = 0;
+  function render(){
+    const th = +range.value;
+    lab.textContent = th + '°';
+    const acute = th <= 90;
+    stage.innerHTML = '';
+    const svg = s('svg', {viewBox:'0 0 540 380', width:540, height:380});
+    stage.appendChild(svg);
+    const cx = 270, cy = 320, R = 175;
+    const g = drawProtractor(svg, cx, cy, R);
+    /* 0 刻度线（与角的一条边重合） */
+    const a0 = acute ? 0 : 180;
+    s('line', {x1:cx, y1:cy, x2:polar(cx, cy, R + 30, a0)[0], y2:polar(cx, cy, R + 30, a0)[1],
+      stroke:'#2f6fd0', 'stroke-width':1.4, 'stroke-dasharray':'6 5'}, g);
+    /* 角 */
+    const a1 = acute ? 0 : 180, a2 = acute ? th : 180 - th;
+    drawAngle(svg, cx, cy, a1, a2, {r:R - 8, color:'#2f6fd0', arcColor:'#f08a24', arcR:38});
+    /* 读数 */
+    let msg;
+    if (step === 0){
+      msg = '第 ① 步：把<b>量角器的中心</b>与角的<b>顶点</b>重合。';
+    } else if (step === 1){
+      msg = `第 ② 步：让量角器的 <b>${acute ? '内圈' : '外圈'} 0 刻度线</b>与角的一条边重合。` +
+            (acute ? '锐角用内圈 0（内圈 0 在<b>右端</b>）。' : '钝角要把量角器<b>转过来</b>，用<b>外圈 0</b>（外圈 0 在<b>左端</b>）。');
+    } else if (step === 2){
+      const from = acute ? 0 : 180, to = acute ? th : 180 - th;
+      const h = highlightScale(g, cx, cy, R, acute ? 'inner' : 'outer', from, to, '#1f9d6b');
+      haloText(g, h.txt[0], h.txt[1], th + '°', null, {size:17, fill:'#126b47', rot:false});
+      msg = `第 ③ 步：另一边所对的刻度是 <b>${th}°</b>（读<b>${acute ? '内' : '外'}圈</b>）。`;
+    } else {
+      const from = acute ? 0 : 180, to = acute ? th : 180 - th;
+      const h = highlightScale(g, cx, cy, R, acute ? 'inner' : 'outer', from, to, '#1f9d6b');
+      haloText(g, h.txt[0], h.txt[1], th + '°', null, {size:17, fill:'#126b47', rot:false});
+      msg = `这个角是 <b>${th}°</b>，是<b>${acute ? '锐角' : '钝角'}</b>。` +
+            (acute ? '锐角读<b>内圈</b>。' : '钝角读<b>外圈</b>；如果错读内圈，就会读成 ' + (180 - th) + '°！');
+    }
+    steps.innerHTML = ['① 中心对顶点','② 0 刻度线对边','③ 读另一边所对刻度','④ 结论']
+      .map((l, i) => `<div class="dot ${i < step ? 'done' : (i === step ? 'on' : '')}" title="${l}">${i+1}</div>`).join('');
+    note.innerHTML = msg;
+  }
+  range.addEventListener('input', () => { step = 0; render(); });
+  $('#btnPmStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
+  $('#btnPmReset').addEventListener('click', () => { step = 0; range.value = 40; render(); });
+  render();
+})();
+
+/* 内外圈对比（115° 陷阱） */
+(function initTrap(){
+  const stage = $('#trapStage'), note = $('#trapNote');
+  function render(){
+    const th = 115;
+    stage.innerHTML = '';
+    const svg = s('svg', {viewBox:'0 0 540 380', width:540, height:380});
+    stage.appendChild(svg);
+    const cx = 270, cy = 320, R = 175;
+    const g = drawProtractor(svg, cx, cy, R);
+    const a2 = 180 - th;
+    drawAngle(svg, cx, cy, 180, a2, {r:R - 8, color:'#2f6fd0', arcColor:'#f08a24', arcR:38});
+    /* 正确：外圈 0 在左（φ=180），读到 φ=a2 处 = th */
+    const hO = highlightScale(g, cx, cy, R, 'outer', a2, 180, '#1f9d6b');
+    haloText(g, hO.txt[0], hO.txt[1] + 26, '外圈读 ' + th + '° ✓', null, {size:15, fill:'#126b47', rot:false});
+    /* 错误：读内圈同一位置 = 180 - th */
+    const midI = polar(cx, cy, R - 60, a2);
+    haloText(g, midI[0], midI[1], '内圈 ' + (180 - th) + '° ✗', null, {size:14, fill:'#c0392b', rot:false});
+    note.innerHTML = `读<b>外圈</b>是 <b>${th}°</b>（正确）；同一位置读<b>内圈</b>却是 <b>${180-th}°</b>——这就是"115° 被读成 65°"的原因。` +
+      `<br>记法：<b>锐角读内圈，钝角读外圈</b>。`;
+  }
+  $('#btnTrap').addEventListener('click', render);
+  render();
+})();
+
+/* ==========================================================================
+   ④ 画角
+   ========================================================================== */
+(function initDraw(){
+  const range = $('#drRange'), lab = $('#drLabel'), stage = $('#drStage'),
+        note = $('#drNote'), steps = $('#drSteps');
+  let step = 0;
+  function render(){
+    const th = +range.value;
+    lab.textContent = th + '°';
+    stage.innerHTML = '';
+    const svg = s('svg', {viewBox:'0 0 460 320', width:460, height:320});
+    stage.appendChild(svg);
+    const cx = 90, cy = 250, R = 120;
+    /* 第①步：射线 OA */
+    s('line', {x1:cx, y1:cy, x2:cx + R + 60, y2:cy, stroke:'#2f6fd0', 'stroke-width':3, 'stroke-linecap':'round'}, svg);
+    s('circle', {cx, cy, r:4.5, fill:'#20304a'}, svg);
+    label(svg, cx + R + 66, cy + 5, 'A', {size:15, fill:'#4b5f7d'});
+    /* 第②步：以 A 为圆心画弧 */
+    const arcC = [cx + R, cy];
+    if (step >= 1){
+      s('path', {d:`M ${arcC[0]-R} ${arcC[1]} A ${R} ${R} 0 0 1 ${arcC[0]+R} ${arcC[1]}`,
+        fill:'none', stroke:'#f08a24', 'stroke-width':2.5}, svg);
+      s('circle', {cx:arcC[0], cy:arcC[1], r:4.5, fill:'#f08a24'}, svg);
+      label(svg, arcC[0] + 14, arcC[1] + 20, '弧', {size:13, fill:'#b35c00'});
+    }
+    /* 第③步：用量角器在弧上找点 C */
+    let C = null;
+    if (step >= 2){
+      const g = drawProtractor(svg, arcC[0], arcC[1], 118);
+      const p = polar(arcC[0], arcC[1], 118, 180 - th);
+      C = p;
+      s('circle', {cx:p[0], cy:p[1], r:6, fill:'#1f9d6b'}, svg);
+      label(svg, p[0] - 16, p[1] - 8, 'C', {size:15, fill:'#126b47'});
+    }
+    /* 第④步：连接 OC 并标度数 */
+    if (step >= 3 && C){
+      s('line', {x1:cx, y1:cy, x2:C[0], y2:C[1], stroke:'#2f6fd0', 'stroke-width':3, 'stroke-linecap':'round'}, svg);
+      const arc = arcPoints(cx, cy, 34, 0, 180 - th);
+      s('path', {d:arc.d, fill:'none', stroke:'#f08a24', 'stroke-width':3.5}, svg);
+      const mid = polar(cx, cy, 34, (180 - th) / 2);
+      haloText(svg, mid[0], mid[1], th + '°', null, {size:15, fill:'#b35c00', rot:false});
+    }
+    const msgs = [
+      '第 ① 步：<b>画一条射线 OA</b>，以 A 为角的顶点。',
+      '第 ② 步：<b>以 A 为圆心</b>，用圆规画一条弧，交 OA 于一点（弧要画得长一些）。',
+      '第 ③ 步：把<b>量角器</b>放在弧上，中心对准 A，读出 ' + th + '° 的位置，点上点 C。',
+      '第 ④ 步：<b>连接 A 与 C</b>，标出角的度数 ' + th + '°。画好了！'
+    ];
+    steps.innerHTML = ['①画射线','②画弧','③找点','④连点标度']
+      .map((l, i) => `<div class="dot ${i < step ? 'done' : (i === step ? 'on' : '')}" title="${l}">${i+1}</div>`).join('');
+    note.innerHTML = msgs[Math.min(step, msgs.length-1)];
+  }
+  range.addEventListener('input', () => { step = 0; render(); });
+  $('#btnDrStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
+  $('#btnDrAll').addEventListener('click', () => { step = 3; render(); });
+  $('#btnDrReset').addEventListener('click', () => { step = 0; range.value = 65; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ⑤ 角的计算（拼角）
+   ========================================================================== */
+(function initCalc(){
+  const r1 = $('#c1Range'), r2 = $('#c2Range'), stage = $('#calcStage'),
+        note = $('#calcNote'), lab = $('#calcLabel');
+  function render(){
+    let a1 = +r1.value, a2 = +r2.value;
+    if (a1 + a2 > 175){ if (document.activeElement === r1) a1 = 175 - a2; else a2 = 175 - a1;
+      r1.value = a1; r2.value = a2; }
+    const a3 = 180 - a1 - a2;
+    lab.textContent = `∠1=${a1}°  ∠2=${a2}°  ∠3=${a3}°`;
+    stage.innerHTML = '';
+    const svg = s('svg', {viewBox:'0 0 460 270', width:460, height:270});
+    stage.appendChild(svg);
+    const cx = 230, cy = 230, R = 175;
+    /* 平角 */
+    s('line', {x1:cx - R, y1:cy, x2:cx + R, y2:cy, stroke:'#2f6fd0', 'stroke-width':3, 'stroke-linecap':'round'}, svg);
+    const p1 = polar(cx, cy, R, 180 - a1), p2 = polar(cx, cy, R, 180 - a1 - a2);
+    s('line', {x1:cx, y1:cy, x2:p1[0], y2:p1[1], stroke:'#2f6fd0', 'stroke-width':3, 'stroke-linecap':'round'}, svg);
+    s('line', {x1:cx, y1:cy, x2:p2[0], y2:p2[1], stroke:'#2f6fd0', 'stroke-width':3, 'stroke-linecap':'round'}, svg);
+    s('circle', {cx, cy, r:4.5, fill:'#20304a'}, svg);
+    const A1 = arcPoints(cx, cy, 52, 180 - a1, a1);
+    const A2 = arcPoints(cx, cy, 52, 180 - a1 - a2, a2);
+    const A3 = arcPoints(cx, cy, 52, 0, 180 - a1 - a2);
+    s('path', {d:A1.d, fill:'none', stroke:'#f08a24', 'stroke-width':4}, svg);
+    s('path', {d:A2.d, fill:'none', stroke:'#7a4fd6', 'stroke-width':4}, svg);
+    s('path', {d:A3.d, fill:'none', stroke:'#1f9d6b', 'stroke-width':4}, svg);
+    const m1 = polar(cx, cy, 52, 180 - a1 / 2), m2 = polar(cx, cy, 52, 180 - a1 - a2 / 2),
+          m3 = polar(cx, cy, 52, (180 - a1 - a2) / 2);
+    haloText(svg, m1[0], m1[1], a1 + '°', null, {size:14, fill:'#b35c00', rot:false});
+    haloText(svg, m2[0], m2[1], a2 + '°', null, {size:14, fill:'#7a4fd6', rot:false});
+    haloText(svg, m3[0], m3[1], a3 + '°', null, {size:14, fill:'#126b47', rot:false});
+    note.innerHTML = `平角是 <b>180°</b>，所以 <b>∠1 + ∠2 + ∠3 = 180°</b>，` +
+      `<b>∠3 = 180° − ${a1}° − ${a2}° = ${a3}°</b>。`;
+  }
+  r1.addEventListener('input', render); r2.addEventListener('input', render);
+  $('#btnCalcReset').addEventListener('click', () => { r1.value = 60; r2.value = 50; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   练习用的迷你角图（题目内嵌 SVG）
+   ========================================================================== */
+function miniAngleSVG(theta, opt){
+  const o = Object.assign({w:130, h:100, mark:true}, opt||{});
+  const cx = 26, cy = o.h - 20, r = 82;
+  const p1 = polar(cx, cy, r, 0), p2 = polar(cx, cy, r, theta);
+  const arc = arcPoints(cx, cy, 24, 0, theta);
+  return `<svg width="${o.w}" height="${o.h}" viewBox="0 0 ${o.w} ${o.h}" style="vertical-align:middle;background:#fbfcff;border:1px solid #e3e9f2;border-radius:8px">` +
+    `<line x1="${cx}" y1="${cy}" x2="${p1[0]}" y2="${p1[1]}" stroke="#2f6fd0" stroke-width="2.5" stroke-linecap="round"/>` +
+    `<line x1="${cx}" y1="${cy}" x2="${p2[0]}" y2="${p2[1]}" stroke="#2f6fd0" stroke-width="2.5" stroke-linecap="round"/>` +
+    `<path d="${arc.d}" fill="none" stroke="#f08a24" stroke-width="2.5"/>` +
+    `<circle cx="${cx}" cy="${cy}" r="3.2" fill="#20304a"/></svg>`;
+}
+
+/* ==========================================================================
+   分层练习数据
+   ========================================================================== */
+const BASIC_CHOICE = [
+  {q:'下面说法正确的是（　）。',
+   opts:['线段有两个端点，可以向两端无限延长','射线只有一个端点，可以向一个方向无限延伸',
+         '直线没有端点，只能向一个方向无限延伸','射线有两个端点'], a:1,
+   why:'线段有两个端点，长度有限；射线一个端点、一端无限延伸；直线没有端点、两端无限延伸。'},
+  {q:'角的大小与（　）有关。',
+   opts:['边画的长短','顶点的位置','两条边张开的大小','角的大小和边长都有关'], a:2,
+   why:'角的大小只看两条边张开的程度，与边画多长完全无关。'},
+  {q:'1 个周角等于（　）个直角。', opts:['2','3','4','6'], a:2,
+   why:'周角 360°，直角 90°，360 ÷ 90 = 4。'},
+  {q:'115° 的角是（　）。', opts:['锐角','直角','钝角','平角'], a:2,
+   why:'大于 90° 小于 180° 的角是钝角。'},
+  {q:'量角时，量角器的中心要和角的（　）重合。', opts:['一条边','顶点','角的两边','任意一点'], a:1,
+   why:'三步法第①步：量角器中心与角的顶点重合。'},
+  {q:'下面各角中，（　）是钝角。',
+   opts:['89°','90°','135°','180°'], a:2,
+   why:'只有 135° 满足大于 90° 小于 180°。'},
+  {q:'钟面上 3 时整，时针与分针的夹角是（　）。',
+   opts:['30°','60°','90°','120°'], a:2,
+   why:'钟面一圈 360°，分成 12 大格，每格 30°；3 时整相差 3 大格 = 90°。'},
+  {q:'用量角器量角时，下面做法正确的是（　）。',
+   opts:['量角器中心对准角的顶点，0 刻度线与角的一条边重合',
+         '量角器中心对准角的一条边，0 刻度线与顶点重合',
+         '把角的一条边对准量角器的外框',
+         '量角器中心对准顶点，读数时看离角远的那一圈'], a:0,
+   why:'三步法：中心对顶点 → 0 刻度线对边 → 读另一边所对的刻度。'}
+];
+
+const BASIC_FILL = [
+  {q:'线段有（　）个端点，射线有（　）个端点。', a:['2','1'],
+   why:'线段两个端点，射线一个端点，直线没有端点。'},
+  {q:'锐角是大于 0° 而小于（　）° 的角。', a:'90', why:'直角是 90°，比它小的是锐角。'},
+  {q:'平角是（　）°，周角是（　）°。', a:['180','360'],
+   why:'平角两条边成一条直线，周角一条边转一整圈。'},
+  {q:'一个角由（　）个顶点和（　）条射线组成。', a:['1','2'],
+   why:'角由一个顶点和两条射线组成。'},
+  {q:'∠AOB 和 ∠BOA 是（　）个角（填"同一个"或"两个"）。', a:'同一个',
+   why:'角的顶点是中间那个字母，两条边换了顺序，读法不同但指的是同一个角。'},
+  {q:'钟面上 6 时整，时针与分针成（　）° 的角。', a:'180',
+   why:'6 时整两针正好相反，是平角。'},
+  {q:'把一个平角分成两个角，其中一个是 65°，另一个是（　）°。', a:'115',
+   why:'平角 180°，180 − 65 = 115。'},
+  {q:'一个直角被分成两个角，其中一个是 35°，另一个是（　）°。', a:'55',
+   why:'直角 90°，90 − 35 = 55。'}
+];
+
+const HAND_CHOICE = [
+  {q:'用量角器量角时，下面做法正确的是（　）。',
+   opts:['量角器的中心与角的顶点重合','量角器的中心与角的顶点不重合','把角的顶点放在量角器的边缘',
+         '只要看到刻度就可以读数'], a:0,
+   why:'中心与顶点重合，才能保证读到的刻度对得上这个角。'},
+  {q:'画一个 40° 的角，正确的步骤是（　）。',
+   opts:['画射线 → 画弧 → 用量角器找点 → 连线并标度数',
+         '画弧 → 画射线 → 连线 → 标度数',
+         '量角 → 画射线 → 标度数',
+         '画射线 → 连线 → 标度数 → 画弧'], a:0,
+   why:'先定一条边，再画弧定半径，再找点，连线标度数。'},
+  {q:'量一个 115° 的角，应该读（　）。',
+   opts:['内圈刻度','外圈刻度','任意一圈','两圈都可以'], a:1,
+   why:'钝角读外圈；读内圈会误读成 65°。'},
+  {q:'两个角拼成一个平角，其中一个角是 100°，另一个角是（　）。',
+   opts:['80°','90°','100°','170°'], a:0,
+   why:'平角 180°，180 − 100 = 80。'}
+];
+
+const HAND_FILL = [
+  {q:'量一量，下图中的角是（　）°。　' + miniAngleSVG(65),
+   a:'65', why:'把量角器中心对准顶点、0 刻度线对准一条边，读另一边所对的刻度。'},
+  {q:'量一量，下图中的角是（　）°。　' + miniAngleSVG(115),
+   a:'115', why:'这是钝角，要读外圈；别读成 65°。'},
+  {q:'量一量，下图中的角是（　）°。　' + miniAngleSVG(30),
+   a:'30', why:'每小格 1°、每大格 10°，数一数刻度。'},
+  {q:'一个平角被分成三个角，分别是 50°、60° 和（　）°。', a:'70',
+   why:'50 + 60 + ∠ = 180，所以 ∠ = 70。'},
+  {q:'三角尺上最大的角是（　）°。', a:'90', why:'一块三角尺上有 45°、45°、90° 三种角。'},
+  {q:'用一副三角尺拼成一个角，最大的角是（　）°。', a:'135',
+   why:'90° + 45° = 135°。'},
+  {q:'钟面上 8 时整，时针与分针的夹角是（　）°。', a:'120',
+   why:'相差 8 − 4 = 4 个大格，4 × 30° = 120°。'},
+  {q:'把一个周角分成两个角，其中一个是 100°，另一个是（　）°。', a:'260',
+   why:'周角 360°，360 − 100 = 260。'}
+];
+
+const EXT_CHOICE = [
+  {q:'量角时，把 115° 错读成 65°，最可能的原因是（　）。',
+   opts:['量角器中心没有对准顶点','钝角读了内圈刻度','角的一条边没有和 0 刻度线重合','数错了小格数'], a:1,
+   why:'115° 所在位置的内圈读数正好是 65°，这是最典型的陷阱。'},
+  {q:'钟面上 3 时 30 分，时针与分针的夹角是（　）。',
+   opts:['75°','90°','105°','150°'], a:0,
+   why:'分针在 6（180°），时针在 3 与 4 正中（105°），相差 75°。'},
+  {q:'把一个周角分成三个角，其中两个都是 100°，第三个是（　）。',
+   opts:['100°','160°','180°','260°'], a:1,
+   why:'360 − 100 − 100 = 160。'},
+  {q:'∠AOB = ∠BOC，∠AOC = 90°，那么 ∠BOC 是（　）。',
+   opts:['45°','90°','135°','180°'], a:0,
+   why:'OB 把 ∠AOC 平分成两个相等的角：90 ÷ 2 = 45。'},
+  {q:'两个角拼成一个直角，其中一个角是 38°，另一个角是（　）。',
+   opts:['38°','45°','52°','62°'], a:2,
+   why:'90 − 38 = 52。'},
+  {q:'下面说法正确的是（　）。',
+   opts:['角的两条边画得越长，角就越大','角的大小只与边张开的大小有关',
+         '周角比平角大，所以它不是角','钝角一定比直角大'], a:1,
+   why:'角的大小与边长无关；周角、平角都是角；钝角大于直角。'}
+];
+
+const EXT_FILL = [
+  {q:'一个角的内部画一条射线，把它分成两个角，其中一个是 55°，原来的角最大可能是（　）°。',
+   a:'235', why:'两个角都大于 55°，原来的角最大 110 + 125 = 235°；先想一想：原来角的两部分各能到 180°。'},
+  {q:'把一个平角分成两个角，其中一个角比另一个角大 30°，较小的角是（　）°。',
+   a:'75', why:'两角和 180°，差 30°，小角 = (180 − 30) ÷ 2 = 75。'},
+  {q:'钟面上从 3 时到 7 时，时针转过的角度是（　）°。',
+   a:'120', why:'4 个大格 × 30° = 120°。'},
+  {q:'钟面上分针从 12 走到 6，转过的角度是（　）°。',
+   a:'180', why:'分针 1 分钟转 6°，30 分钟转 180°。'},
+  {q:'一个直角加上一个平角，和是（　）°。',
+   a:'270', why:'90 + 180 = 270。'},
+  {q:'钟面上 4 时整，时针与分针的夹角是（　）°。',
+   a:'120', why:'4 时整相差 4 个大格（从 12 到 4 是 4 格，从 4 到 6 是 2 格，共 4 格），4 × 30 = 120。'}
+];
+
+bootCourse([
+  {key:'basic', title:'第一档 · 巩固基础（线与角、分类、量角器）', prefix:'基',
+   choice:BASIC_CHOICE, fill:BASIC_FILL,
+   host:'#basicBlock', score:'#scoreBasic', total:'#totalBasic', reset:'#btnResetBasic'},
+  {key:'hand', title:'第二档 · 动手操作（看图量角、画角、拼角）', prefix:'动',
+   choice:HAND_CHOICE, fill:HAND_FILL,
+   host:'#handBlock', score:'#scoreHand', total:'#totalHand', reset:'#btnResetHand'},
+  {key:'ext', title:'第三档 · 扩展思维（钟面角、推理、易错辨析）', prefix:'拓',
+   choice:EXT_CHOICE, fill:EXT_FILL,
+   host:'#extBlock', score:'#scoreExt', total:'#totalExt', reset:'#btnResetExt'}
+]);
+
+})();
+</script>
+</body>
+</html>

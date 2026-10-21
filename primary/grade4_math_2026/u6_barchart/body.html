@@ -1,0 +1,66 @@
+<section id="s-single">
+  <h2 class="section"><span class="num">1</span>单式条形统计图</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>一格代表几？条形要多宽？</h3>
+    <p class="lead">拖动滑块改变"1 格代表几"，看直条的高度怎么变。
+      画条形统计图有<b>四要素</b>：<b>标题、横轴项目、纵轴（单位）、直条</b>；还要注意<b>直条宽窄一致、间隔相同</b>。</p>
+    <div class="controls">
+      <span class="pill" id="scLabel">—</span>
+      <input type="range" id="scUnit" min="1" max="5" value="1">
+      <button class="ghost" id="btnScReset">重置</button>
+    </div>
+    <div class="stage" id="scStage"></div>
+    <div id="scNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-double">
+  <h2 class="section"><span class="num">2</span>复式条形统计图</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>两组数据放在一起比</h3>
+    <p class="lead">复式条形统计图能同时表示两组数据，方便<b>直接比较</b>。注意要有<b>图例</b>。</p>
+    <div class="controls">
+      <button id="btnDbStep">▶ 一步步画</button>
+      <button class="ghost" id="btnDbAll">完整图</button>
+      <button class="ghost" id="btnDbReset">重置</button>
+    </div>
+    <div class="stepper" id="dbSteps"></div>
+    <div class="stage" id="dbStage"></div>
+    <div id="dbNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-collect">
+  <h2 class="section"><span class="num">3</span>数据的收集与整理</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>调查 → 记录 → 整理 → 画图</h3>
+    <p class="lead">点"下一步"，看一份问卷调查数据是怎么一步步变成条形统计图的。</p>
+    <div class="controls">
+      <button id="btnClStep">▶ 下一步</button>
+      <button class="ghost" id="btnClReset">重置</button>
+    </div>
+    <div class="stepper" id="clSteps"></div>
+    <div class="stage" id="clStage" style="flex-direction:column"></div>
+    <div id="clNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-read">
+  <h2 class="section"><span class="num">4</span>读图分析与决策</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>从统计图里能读出什么？</h3>
+    <p class="lead">点下面的问题，逐个分析（复式图：四（1）班与四（2）班每天课外阅读时间）。</p>
+    <div class="controls">
+      <button id="btnRdStep">▶ 下一个问题</button>
+      <button class="ghost" id="btnRdReset">重置</button>
+    </div>
+    <div class="stage" id="rdStage" style="flex-direction:column"></div>
+    <div id="rdNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

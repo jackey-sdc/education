@@ -1,0 +1,105 @@
+<section id="s-add">
+  <h2 class="section"><span class="num">1</span>加法模型：总量 = 分量 + 分量</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>两部分合起来是总量</h3>
+    <p class="lead">拖动滑块改变两个部分的数量，看"总量"怎么变。
+      这就是最基本的加法模型：<b>部分量 + 部分量 = 总量</b>；反过来，<b>总量 − 部分量 = 另一部分量</b>。</p>
+    <div class="controls">
+      <span class="pill" id="addLabel">—</span>
+      <input type="range" id="addA" min="0" max="60" value="28">
+      <input type="range" id="addB" min="0" max="60" value="26">
+      <button class="ghost" id="btnAddReset">重置</button>
+    </div>
+    <div class="stage" id="addStage" style="flex-direction:column"></div>
+    <div id="addNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-price">
+  <h2 class="section"><span class="num">2</span>乘法模型一：单价 × 数量 = 总价</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>读购物小票，认出三个量</h3>
+    <p class="lead">从超市小票里找出<b>单价、数量、总价</b>，再用关系式算出缺少的那个量。</p>
+    <div class="stage" id="priceStage" style="flex-direction:column"></div>
+    <div class="controls">
+      <select id="priceSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">牛奶 18 元/盒 × 3 盒</option>
+        <option value="1">苹果 9 元/千克 × 4 千克</option>
+        <option value="2">校服 120 元/套 × 5 套</option>
+        <option value="3">粉笔 840 元 ÷ 4 箱</option>
+        <option value="4">大米 236 元 ÷ 4 袋（原价 84 元/袋）</option>
+      </select>
+      <button id="btnPriceStep">▶ 一步步算</button>
+      <button class="ghost" id="btnPriceReset">重置</button>
+    </div>
+    <div class="stepper" id="priceSteps"></div>
+    <div id="priceNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">要点</span>三个量、三个关系式</h3>
+    <div class="grid3">
+      <div class="tip ok"><b>求总价</b><br>单价 × 数量 = 总价<br><span style="font-size:13.5px">例：120 × 5 = 600（元）</span></div>
+      <div class="tip ok"><b>求单价</b><br>总价 ÷ 数量 = 单价<br><span style="font-size:13.5px">例：840 ÷ 4 = 210（元）</span></div>
+      <div class="tip ok"><b>求数量</b><br>总价 ÷ 单价 = 数量<br><span style="font-size:13.5px">例：600 ÷ 120 = 5（套）</span></div>
+    </div>
+    <div class="tip warn"><b>易错</b>：求数量时用<b>除法</b>，不要写成乘法；写答案要带<b>单位</b>（元、盒、套、千克…）。</div>
+  </div>
+</section>
+
+<section id="s-speed">
+  <h2 class="section"><span class="num">3</span>乘法模型二：速度 × 时间 = 路程</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>小车开多快、走多远</h3>
+    <p class="lead">拖动滑块改变速度和时间，看看小车走了多远。
+      <b>速度</b>是"每单位时间走的路程"，所以单位是复合单位：<b>米/秒、千米/时</b>。</p>
+    <div class="controls">
+      <span class="pill" id="spdLabel">—</span>
+      <input type="range" id="spdV" min="40" max="120" value="60">
+      <input type="range" id="spdT" min="1" max="12" value="3">
+      <button class="ghost" id="btnSpdReset">重置</button>
+    </div>
+    <div class="stage" id="spdStage" style="flex-direction:column"></div>
+    <div id="spdNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-judge">
+  <h2 class="section"><span class="num">4</span>模型辨析：这个问题用哪个模型？</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>四步法：审题 → 判模型 → 找关系 → 列式</h3>
+    <p class="lead">点"下一个"，看每一步该怎么想。最后一步可以自己判断模型类型，再点"看看答案"。</p>
+    <div class="controls">
+      <button id="btnJudgeNext">▶ 下一步</button>
+      <button id="btnJudgeShow">看看答案</button>
+      <button class="ghost" id="btnJudgeReset">重置</button>
+    </div>
+    <div class="stepper" id="judgeSteps"></div>
+    <div class="stage" id="judgeStage" style="flex-direction:column"></div>
+    <div id="judgeNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-apply">
+  <h2 class="section"><span class="num">5</span>综合应用：两个模型一起用</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>先算一步，再算一步</h3>
+    <p class="lead">这类题要<b>分步列式</b>：先想第一步求的是什么，再想第二步怎么用。</p>
+    <div class="controls">
+      <select id="applySel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">买 15 双运动鞋，每双 48 元；另外买 30 根跳绳，每根 6 元。一共花多少钱？</option>
+        <option value="1">家到动物园 240 千米，汽车每小时行 80 千米，几小时到达？</option>
+        <option value="2">每箱牛奶 60 元，买 4 箱，付出 300 元，应找回多少钱？</option>
+      </select>
+      <button id="btnApplyStep">▶ 分步算</button>
+      <button class="ghost" id="btnApplyReset">重置</button>
+    </div>
+    <div class="stepper" id="applySteps"></div>
+    <div id="applyNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

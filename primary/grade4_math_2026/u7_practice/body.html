@@ -1,0 +1,92 @@
+<section id="s-map">
+  <h2 class="section"><span class="num">1</span>全册知识地图</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>四年级上册学了什么？点开看</h3>
+    <p class="lead">这张图把本册 8 个板块的知识串起来。点每个板块，看它包含哪些知识点。学会<b>把知识连成线</b>，比记住一百个知识点更有用。</p>
+    <div class="stage" id="mapStage" style="flex-direction:column"></div>
+    <div id="mapNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-num">
+  <h2 class="section"><span class="num">2</span>数与代数整理</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>数位表 → 读数 → 改写 → 估算，一条线</h3>
+    <p class="lead">输入一个数，看看它在这条"知识链"上会经历什么。</p>
+    <div class="controls">
+      <input type="text" id="rvNum" value="48609230" style="width:180px;font-weight:700;font-size:17px;text-align:center">
+      <button id="btnRvStep">▶ 下一步</button>
+      <button class="ghost" id="btnRvReset">重置</button>
+    </div>
+    <div class="stepper" id="rvSteps"></div>
+    <div class="stage" id="rvStage" style="flex-direction:column"></div>
+    <div id="rvNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-geo">
+  <h2 class="section"><span class="num">3</span>图形与几何整理</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>从线到角，再到四边形</h3>
+    <p class="lead">本册图形学习的线索：<b>线段/射线/直线 → 角的度量 → 平行与垂直 → 平行四边形与梯形</b>。点下面的按钮切换。</p>
+    <div class="controls">
+      <button data-g="0">线与角</button>
+      <button data-g="1">平行与垂直</button>
+      <button data-g="2">平行四边形与梯形</button>
+    </div>
+    <div class="stage" id="geoStage"></div>
+    <div id="geoNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-stat">
+  <h2 class="section"><span class="num">4</span>统计整理</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>数据 → 表 → 图 → 结论</h3>
+    <p class="lead">统计的四步流程，本册重点是<b>条形统计图</b>（单式与复式）。</p>
+    <div class="stage" id="statStage" style="flex-direction:column"></div>
+    <div id="statNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-chicken">
+  <h2 class="section"><span class="num">5</span>数学广角：鸡兔同笼</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>假设法：先假设全是鸡</h3>
+    <p class="lead">拖动滑块改变头数和脚数，跟着"假设—对比—调整"三步走一遍。
+      这就是<b>假设法</b>：先假设一种情况，再看差多少、怎么调。</p>
+    <div class="controls">
+      <span class="pill" id="ckLabel">—</span>
+      <input type="range" id="ckHeads" min="3" max="20" value="8">
+      <input type="range" id="ckFeet" min="6" max="50" value="26">
+      <button id="btnCkStep">▶ 下一步</button>
+      <button class="ghost" id="btnCkReset">重置</button>
+    </div>
+    <div class="stepper" id="ckSteps"></div>
+    <div class="stage" id="ckStage" style="flex-direction:column"></div>
+    <div id="ckNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-treasure">
+  <h2 class="section"><span class="num">6</span>综合实践：寻找宝藏</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>按指令在方格图上走</h3>
+    <p class="lead">点"走一步"，看探险家怎样按指令移动，最后说出宝藏的位置。
+      用<b>方向 + 步数</b>把位置说清楚，就不容易走丢。</p>
+    <div class="controls">
+      <button id="btnTrStep">▶ 走一步</button>
+      <button class="ghost" id="btnTrAll">全部走完</button>
+      <button class="ghost" id="btnTrReset">重来</button>
+    </div>
+    <div class="stepper" id="trSteps"></div>
+    <div class="stage" id="trStage"></div>
+    <div id="trNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

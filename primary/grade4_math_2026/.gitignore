@@ -1,0 +1,4 @@
+# 测试过程截图（可由 tests/_smoke.py 重新生成）
+shots/
+__pycache__/
+*.pyc

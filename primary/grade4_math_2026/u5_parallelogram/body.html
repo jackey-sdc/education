@@ -1,0 +1,104 @@
+<section id="s-pv">
+  <h2 class="section"><span class="num">1</span>平行与垂直</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>两条直线有几种位置关系？</h3>
+    <p class="lead">拖动滑块改变第二条直线的位置，看它和第一条直线的关系怎么变。
+      两种直线的位置关系只有三种：<b>相交</b>、<b>平行</b>、<b>垂直</b>。</p>
+    <div class="controls">
+      <span class="pill" id="pvLabel">—</span>
+      <input type="range" id="pvRange" min="0" max="100" value="0">
+      <button class="ghost" id="btnPvReset">重置</button>
+    </div>
+    <div class="stage" id="pvStage"></div>
+    <div id="pvNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">要点</span>三个"关键词"</h3>
+    <ul class="klist">
+      <li><b>同一平面内</b>的两条直线：不相交就是<b>平行</b>；相交成直角就是<b>垂直</b>，互相垂直的两条直线叫<b>垂线</b>。</li>
+      <li>从直线外一点到这条直线所画的<b>垂直线段最短</b>，它的长度叫这点到直线的<b>距离</b>。</li>
+      <li>长方形、正方形是特殊的平行四边形；正方形是特殊的长方形，也是特殊的正方形。</li>
+      <li>平行四边形的两组对边分别<b>平行且相等</b>；<b>只有一组</b>对边平行的四边形是梯形。</li>
+    </ul>
+  </div>
+</section>
+
+<section id="s-drawp">
+  <h2 class="section"><span class="num">2</span>画垂线</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>用三角尺画垂线的三步</h3>
+    <p class="lead">点"下一步"：<b>① 三角尺的一条直角边与已知直线重合 ② 另一条直角边过已知点画线 ③ 在交点处标直角符号</b>。</p>
+    <div class="controls">
+      <button id="btnDpStep">▶ 下一步</button>
+      <button class="ghost" id="btnDpAll">完整演示</button>
+      <button class="ghost" id="btnDpReset">重置</button>
+    </div>
+    <div class="stepper" id="dpSteps"></div>
+    <div class="stage" id="dpStage"></div>
+    <div id="dpNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-dist">
+  <h2 class="section"><span class="num">3</span>点到直线的距离</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>所有的连线中，垂直的那条最短</h3>
+    <p class="lead">拖动上面的点 P 到不同位置，看几条连线的长度：<b>垂线段永远最短</b>。</p>
+    <div class="controls">
+      <span class="pill" id="distLabel">—</span>
+      <input type="range" id="distX" min="20" max="380" value="240">
+      <input type="range" id="distY" min="20" max="150" value="60">
+      <button class="ghost" id="btnDistReset">重置</button>
+    </div>
+    <div class="stage" id="distStage"></div>
+    <div id="distNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-para">
+  <h2 class="section"><span class="num">4</span>平行四边形的认识</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>拉动平行四边形：高会变吗？</h3>
+    <p class="lead">拖动<b>第一个滑块</b>改变倾斜程度：底和高都没变，所以<b>面积不变</b>；可是腰变长了，<b>周长变了</b>。
+      拖动<b>第二个滑块</b>改变高：<b>面积</b>就跟着变。这就是平行四边形"容易变形"的数学道理。</p>
+    <div class="controls">
+      <span class="pill" id="paraLabel">—</span>
+      <input type="range" id="paraSkew" min="10" max="60" value="35">
+      <input type="range" id="paraH" min="40" max="140" value="100">
+      <button class="ghost" id="btnParaReset">重置</button>
+    </div>
+    <div class="stage" id="paraStage"></div>
+    <div id="paraNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-trap">
+  <h2 class="section"><span class="num">5</span>梯形的认识</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>只有一组对边平行的四边形</h3>
+    <p class="lead">点下面的按钮，看等腰梯形、直角梯形、一般梯形的样子，并找出它们的<b>上底、下底和高</b>。</p>
+    <div class="controls">
+      <button data-t="0">一般梯形</button>
+      <button data-t="1">等腰梯形</button>
+      <button data-t="2">直角梯形</button>
+    </div>
+    <div class="stage" id="trapStage"></div>
+    <div id="trapNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-tree">
+  <h2 class="section"><span class="num">6</span>四边形家族图</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>按"对边是否平行"给四边形分家</h3>
+    <p class="lead">点一个图形，看它属于哪一类。分类要用<b>一个标准</b>，这是数学里很重要的思想。</p>
+    <div class="stage" id="treeStage" style="flex-direction:column"></div>
+    <div id="treeNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

@@ -1,0 +1,162 @@
+<section id="s-place">
+  <h2 class="section"><span class="num">1</span>数位顺序表 · 计数单位</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>从"个"到"亿"：满十进一，两个大单位换一个大单位</h3>
+    <p class="lead">数位顺序表从右往左依次是个位、十位、百位、千位、万位……<b>每相邻两个计数单位之间的进率都是 10</b>。
+      点击表格中的任意一个<b>计数单位</b>，看看它的名称、读写方式，以及"10 个它 = 1 个谁"。</p>
+    <div class="stage" style="flex-direction:column;align-items:stretch">
+      <div id="placeTable"></div>
+      <div id="placeDemo" class="hint" style="text-align:center;color:var(--ink2)"></div>
+    </div>
+    <div id="placeInfo" class="tip">点击上表中的计数单位试试。</div>
+    <div class="stepper" id="unitSteps"></div>
+    <div class="controls">
+      <button id="btnUnitDemo">▶ 演示：10 个一万 = 1 个十万</button>
+      <button class="ghost" id="btnUnitReset">重置</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">要点</span>分级：从右往左每四位分一级</h3>
+    <div class="grid2">
+      <div>
+        <table class="plain">
+          <tr><th class="l">数位级</th><th>包含的数位</th><th>计数单位</th></tr>
+          <tr><td class="l">亿级</td><td>亿位、十亿位、百亿位、千亿位</td><td>亿、十亿、百亿、千亿</td></tr>
+          <tr><td class="l">万级</td><td>万位、十万位、百万位、千万位</td><td>万、十万、百万、千万</td></tr>
+          <tr><td class="l">个级</td><td>个位、十位、百位、千位</td><td>个、十、百、千</td></tr>
+        </table>
+      </div>
+      <div>
+        <p class="lead">分级的方法：从<b>右边起</b>，每四个数位为一级；不够四位的，<b>前面补 0</b>。
+          分级后，从<b>最高级</b>起读，每一级都按"个级"的读法读，读完加该级的名称。</p>
+        <div class="tip warn"><b>易错提醒</b>：每级末尾的 0 都不读；其他数位有一个 0 或连续几个 0，都只读一个"零"。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s-read">
+  <h2 class="section"><span class="num">2</span>认识大数：怎样读，怎样写</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>分级读数器</h3>
+    <p class="lead">输入一个数（或点"随机"），点"分级"，再一级一级地读下去：
+      <b>亿级 → 万级 → 个级</b>，每读一级就高亮一级。</p>
+    <div class="controls">
+      <input type="text" id="readNum" value="384562305" style="width:190px;font-weight:700;font-size:17px;text-align:center">
+      <button id="btnReadRandom">随机</button>
+      <button id="btnReadStep">▶ 读一级</button>
+      <button class="ghost" id="btnReadAll">完整演示</button>
+      <button class="ghost" id="btnReadReset">重置</button>
+    </div>
+    <div class="stepper" id="readSteps"></div>
+    <div class="stage" style="flex-direction:column">
+      <div id="readStage"></div>
+      <div id="readText" class="big-num" style="min-height:34px;color:var(--accent)"></div>
+    </div>
+    <div id="readNote" class="tip">输入数字后点"读一级"，看看一级一级是怎么读的。</div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">动画</span>写数：从读法还原到数位</h3>
+    <p class="lead">知道一个数的读法，怎么把它写下来？点"写一写"，看数字依次落位。</p>
+    <div class="controls">
+      <input type="text" id="writeCn" value="三亿二千零五万六千" style="width:260px;font-weight:700">
+      <button id="btnWrite">✍ 写一写</button>
+      <button class="ghost" id="btnWriteClear">清空</button>
+    </div>
+    <div class="stage" style="flex-direction:column">
+      <div id="writeStage"></div>
+      <div id="writeText" class="big-num" style="color:var(--accent)"></div>
+    </div>
+  </div>
+</section>
+
+<section id="s-compare">
+  <h2 class="section"><span class="num">3</span>数的大小比较</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>位数多的一定大；位数相同，就比最高位</h3>
+    <p class="lead">点"比一比"，看看两个数是怎样一步一步比出大小的。</p>
+    <div class="controls">
+      <select id="cmpSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">5060708 ○ 5080607</option>
+        <option value="1">3702000 ○ 3700200</option>
+        <option value="2">999999 ○ 1000000</option>
+        <option value="3">12亿 ○ 120000万</option>
+        <option value="4">30600000 ○ 3060000</option>
+      </select>
+      <button id="btnCmp">▶ 比一比</button>
+      <button class="ghost" id="btnCmpReset">重置</button>
+    </div>
+    <div class="stepper" id="cmpSteps"></div>
+    <div class="stage" id="cmpStage" style="flex-direction:column"></div>
+    <div id="cmpNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-rewrite">
+  <h2 class="section"><span class="num">4</span>数的改写：把整万、整亿的数写简便</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>改写用等号"＝"</h3>
+    <p class="lead">拖动滑块选一个<b>整万数</b>，看看它怎么改写成用"万"或"亿"作单位的数。
+      拖动滑块时注意：只有<b>末四位是 0</b> 的数才能改写成"万"，只有<b>末八位都是 0</b> 的数才能改写成"亿"。</p>
+    <div class="controls">
+      <span class="pill" id="rwLabel">—</span>
+      <input type="range" id="rwRange" min="0" max="9" value="0">
+      <button class="ghost" id="btnRwReset">重置</button>
+    </div>
+    <div class="stage" id="rwStage" style="flex-direction:column"></div>
+    <div id="rwNote" class="tip"></div>
+    <div class="tip warn"><b>关键区别</b>：改写是<b>准确数</b>，大小没变，用"<b>＝</b>"；求近似数是<b>估计数</b>，大小变了，用"<b>≈</b>"。</div>
+  </div>
+</section>
+
+<section id="s-approx">
+  <h2 class="section"><span class="num">5</span>求近似数：四舍五入</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>要省略万位后面的尾数，就看千位</h3>
+    <p class="lead">拖动滑块选数，点"省略万位后面的尾数"或"省略亿位后面的尾数"，看四舍五入是怎么发生的。
+      <b>满 5 进 1，不满 5 舍去。</b></p>
+    <div class="controls">
+      <span class="pill" id="apLabel">—</span>
+      <input type="range" id="apRange" min="0" max="9" value="0">
+      <button id="btnApW">省略万位后面的尾数</button>
+      <button id="btnApY">省略亿位后面的尾数</button>
+      <button class="ghost" id="btnApReset">重置</button>
+    </div>
+    <div class="stage" id="apStage" style="flex-direction:column"></div>
+    <div id="apNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-billion">
+  <h2 class="section"><span class="num">6</span>综合与实践：1亿有多大</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>把"亿"变成看得见的东西</h3>
+    <p class="lead">点下面的按钮，看 1 亿到底有多大——这些估算不要求精确，能说出"大约"就够了。</p>
+    <div class="controls" id="bnBtns">
+      <button data-k="money">💴 1亿元有多少张百元钞</button>
+      <button data-k="rice">🌾 1亿粒米有多重</button>
+      <button data-k="time">⏱ 1亿秒是多久</button>
+      <button data-k="steps">👣 1亿步能走多远</button>
+    </div>
+    <div class="stage" id="bnStage" style="flex-direction:column"></div>
+    <div id="bnNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">要点</span>亿级数的认识小结</h3>
+    <ul class="klist">
+      <li>十进制计数单位：个、十、百、千、万、十万、百万、千万、<b>亿</b>、十亿、百亿、千亿……</li>
+      <li>相邻两个计数单位之间的进率是 <b>10</b>；10 个一千万是 1 个亿。</li>
+      <li>读数：先分级，从最高级读起，<b>每级末尾的 0 不读</b>。</li>
+      <li>写数：先分级，哪一位上一个单位也没有就写 0 占位。</li>
+      <li>比较：位数多的数大；位数相同，从最高位比起。</li>
+      <li>改写（<b>＝</b>）：整万数改写成用"万"作单位的数，整亿数改写成用"亿"作单位的数。</li>
+      <li>求近似数（<b>≈</b>）：四舍五入到万位看千位，到亿位看千万位。</li>
+    </ul>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

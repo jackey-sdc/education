@@ -1,0 +1,106 @@
+<section id="s-line">
+  <h2 class="section"><span class="num">1</span>线段、射线、直线</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>端点有几个？能不能延伸？</h3>
+    <p class="lead">点"延伸"按钮，看看线段、射线、直线在延伸时有什么不一样。</p>
+    <div class="controls">
+      <button id="btnLineExtend">▶ 延伸</button>
+      <button class="ghost" id="btnLineReset">重置</button>
+    </div>
+    <div class="stage" id="lineStage" style="flex-direction:column"></div>
+    <div id="lineNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-angle">
+  <h2 class="section"><span class="num">2</span>角的再认识</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>一条边不动，另一条边转起来</h3>
+    <p class="lead">拖动滑块，让角的一条边转动，看看角的大小怎么变化，角又属于哪一类。</p>
+    <div class="controls">
+      <input type="range" id="angRange" min="0" max="360" value="60">
+      <span class="pill" id="angLabel">60°</span>
+      <button class="ghost" id="btnAngReset">重置</button>
+    </div>
+    <div class="stage" id="angStage"></div>
+    <div id="angNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">动画</span>角的大小与边画多长有关吗？</h3>
+    <p class="lead">点"把边拉长"，看看角有没有变。</p>
+    <div class="controls">
+      <button id="btnAngStretch">🔧 把边拉长</button>
+      <button class="ghost" id="btnAngStretchReset">复原</button>
+    </div>
+    <div class="stage" id="angStretchStage"></div>
+    <div id="angStretchNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-measure">
+  <h2 class="section"><span class="num">3</span>角的度量：用量角器量角</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>三步法 + 内外圈</h3>
+    <p class="lead">拖动滑块改变角的度数，看量角器怎么工作：
+      <b>① 中心与角的顶点重合 → ② 0 刻度线与角的一条边重合 → ③ 另一边所对的刻度就是这个角的度数</b>。
+      <br><b>教学口径</b>：量角器<b>内圈 0° 在右端</b>、<b>外圈 0° 在左端</b>；<b>锐角读内圈，钝角读外圈</b>。</p>
+    <div class="controls">
+      <input type="range" id="pmRange" min="10" max="170" value="40">
+      <span class="pill" id="pmLabel">40°</span>
+      <button id="btnPmStep">▶ 一步步量</button>
+      <button class="ghost" id="btnPmReset">重置</button>
+    </div>
+    <div class="stepper" id="pmSteps"></div>
+    <div class="stage" id="pmStage"></div>
+    <div id="pmNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">易错</span>115° 为什么常被读成 65°？</h3>
+    <p class="lead">量钝角时，如果把内圈当外圈读，就会把 115° 读成 65°。点"对比"看看两个圈分别指着多少。</p>
+    <div class="controls">
+      <button id="btnTrap">🔍 对比内外圈</button>
+    </div>
+    <div class="stage" id="trapStage"></div>
+    <div id="trapNote" class="tip warn"></div>
+  </div>
+</section>
+
+<section id="s-draw">
+  <h2 class="section"><span class="num">4</span>画角</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>用尺规画一个 65° 的角</h3>
+    <p class="lead">点"下一步"，看画角的三个步骤：<b>画弧 → 交点连线 → 标度数</b>。画角的道理和量角器一样——都靠"弧"和"半径相等"。</p>
+    <div class="controls">
+      <input type="range" id="drRange" min="25" max="150" value="65">
+      <span class="pill" id="drLabel">65°</span>
+      <button id="btnDrStep">▶ 下一步</button>
+      <button class="ghost" id="btnDrAll">完整演示</button>
+      <button class="ghost" id="btnDrReset">重置</button>
+    </div>
+    <div class="stepper" id="drSteps"></div>
+    <div class="stage" id="drStage"></div>
+    <div id="drNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-calc">
+  <h2 class="section"><span class="num">5</span>角的计算：拼角与和差</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>半圆被分成三个角</h3>
+    <p class="lead">拖动两个滑块改变 ∠1 和 ∠2，看看 ∠3 是怎么算出来的（平角 = 180°）。</p>
+    <div class="controls">
+      <span class="pill" id="calcLabel">—</span>
+      <input type="range" id="c1Range" min="10" max="160" value="60">
+      <input type="range" id="c2Range" min="10" max="160" value="50">
+      <button class="ghost" id="btnCalcReset">重置</button>
+    </div>
+    <div class="stage" id="calcStage"></div>
+    <div id="calcNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

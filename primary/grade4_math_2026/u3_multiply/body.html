@@ -1,0 +1,118 @@
+<section id="s-oral">
+  <h2 class="section"><span class="num">1</span>口算乘法</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>先算前面两个数，再在积的末尾添 0</h3>
+    <p class="lead">整十数、整百数相乘，可以先算"去掉 0 后的数"，再在积的末尾添上同样多的 0。
+      点"算一算"看每一步。</p>
+    <div class="controls">
+      <select id="oralSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">20 × 30</option>
+        <option value="1">300 × 40</option>
+        <option value="2">120 × 30</option>
+        <option value="3">25 × 40</option>
+        <option value="4">13 × 20</option>
+      </select>
+      <button id="btnOralStep">▶ 算一算</button>
+      <button class="ghost" id="btnOralReset">重置</button>
+    </div>
+    <div class="stepper" id="oralSteps"></div>
+    <div class="stage" id="oralStage" style="flex-direction:column"></div>
+    <div id="oralNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-vertical">
+  <h2 class="section"><span class="num">2</span>笔算乘法</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>竖式一步一步算</h3>
+    <p class="lead">选一道题，点"下一步"，看清楚竖式里<b>先算什么、再算什么、满几进几</b>。
+      注意：相同数位要<b>对齐</b>，从<b>个位</b>算起。</p>
+    <div class="controls">
+      <select id="vmSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">145 × 12</option>
+        <option value="1">236 × 34</option>
+        <option value="2">307 × 25</option>
+        <option value="3">48 × 27</option>
+      </select>
+      <button id="btnVmStep">▶ 下一步</button>
+      <button class="ghost" id="btnVmAll">完整演示</button>
+      <button class="ghost" id="btnVmReset">重置</button>
+    </div>
+    <div class="stepper" id="vmSteps"></div>
+    <div class="stage" id="vmStage" style="flex-direction:column"></div>
+    <div id="vmNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">要点</span>笔算乘法的三个"对齐"</h3>
+    <ul class="klist">
+      <li><b>数位对齐</b>：第二个因数的个位要和第一个因数的个位对齐。</li>
+      <li><b>从低位算起</b>：先算个位，再算十位……</li>
+      <li><b>满几进几</b>：哪一位上的积满几十，就向前一位进几；进位的小 1 要写清楚。</li>
+      <li>算完不要忘记把进位加上去；末尾有 0 的因数，积的末尾 0 的个数要看清楚。</li>
+    </ul>
+  </div>
+</section>
+
+<section id="s-zero">
+  <h2 class="section"><span class="num">3</span>因数中间或末尾有 0 的乘法</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>0 的个数，藏在哪里？</h3>
+    <p class="lead">点"算一算"，看因数末尾的 0 到底该在哪里"藏起来"。</p>
+    <div class="controls">
+      <select id="zeroSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">25 × 40</option>
+        <option value="1">25 × 4</option>
+        <option value="2">160 × 30</option>
+        <option value="3">30 × 40</option>
+        <option value="4">240 × 50</option>
+      </select>
+      <button id="btnZeroStep">▶ 算一算</button>
+      <button class="ghost" id="btnZeroReset">重置</button>
+    </div>
+    <div class="stepper" id="zeroSteps"></div>
+    <div class="stage" id="zeroStage" style="flex-direction:column"></div>
+    <div id="zeroNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-law">
+  <h2 class="section"><span class="num">4</span>积的变化规律</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>一个因数不变，另一个因数变，积怎么变？</h3>
+    <p class="lead">拖动滑块改变第二个因数，看看积怎么变。也可以点" ÷2 / ×3"让积倒着变。</p>
+    <div class="controls">
+      <span class="pill" id="lawLabel">12 × 5 = 60</span>
+      <input type="range" id="lawRange" min="1" max="20" value="5">
+      <button id="btnLawHalf">÷ 2</button>
+      <button id="btnLawTriple">× 3</button>
+      <button class="ghost" id="btnLawReset">重置</button>
+    </div>
+    <div class="stage" id="lawStage" style="flex-direction:column"></div>
+    <div id="lawNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-estimate">
+  <h2 class="section"><span class="num">5</span>估算</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>把因数看成整十整百数</h3>
+    <p class="lead">拖动滑块选择"看成多少"，同时看<b>估算值</b>和<b>精确值</b>的差别，并判断"够不够"。</p>
+    <div class="controls">
+      <select id="estSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">302 × 21 ≈ ? （判断 400 元够不够）</option>
+        <option value="1">48 × 29 ≈ ? （判断 1500 个够不够）</option>
+        <option value="2">198 × 52 ≈ ? （判断 10000 元够不够）</option>
+      </select>
+      <input type="range" id="estRange" min="0" max="2" value="0">
+      <button class="ghost" id="btnEstReset">重置</button>
+    </div>
+    <div class="stage" id="estStage" style="flex-direction:column"></div>
+    <div id="estNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

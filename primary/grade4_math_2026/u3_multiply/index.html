@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>多位数乘两位数</title>
+<style>
+:root{
+    --accent:#7a4fd6;
+    --accent-l:#f1ebff;
+    --accent-d:#5a35a8;
+}
+
+  :root{
+    --ink:#20304a; --ink2:#4b5f7d; --blue:#2f6fd0; --blue-l:#e8f1ff;
+    --orange:#f08a24; --orange-l:#fff2e2; --green:#1f9d6b; --green-l:#e6f7ef;
+    --purple:#7a4fd6; --purple-l:#f1ebff; --red:#d94a4a; --red-l:#fdecec;
+    --teal:#0e8fa8; --teal-l:#e4f6f9;
+    --card:#ffffff; --line:#e3e9f2; --bg:#f4f7fc;
+    --shadow:0 6px 18px rgba(31,52,90,.08);
+    --accent:#2f6fd0; --accent-l:#e8f1ff; --accent-d:#1f5bb0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+    line-height:1.75;font-size:16px}
+  header{background:linear-gradient(135deg,var(--accent-d),var(--accent) 55%,#7a4fd6);
+    color:#fff;padding:32px 20px 28px;text-align:center}
+  header h1{margin:0 0 6px;font-size:30px;letter-spacing:1px}
+  header p{margin:0;opacity:.94;font-size:15px}
+  .badges{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .badges span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+    padding:3px 12px;border-radius:999px;font-size:13px}
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(31,52,90,.05)}
+  nav .inner{max-width:1080px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:8px 14px}
+  nav a{flex:0 0 auto;text-decoration:none;color:var(--ink2);font-size:14px;font-weight:600;
+    padding:7px 13px;border-radius:999px;white-space:nowrap}
+  nav a:hover{background:var(--accent-l);color:var(--accent)}
+  main{max-width:1080px;margin:0 auto;padding:26px 16px 80px}
+  section{margin-bottom:34px}
+  h2.section{font-size:22px;margin:0 0 16px;display:flex;align-items:center;gap:10px;
+    padding-left:12px;border-left:6px solid var(--accent)}
+  h2.section .num{background:var(--accent);color:#fff;font-size:14px;width:26px;height:26px;
+    border-radius:8px;display:grid;place-items:center;font-weight:700}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;
+    box-shadow:var(--shadow);margin-bottom:18px}
+  .card h3{margin:0 0 6px;font-size:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card h3 .tag{font-size:12px;background:var(--accent-l);color:var(--accent);padding:2px 9px;
+    border-radius:999px;font-weight:700}
+  .lead{color:var(--ink2);font-size:15px;margin:0 0 14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:880px){.grid2,.grid3{grid-template-columns:1fr}}
+  .stage{background:#fbfcff;border:1px dashed #cfdcee;border-radius:14px;padding:12px;
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center}
+  .stage svg{max-width:100%;height:auto;display:block}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+  button,.btn{font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent);
+    color:#fff;border:none;border-radius:10px;padding:8px 15px;transition:transform .08s ease,filter .15s ease}
+  button:hover{filter:brightness(1.07)} button:active{transform:translateY(1px)}
+  button.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}
+  button.soft{background:var(--orange)} button.green{background:var(--green)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  input[type=range]{accent-color:var(--accent);width:190px;height:26px}
+  input[type=text],input[type=number]{font:inherit;font-size:15px;padding:6px 10px;border:1.5px solid var(--line);
+    border-radius:8px;outline:none}
+  input[type=text]:focus,input[type=number]:focus{border-color:var(--accent)}
+  .pill{display:inline-block;background:var(--orange-l);color:#b35c00;font-weight:700;
+    padding:4px 12px;border-radius:999px;font-size:14px}
+  .klist{margin:8px 0 0;padding-left:20px;color:var(--ink2);font-size:15px}
+  .klist li{margin:3px 0}
+  .tip{background:var(--accent-l);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;
+    margin-top:12px;font-size:14.5px;color:#26456f}
+  .tip b{color:var(--accent)}
+  .tip.warn{background:var(--orange-l);border-color:var(--orange);color:#8a4a00}
+  .tip.warn b{color:#b35c00}
+  .tip.ok{background:var(--green-l);border-color:var(--green);color:#126b47}
+  .tip.ok b{color:var(--green)}
+  .num-display{font-size:30px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;
+    background:var(--accent-l);padding:4px 16px;border-radius:12px;display:inline-block}
+  table.plain{border-collapse:collapse;width:100%;font-size:14.5px}
+  table.plain th,table.plain td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+  table.plain th{background:var(--accent-l);color:var(--accent)}
+  table.plain td.l,table.plain th.l{text-align:left}
+  /* ---- 练习 ---- */
+  .q{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;background:#fff}
+  .q .qt{font-weight:600;margin-bottom:9px;font-size:15.5px}
+  .q .qt .qno{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;
+    background:var(--purple-l);color:var(--purple);font-size:13px;font-weight:800;margin-right:8px}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{border:1.5px solid var(--line);border-radius:10px;padding:8px 13px;cursor:pointer;
+    background:#fcfdff;font-size:15px;transition:.15s;display:flex;gap:9px;align-items:flex-start}
+  .opt:hover{border-color:var(--accent);background:var(--accent-l)}
+  .opt .k{font-weight:800;color:var(--ink2)}
+  .opt.right{border-color:var(--green);background:var(--green-l)}
+  .opt.right .k{color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:var(--red-l)}
+  .opt.wrong .k{color:var(--red)}
+  .opt.locked{cursor:default}
+  .fb{margin-top:9px;font-size:14px;padding:8px 12px;border-radius:9px;display:none}
+  .fb.show{display:block}
+  .fb.good{background:var(--green-l);color:#126b47}
+  .fb.bad{background:var(--red-l);color:#9b2f2f}
+  .fb .why{display:block;margin-top:4px;color:var(--ink2)}
+  .score{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--accent-l);
+    border-radius:12px;padding:10px 16px;margin-bottom:14px;font-size:15px}
+  .score b{font-size:19px;color:var(--accent)}
+  details.answers{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow)}
+  details.answers summary{cursor:pointer;font-weight:700;color:var(--accent);font-size:16px;outline:none}
+  details.answers[open] summary{margin-bottom:10px;color:var(--orange)}
+  .ans-item{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .ans-item:last-child{border-bottom:none}
+  .ans-item b{color:var(--orange)}
+  /* ---- 通用小组件 ---- */
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .tab{font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink2)}
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .stepper{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .stepper .dot{width:30px;height:30px;border-radius:50%;background:var(--line);color:var(--ink2);
+    display:grid;place-items:center;font-weight:800;font-size:14px}
+  .stepper .dot.on{background:var(--accent);color:#fff}
+  .stepper .dot.done{background:var(--green-l);color:var(--green)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);margin-top:8px}
+  .legend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:5px;vertical-align:-2px}
+  .hstack{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .chip{display:inline-block;background:#fff;border:1.5px solid var(--line);border-radius:999px;
+    padding:3px 12px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .note{font-size:13.5px;color:var(--ink2);margin-top:8px}
+  .big-num{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+  .cell-hl{background:var(--accent-l);border-radius:6px;padding:2px 8px;font-weight:800;color:var(--accent);
+    display:inline-block}
+  .card-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .toggle-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  @media print{
+    header,nav,.controls,.tabs,.score .btn{display:none!important}
+    body{background:#fff}
+    .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+    details.answers{display:block}
+    details.answers summary{display:none}
+    .q{break-inside:avoid}
+  }
+
+</style>
+</head>
+<body>
+<header>
+  <h1>多位数乘两位数</h1>
+  <p>人教版（2024年审定）四年级数学上册 · 第三单元 · 口算乘法 / 笔算乘法 / 因数有0 / 积的变化规律 / 估算</p>
+  <div class="badges"><span>9 个课时</span>
+    <span>5 个动画模块</span>
+    <span>分层练习 40 题</span>
+    <span>含答案解析</span></div>
+</header>
+<nav><div class="inner">    <a href="#s-oral">① 口算乘法</a>
+    <a href="#s-vertical">② 笔算乘法</a>
+    <a href="#s-zero">③ 因数中间或末尾有0</a>
+    <a href="#s-law">④ 积的变化规律</a>
+    <a href="#s-estimate">⑤ 估算</a>
+    <a href="#quiz">分层练习</a>
+    <a href="#answers">答案解析</a></div></nav>
+<main>
+<section id="s-oral">
+  <h2 class="section"><span class="num">1</span>口算乘法</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>先算前面两个数，再在积的末尾添 0</h3>
+    <p class="lead">整十数、整百数相乘，可以先算"去掉 0 后的数"，再在积的末尾添上同样多的 0。
+      点"算一算"看每一步。</p>
+    <div class="controls">
+      <select id="oralSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">20 × 30</option>
+        <option value="1">300 × 40</option>
+        <option value="2">120 × 30</option>
+        <option value="3">25 × 40</option>
+        <option value="4">13 × 20</option>
+      </select>
+      <button id="btnOralStep">▶ 算一算</button>
+      <button class="ghost" id="btnOralReset">重置</button>
+    </div>
+    <div class="stepper" id="oralSteps"></div>
+    <div class="stage" id="oralStage" style="flex-direction:column"></div>
+    <div id="oralNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-vertical">
+  <h2 class="section"><span class="num">2</span>笔算乘法</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>竖式一步一步算</h3>
+    <p class="lead">选一道题，点"下一步"，看清楚竖式里<b>先算什么、再算什么、满几进几</b>。
+      注意：相同数位要<b>对齐</b>，从<b>个位</b>算起。</p>
+    <div class="controls">
+      <select id="vmSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">145 × 12</option>
+        <option value="1">236 × 34</option>
+        <option value="2">307 × 25</option>
+        <option value="3">48 × 27</option>
+      </select>
+      <button id="btnVmStep">▶ 下一步</button>
+      <button class="ghost" id="btnVmAll">完整演示</button>
+      <button class="ghost" id="btnVmReset">重置</button>
+    </div>
+    <div class="stepper" id="vmSteps"></div>
+    <div class="stage" id="vmStage" style="flex-direction:column"></div>
+    <div id="vmNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">要点</span>笔算乘法的三个"对齐"</h3>
+    <ul class="klist">
+      <li><b>数位对齐</b>：第二个因数的个位要和第一个因数的个位对齐。</li>
+      <li><b>从低位算起</b>：先算个位，再算十位……</li>
+      <li><b>满几进几</b>：哪一位上的积满几十，就向前一位进几；进位的小 1 要写清楚。</li>
+      <li>算完不要忘记把进位加上去；末尾有 0 的因数，积的末尾 0 的个数要看清楚。</li>
+    </ul>
+  </div>
+</section>
+
+<section id="s-zero">
+  <h2 class="section"><span class="num">3</span>因数中间或末尾有 0 的乘法</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>0 的个数，藏在哪里？</h3>
+    <p class="lead">点"算一算"，看因数末尾的 0 到底该在哪里"藏起来"。</p>
+    <div class="controls">
+      <select id="zeroSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">25 × 40</option>
+        <option value="1">25 × 4</option>
+        <option value="2">160 × 30</option>
+        <option value="3">30 × 40</option>
+        <option value="4">240 × 50</option>
+      </select>
+      <button id="btnZeroStep">▶ 算一算</button>
+      <button class="ghost" id="btnZeroReset">重置</button>
+    </div>
+    <div class="stepper" id="zeroSteps"></div>
+    <div class="stage" id="zeroStage" style="flex-direction:column"></div>
+    <div id="zeroNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-law">
+  <h2 class="section"><span class="num">4</span>积的变化规律</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>一个因数不变，另一个因数变，积怎么变？</h3>
+    <p class="lead">拖动滑块改变第二个因数，看看积怎么变。也可以点" ÷2 / ×3"让积倒着变。</p>
+    <div class="controls">
+      <span class="pill" id="lawLabel">12 × 5 = 60</span>
+      <input type="range" id="lawRange" min="1" max="20" value="5">
+      <button id="btnLawHalf">÷ 2</button>
+      <button id="btnLawTriple">× 3</button>
+      <button class="ghost" id="btnLawReset">重置</button>
+    </div>
+    <div class="stage" id="lawStage" style="flex-direction:column"></div>
+    <div id="lawNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-estimate">
+  <h2 class="section"><span class="num">5</span>估算</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>把因数看成整十整百数</h3>
+    <p class="lead">拖动滑块选择"看成多少"，同时看<b>估算值</b>和<b>精确值</b>的差别，并判断"够不够"。</p>
+    <div class="controls">
+      <select id="estSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">302 × 21 ≈ ? （判断 400 元够不够）</option>
+        <option value="1">48 × 29 ≈ ? （判断 1500 个够不够）</option>
+        <option value="2">198 × 52 ≈ ? （判断 10000 元够不够）</option>
+      </select>
+      <input type="range" id="estRange" min="0" max="2" value="0">
+      <button class="ghost" id="btnEstReset">重置</button>
+    </div>
+    <div class="stage" id="estStage" style="flex-direction:column"></div>
+    <div id="estNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第一档</span>巩固基础</h3>
+      <span class="note">口算 · 竖式 · 积的变化规律</span>
+    </div>
+    <div class="score">已答对 <b id="scoreBasic">0</b> / <span id="totalBasic">0</span> 题
+      <button class="ghost" id="btnResetBasic">重做本档</button></div>
+    <div id="basicBlock"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第二档</span>动手操作</h3>
+      <span class="note">竖式纠错 · 估算判断</span>
+    </div>
+    <div class="score">已答对 <b id="scoreHand">0</b> / <span id="totalHand">0</span> 题
+      <button class="ghost" id="btnResetHand">重做本档</button></div>
+    <div id="handBlock"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第三档</span>扩展思维</h3>
+      <span class="note">规律逆推 · 估算策略 · 实际应用</span>
+    </div>
+    <div class="score">已答对 <b id="scoreExt">0</b> / <span id="totalExt">0</span> 题
+      <button class="ghost" id="btnResetExt">重做本档</button></div>
+    <div id="extBlock"></div>
+  </div>
+
+<section id="answers">
+  <details class="answers">
+    <summary>📖 答案与解析（讲评时展开 / 可直接打印）</summary>
+    <div id="answerKey"></div>
+  </details>
+</section>
+
+</section>
+
+<section id="answers">
+  <details class="answers">
+    <summary>📖 答案与解析（讲评时展开 / 可直接打印）</summary>
+    <div id="answerKey"></div>
+  </details>
+</section>
+
+
+</main>
+<footer style="max-width:1080px;margin:0 auto;padding:0 16px 40px;color:var(--ink2);font-size:14px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px">
+  <div>人教版（2024年审定）四年级数学上册 · 第三单元动画课件</div>
+  <div class="hstack"><a class="chip" href="../u2_angle/index.html">← 上一单元</a><a class="chip" href="../u4_models/index.html">下一单元 →</a></div>
+</footer>
+<script>
+/* ==========================================================================
+   共享引擎：DOM/SVG 工具 + 分层练习引擎 + 答案区生成
+   —— 所有单元课件共用（构建时内联进各自的 index.html）
+   ========================================================================== */
+'use strict';
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+
+/* ---------------- SVG 基础 ---------------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+function s(tag, attrs, parent){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in (attrs||{})) if (attrs[k] !== undefined && attrs[k] !== null) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function clear(node){ while(node && node.firstChild) node.removeChild(node.firstChild); }
+
+/* 角度约定：数学正方向 = 逆时针为正；SVG 的 y 轴向下，换算时翻 y */
+function polar(cx, cy, r, deg){
+  const a = deg * Math.PI / 180;
+  return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+}
+/* 数学逆时针弧：sweep 固定 0；large-arc-flag 由跨角是否大于 180° 决定 */
+function arcPoints(cx, cy, r, startDeg, spanDeg){
+  const p1 = polar(cx, cy, r, startDeg), p2 = polar(cx, cy, r, startDeg + spanDeg);
+  const large = spanDeg > 180 ? 1 : 0;
+  return { p1, p2, d:`M ${p1[0]} ${p1[1]} A ${r} ${r} 0 ${large} 0 ${p2[0]} ${p2[1]}` };
+}
+/* 圆周数字：沿切向旋转 + 白色描边光晕，避免被射线/指针压住 */
+function haloText(parent, x, y, str, deg, opt){
+  const o = Object.assign({size:13, fill:'#20304a', rot:true}, opt||{});
+  const t = s('text', {x, y, 'font-size':o.size, fill:o.fill, 'text-anchor':'middle',
+    'dominant-baseline':'central', 'paint-order':'stroke', stroke:'#fff',
+    'stroke-width':3.5, 'stroke-linejoin':'round'}, parent);
+  if (o.rot && deg !== undefined && deg !== null) t.setAttribute('transform', `rotate(${deg - 90} ${x} ${y})`);
+  t.textContent = str;
+  return t;
+}
+function label(parent, x, y, str, opt){
+  const o = Object.assign({size:14, fill:'#20304a', anchor:'middle', weight:600}, opt||{});
+  const t = s('text', {x, y, 'font-size':o.size, fill:o.fill, 'text-anchor':o.anchor,
+    'font-weight':o.weight}, parent);
+  t.textContent = str;
+  return t;
+}
+function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+
+/* ---------------- 画一个角（通用） ---------------- */
+/* vertex=(vx,vy)，a1/a2 为两条边的极角（度，逆时针为正） */
+function drawAngle(svg, vx, vy, a1, a2, opt){
+  const o = Object.assign({r:120, color:'#2f6fd0', arc:true, arcColor:'#f08a24',
+    arcR:34, label:null, lw:3, dash:null}, opt||{});
+  const p1 = polar(vx, vy, o.r, a1), p2 = polar(vx, vy, o.r, a2);
+  s('line', {x1:vx, y1:vy, x2:p1[0], y2:p1[1], stroke:o.color, 'stroke-width':o.lw,
+    'stroke-linecap':'round', 'stroke-dasharray':o.dash || ''}, svg);
+  s('line', {x1:vx, y1:vy, x2:p2[0], y2:p2[1], stroke:o.color, 'stroke-width':o.lw,
+    'stroke-linecap':'round', 'stroke-dasharray':o.dash || ''}, svg);
+  if (o.arc){
+    let start = a1, span = a2 - a1;
+    if (span < 0){ start = a2; span = -span; }   /* 走短弧 */
+    if (span > 360) span = 360;
+    const arc = arcPoints(vx, vy, o.arcR, start, span);
+    s('path', {d:arc.d, fill:'none', stroke:o.arcColor, 'stroke-width':3.5,
+      'stroke-linecap':'round'}, svg);
+    const mid = polar(vx, vy, o.arcR, start + span/2);
+    if (o.label) haloText(svg, mid[0], mid[1], o.label, null, {size:15, fill:'#b35c00'});
+  }
+  s('circle', {cx:vx, cy:vy, r:4.5, fill:o.color}, svg);
+  return {p1, p2};
+}
+
+/* ---------------- 答案归一化 ---------------- */
+const CN_D = {'零':0,'〇':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9};
+const CN_U = {'十':10,'百':100,'千':1000};
+/* 中文数字 → 阿拉伯数字（支持 三千五百万 / 十二万 / 3千万 / 3.5万 等混写） */
+function cn2num(str){
+  const toks = str.match(/\d+(?:\.\d+)?|[零〇一二两三四五六七八九十百千万亿]/g) || [];
+  let out = 0, section = 0, num = 0;
+  for (const t of toks){
+    if (/^\d/.test(t)) num = parseFloat(t);
+    else if (t in CN_D) num = CN_D[t];
+    else if (t in CN_U){ section += (num || 1) * CN_U[t]; num = 0; }
+    else if (t === '万'){ section = (section + num) * 10000; out += section; section = 0; num = 0; }
+    else if (t === '亿'){ out = (out + section + num) * 100000000; section = 0; num = 0; }
+  }
+  return out + section + num;
+}
+function norm(v){
+  let t = String(v).trim();
+  t = t.replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+  if (/[零〇一二两三四五六七八九十百千万亿]/.test(t)){
+    const v2 = cn2num(t); t = (Number.isFinite(v2) ? String(v2) : t);
+  }
+  t = t.replace(/\s/g, '')
+       .replace(/[，。、；：]/g, '')
+       .replace(/[，,]/g, '')
+       .replace(/[．。]/g, '.')
+       .replace(/[（(]/g, '(').replace(/[）)]/g, ')')
+       .replace(/[×xX*]/g, '*').replace(/[÷]/g, '/')
+       .replace(/[＝=]/g, '=')
+       .replace(/[约≈]/g, '')
+       .replace(/[度°]/g, '')
+       .replace(/平方千米/g, 'km2').replace(/平方千米/g, 'km2')
+       .replace(/平方厘米/g, 'cm2').replace(/平方分米/g, 'dm2').replace(/平方米/g, 'm2')
+       .replace(/平方毫米/g, 'mm2')
+       .replace(/千米|公里/g, 'km').replace(/米/g, 'm')
+       .replace(/公顷/g, 'ha')
+       .replace(/时/g, 'h').replace(/分/g, 'min').replace(/秒/g, 's')
+       .replace(/元/g, 'yuan');
+  return t;
+}
+
+/* ==========================================================================
+   练习引擎
+   item: { q, opts?[], a:index | index[] | string | string[], why, hint }
+   ========================================================================== */
+const LETTERS = ['A','B','C','D','E','F'];
+function makeCounter(scoreId, totalId, total){
+  return { ok:0, total, scoreEl:$(scoreId), totalEl:$(totalId) };
+}
+function updateCounter(c){
+  if (!c) return;
+  if (c.scoreEl) c.scoreEl.textContent = c.ok;
+  if (c.totalEl) c.totalEl.textContent = c.total;
+}
+
+/* 把一组题目渲染进 host；返回重做函数 */
+function mountQuizInto(host, items, c, prefix, offset){
+  clear(host);
+  const state = items.map(()=>({done:false, ok:false}));
+  const isChoice = it => Array.isArray(it.opts) && it.opts.length;
+  const optsOf  = it => (it.opts||[]).map(o => typeof o === 'string' ? o : (o.t || ''));
+
+  items.forEach((q, i) => {
+    const box = document.createElement('div'); box.className = 'q';
+    const qt = document.createElement('div'); qt.className = 'qt';
+    qt.innerHTML = `<span class="qno">${prefix}${i + 1 + offset}</span>${q.q}`;
+    box.appendChild(qt);
+    const fb = document.createElement('div'); fb.className = 'fb';
+
+    if (isChoice(q)){
+      const opts = document.createElement('div'); opts.className = 'opts';
+      optsOf(q).forEach((o, k) => {
+        const d = document.createElement('div'); d.className = 'opt'; d.dataset.k = k;
+        d.innerHTML = `<span class="k">${LETTERS[k]}.</span><span>${o}</span>`;
+        d.addEventListener('click', () => choose(k, d));
+        opts.appendChild(d);
+      });
+      box.appendChild(opts);
+    } else {
+      /* 填空题：按题干中的空数渲染输入框（多空题逐空作答、逐空比对） */
+      const answers = Array.isArray(q.a) ? q.a : [q.a];
+      const blanks = (q.q.match(/（\s*）/g) || []).length;
+      const n = Math.max(1, blanks);
+      const wrap = document.createElement('div'); wrap.className = 'controls';
+      const inputs = [];
+      for (let k = 0; k < n; k++){
+        const inp = document.createElement('input'); inp.type = 'text';
+        inp.placeholder = n > 1 ? `第 ${k+1} 空` : '答案填这里';
+        inp.style.cssText = `width:${n > 1 ? 96 : 180}px;text-align:center;font-weight:700`;
+        wrap.appendChild(inp); inputs.push(inp);
+      }
+      const btn = document.createElement('button'); btn.className = 'ghost'; btn.textContent = '检查';
+      wrap.appendChild(btn); box.appendChild(wrap);
+      const check = () => {
+        if (state[i].done) return;
+        const ok = (n === 1)
+          ? answers.some(a => norm(a) === norm(inputs[0].value))
+          : (answers.length >= n && inputs.every((inp, k) => norm(inp.value) === norm(answers[k])));
+        inputs.forEach(inp => inp.classList.add(ok ? 'ok' : 'no'));
+        if (ok){
+          state[i].done = true; state[i].ok = true; c.ok++; updateCounter(c);
+          inputs.forEach(inp => inp.readOnly = true);
+          fb.className = 'fb show good';
+          fb.innerHTML = `✅ 答对了！${q.why ? '<span class="why">💡 ' + q.why + '</span>' : ''}`;
+        } else {
+          fb.className = 'fb show bad';
+          fb.innerHTML = `❌ 答案不对，再想想～<span class="why">💡 提示：${q.hint || '回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
+        }
+      };
+      btn.addEventListener('click', check);
+      inputs.forEach(inp => inp.addEventListener('keydown', e => { if (e.key === 'Enter') check(); }));
+    }
+    box.appendChild(fb); host.appendChild(box);
+
+    function choose(k, el){
+      if (state[i].done) return;
+      const answer = Array.isArray(q.a) ? q.a : [q.a];
+      if (answer.includes(k)){
+        state[i].done = true; state[i].ok = true; c.ok++; updateCounter(c);
+        [...el.parentElement.children].forEach(x => {
+          x.classList.add('locked');
+          if (+x.dataset.k === k) x.classList.add('right');
+        });
+        fb.className = 'fb show good';
+        fb.innerHTML = `✅ 答对了！${q.why ? '<span class="why">💡 ' + q.why + '</span>' : ''}`;
+      } else {
+        el.classList.add('wrong');
+        fb.className = 'fb show bad';
+        fb.innerHTML = `❌ 再想想～<span class="why">💡 提示：${q.hint || '回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
+      }
+    }
+  });
+
+  return function reset(){
+    c.ok -= state.filter(x => x.ok).length;
+    state.forEach(x => { x.done = false; x.ok = false; });
+    mountQuizInto(host, items, c, prefix, offset);
+    updateCounter(c);
+  };
+}
+
+/* 答案区：按分组渲染 */
+function renderAnswers(hostSel, groups){
+  const host = $(hostSel); if (!host) return;
+  let html = '';
+  groups.forEach(g => {
+    html += `<h4 style="margin:16px 0 6px;color:var(--accent)">${g.title}</h4>`;
+    g.items.forEach((q, i) => {
+      const ans = (Array.isArray(q.opts) && q.opts.length)
+        ? (Array.isArray(q.a) ? q.a : [q.a]).map(k => `${LETTERS[k]}. ${q.opts[k]}`).join(' / ')
+        : (Array.isArray(q.a) ? q.a.join(' 或 ') : q.a);
+      html += `<div class="ans-item"><b>${g.prefix || ''}${i + 1}. ${ans}</b> —— ${q.why || ''}</div>`;
+    });
+  });
+  host.innerHTML = html;
+}
+
+/* 标准装配：三档练习（巩固 / 动手 / 扩展） */
+function bootCourse(groups){
+  const resets = [], answerGroups = [];
+  groups.forEach(g => {
+    const items = [].concat(g.choice || [], g.fill || []);
+    const c = makeCounter(g.score, g.total, items.length);
+    const host = $(g.host);
+    if (!host) return;
+    /* 一次性挂载全部题目：mountQuizInto 内部会 clear(host)，
+       若分两次挂载，后一次（填空）会把前一次（选择）整块覆盖掉。 */
+    mountQuizInto(host, items, c, g.prefix || '', 0);
+    const resetFn = () => {
+      c.ok = 0; updateCounter(c);
+      mountQuizInto(host, items, c, g.prefix || '', 0);
+    };
+    resets.push(resetFn);
+    answerGroups.push({title:g.title, prefix:g.prefix || '', items});
+    updateCounter(c);
+  });
+  renderAnswers('#answerKey', answerGroups);
+  /* 暴露题目数据，便于自动化测试与二次开发 */
+  window.__QUIZ_DATA__ = groups.map(g => ({
+    key: g.key, title: g.title, prefix: g.prefix || '',
+    choice: g.choice || [], fill: g.fill || []
+  }));
+  window.__ANSWER_KEY__ = answerGroups;
+  groups.forEach((g, i) => {
+    const btn = $(g.reset); if (btn) btn.addEventListener('click', () => resets[i] && resets[i]());
+  });
+}
+
+</script>
+<script>
+(function(){
+/* ==========================================================================
+   第三单元 多位数乘两位数 —— 交互模块
+   ========================================================================== */
+
+/* ==========================================================================
+   ① 口算乘法
+   ========================================================================== */
+(function initOral(){
+  const ITEMS = [
+    {a:'20', b:'30', hint:'先算 2 × 3 = 6，两个因数末尾一共有 2 个 0，积的末尾就添 2 个 0。'},
+    {a:'300', b:'40', hint:'先算 3 × 4 = 12，末尾一共有 3 个 0，积的末尾添 3 个 0。'},
+    {a:'120', b:'30', hint:'120 看作 12，30 看作 3：12 × 3 = 36，再添 1 个 0 → 360。'},
+    {a:'25', b:'40', hint:'40 看作 4：25 × 4 = 100，再添 1 个 0 → 1000。'},
+    {a:'13', b:'20', hint:'20 看作 2：13 × 2 = 26，再添 1 个 0 → 260。'}
+  ];
+  const sel = $('#oralSel'), stage = $('#oralStage'), note = $('#oralNote'), steps = $('#oralSteps');
+  let step = 0;
+  function zeros(str){ return (str.match(/0/g) || []).length; }
+  function render(){
+    const it = ITEMS[+sel.value];
+    const zA = zeros(it.a), zB = zeros(it.b);
+    const sa = it.a.replace(/0/g, ''), sb = it.b.replace(/0/g, '');
+    const core = (+sa) * (+sb);
+    const res = it.a * it.b;
+    stage.innerHTML = '';
+    const box = document.createElement('div');
+    box.style.cssText = 'text-align:center;font-size:26px;font-weight:800;line-height:2.1;font-variant-numeric:tabular-nums';
+    const line = (t, color) => { const d = document.createElement('div'); d.textContent = t; if (color) d.style.color = color; box.appendChild(d); };
+    line(`${it.a} × ${it.b}`);
+    if (step === 0){ line('把因数末尾的 0 暂时藏起来', 'var(--ink2)'); }
+    if (step === 1){ line(`${sa} × ${sb}`, 'var(--accent)'); }
+    if (step === 2){ line(`${sa} × ${sb} = ${core}`, 'var(--accent)'); }
+    if (step >= 3){ line(`${it.a} × ${it.b} = ${res}`, 'var(--green)'); }
+    stage.appendChild(box);
+    steps.innerHTML = ['①藏起0','②算前面的数','③写出得数','④添上0']
+      .map((l, i) => `<div class="dot ${i < step ? 'done' : (i === step ? 'on' : '')}" title="${l}">${i+1}</div>`).join('');
+    const msgs = [
+      `先想一想：<b>${it.a}</b> 末尾有 <b>${zA}</b> 个 0，<b>${it.b}</b> 末尾有 <b>${zB}</b> 个 0。`,
+      `把 0 藏起来：<b>${sa} × ${sb}</b>。`,
+      `算出前面的积：<b>${sa} × ${sb} = ${core}</b>。`,
+      `再在积的末尾添上 <b>${zA + zB}</b> 个 0，得 <b>${res}</b>。${it.hint}`
+    ];
+    note.innerHTML = msgs[Math.min(step, msgs.length-1)];
+  }
+  sel.addEventListener('change', () => { step = 0; render(); });
+  $('#btnOralStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
+  $('#btnOralReset').addEventListener('click', () => { step = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ② 笔算乘法（竖式逐步演示）
+   ========================================================================== */
+(function initVertical(){
+  const ITEMS = [
+    {a:145, b:12}, {a:236, b:34}, {a:307, b:25}, {a:48, b:27}
+  ];
+  const sel = $('#vmSel'), stage = $('#vmStage'), note = $('#vmNote'), steps = $('#vmSteps');
+  let step = 0;
+
+  /* 生成竖式步骤 */
+  function mulSteps(a, b){
+    const A = String(a).split('').map(Number).reverse();
+    const B = String(b).split('').map(Number).reverse();
+    const out = [];
+    B.forEach((bd, i) => {
+      let carry = 0; const digits = [];
+      A.forEach((ad, j) => {
+        const prod = ad * bd + carry;
+        const digit = prod % 10, nc = Math.floor(prod / 10);
+        out.push({i, j, ad, bd, prod, digit, carry, nc});
+        carry = nc;
+        digits.unshift(digit);
+      });
+      if (carry > 0) digits.unshift(carry);
+      out.push({rowDone: i, digits: digits.slice()});
+    });
+    return out;
+  }
+
+  function render(){
+    const it = ITEMS[+sel.value];
+    const a = it.a, b = it.b;
+    const all = mulSteps(a, b);
+    const calcSteps = all.filter(x => !('rowDone' in x));
+    const total = calcSteps.length;
+    const cur = Math.min(step, total);
+    stage.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:center';
+
+    /* 竖式：HTML 格子 */
+    const cols = Math.max(String(a).length, String(b).length, String(a * b).length) + 2;
+    const grid = document.createElement('div');
+    grid.style.cssText = 'display:grid;grid-template-columns:repeat(' + cols + ',46px);gap:0;font-variant-numeric:tabular-nums';
+    const cell = (txt, opt) => {
+      const o = Object.assign({color:'var(--ink)', size:26, weight:700, bg:'transparent', border:'none'}, opt||{});
+      const d = document.createElement('div');
+      d.textContent = txt;
+      d.style.cssText = `text-align:center;font-size:${o.size}px;font-weight:${o.weight};color:${o.color};` +
+        `height:38px;line-height:38px;background:${o.bg};border:${o.border};`;
+      return d;
+    };
+    const A = String(a).split(''), B = String(b).split('');
+    const Acols = A.length, Bcols = B.length;
+    /* 行1：第二个因数（b），右对齐 */
+    for (let i = 0; i < cols; i++){
+      const idx = i - (cols - Bcols);
+      grid.appendChild(cell(idx >= 0 ? B[idx] : '', {size:26, weight:600}));
+    }
+    /* 行2：第一个因数（a），右对齐 */
+    for (let i = 0; i < cols; i++){
+      const idx = i - (cols - Acols);
+      grid.appendChild(cell(idx >= 0 ? A[idx] : '', {size:26, weight:600}));
+    }
+    /* 横线 */
+    const line = document.createElement('div');
+    line.style.cssText = `grid-column:1 / ${cols + 1};height:0;border-top:2.5px solid var(--ink);margin:4px 0`;
+    grid.appendChild(line);
+    /* 部分积行：第 i 行是 a × (b 的第 i 位)，整体左移 i 位 */
+    const Bv = String(b).split('').map(Number).reverse();
+    const rows = [];
+    for (let i = 0; i < Bv.length; i++){
+      const str = String(a * Bv[i]);
+      const row = [];
+      for (let k = 0; k < cols; k++){
+        const r = (cols - 1 - k) - i;          /* r = 该位在部分积中是从右数第几位 */
+        row.push((r >= 0 && r < str.length) ? str[str.length - 1 - r] : '');
+      }
+      rows.push(row);
+    }
+    for (let i = 0; i < rows.length; i++){
+      const partial = rows[i].slice();
+      const mySteps = calcSteps.filter(x => x.i === i);
+      const complete = mySteps.length === calcSteps.filter(x => x.i === i).length;
+      mySteps.forEach(st2 => {
+        const k = cols - 1 - i - st2.j;        /* 写在哪一列 */
+        if (k >= 0) partial[k] = String(st2.digit);
+      });
+      for (let k = 0; k < cols; k++){
+        const isCur = calcSteps[cur - 1] && calcSteps[cur - 1].i === i &&
+                      calcSteps[cur - 1].j === (cols - 1 - i - k);
+        grid.appendChild(cell(partial[k], {
+          color: isCur ? '#fff' : (complete ? 'var(--purple)' : 'var(--ink)'),
+          bg: isCur ? 'var(--accent)' : 'transparent',
+          size: 24, weight: complete ? 700 : 500
+        }));
+      }
+    }
+    /* 结果行 */
+    const resStr = String(a * b);
+    const resRow = [];
+    for (let k = 0; k < cols; k++){
+      const idx = k - (cols - resStr.length);
+      resRow.push(idx >= 0 ? resStr[idx] : '');
+    }
+    const line2 = document.createElement('div');
+    line2.style.cssText = `grid-column:1 / ${cols + 1};height:0;border-top:2.5px solid var(--ink);margin:4px 0`;
+    grid.appendChild(line2);
+    resRow.forEach(txt => {
+      grid.appendChild(cell(txt, {color: cur >= total ? 'var(--green)' : 'var(--ink2)',
+        size: 26, weight:800}));
+    });
+    wrap.appendChild(grid);
+
+    /* 右侧说明 */
+    const info = document.createElement('div');
+    info.style.cssText = 'font-size:17px;line-height:2;text-align:left;min-width:260px';
+    if (cur === 0){
+      info.innerHTML = `先写<b>竖式</b>：<br>① 上面写第二个因数 <b>${b}</b>，个位与 <b>${a}</b> 的个位对齐<br>② 下面写第一个因数 <b>${a}</b><br>③ 从<b>个位</b>算起`;
+    } else {
+      const st2 = calcSteps[cur - 1];
+      const colName = ['个', '十', '百', '千'][st2.j] || '';
+      info.innerHTML = `正在算：<b>${st2.ad} × ${st2.bd}</b>` +
+        (st2.carry ? ` <span style="color:var(--orange)">+ 进位 ${st2.carry}</span>` : '') +
+        ` = <b>${st2.prod}</b><br>` +
+        `在<b>${colName}位</b>写 <b>${st2.digit}</b>` +
+        (st2.nc ? `，向<b>${['个','十','百'][st2.j] || '前'}位</b>进 <b>${st2.nc}</b>` : '，不用进位') +
+        `<br><span style="color:var(--ink2);font-size:15px">竖式里第 ${cur} / ${total} 步</span>`;
+    }
+    wrap.appendChild(info);
+    stage.appendChild(wrap);
+
+    steps.innerHTML = Array.from({length: total + 1}, (_, i) =>
+      `<div class="dot ${i < cur ? 'done' : (i === cur ? 'on' : '')}" title="第${i}步">${i}</div>`).join('');
+
+    note.innerHTML = cur >= total
+      ? `所以 <b>${a} × ${b} = ${a * b}</b>。别忘了：相同数位对齐、从个位算起、满几进几。`
+      : '点"下一步"，一步一步看竖式怎么算。';
+  }
+  sel.addEventListener('change', () => { step = 0; render(); });
+  $('#btnVmStep').addEventListener('click', () => { step++; render(); });
+  $('#btnVmAll').addEventListener('click', () => { step = 99; render(); });
+  $('#btnVmReset').addEventListener('click', () => { step = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ③ 因数中间或末尾有 0 的乘法
+   ========================================================================== */
+(function initZero(){
+  const ITEMS = [
+    {a:'25', b:'40'}, {a:'25', b:'4'}, {a:'160', b:'30'}, {a:'30', b:'40'}, {a:'240', b:'50'}
+  ];
+  const sel = $('#zeroSel'), stage = $('#zeroStage'), note = $('#zeroNote'), steps = $('#zeroSteps');
+  let step = 0;
+  function zeros(str){ return (str.match(/0/g) || []).length; }
+  function render(){
+    const it = ITEMS[+sel.value];
+    const a = +it.a, b = +it.b;
+    const za = zeros(it.a), zb = zeros(it.b);
+    /* 末尾 0 的个数 */
+    const trail = n => { let k = 0, m = n; while (m % 10 === 0 && m !== 0){ k++; m /= 10; } return k; };
+    const ta = trail(a), tb = trail(b);
+    stage.innerHTML = '';
+    const box = document.createElement('div');
+    box.style.cssText = 'text-align:center;font-size:24px;font-weight:800;line-height:2.1;font-variant-numeric:tabular-nums';
+    const line = (t, c) => { const d = document.createElement('div'); d.textContent = t; if (c) d.style.color = c; box.appendChild(d); };
+    line(`${it.a} × ${it.b}`);
+    if (step === 0){
+      line(`<span style="font-size:19px;font-weight:600;color:var(--ink2)">先看末尾各有几个 0：${it.a} 有 ${ta} 个，${it.b} 有 ${tb} 个</span>`);
+    } else if (step === 1){
+      const a2 = a / Math.pow(10, ta), b2 = b / Math.pow(10, tb);
+      line(`${a2} × ${b2}`, 'var(--accent)');
+    } else if (step === 2){
+      const a2 = a / Math.pow(10, ta), b2 = b / Math.pow(10, tb);
+      line(`${a2} × ${b2} = ${a2 * b2}`, 'var(--accent)');
+    } else {
+      line(`${it.a} × ${it.b} = ${a * b}`, 'var(--green)');
+    }
+    stage.appendChild(box);
+    steps.innerHTML = ['①看末尾0','②藏起0','③算一算','④添上0']
+      .map((l, i) => `<div class="dot ${i < step ? 'done' : (i === step ? 'on' : '')}" title="${l}">${i+1}</div>`).join('');
+    const msgs = [
+      `先看因数<b>末尾</b>有几个 0：<b>${it.a}</b> 末尾 ${ta} 个，<b>${it.b}</b> 末尾 ${tb} 个。`,
+      `把末尾的 0 暂时去掉，先算 <b>${a / Math.pow(10, ta)} × ${b / Math.pow(10, tb)}</b>。`,
+      `算出得数 <b>${(a / Math.pow(10, ta)) * (b / Math.pow(10, tb))}</b>。`,
+      `在得数末尾添上 <b>${ta + tb}</b> 个 0，得 <b>${a * b}</b>。` +
+      (za + zb > ta + tb ? '<br><span style="color:var(--orange)">注意：因数<b>中间</b>的 0 不能去掉，它占着数位呢！</span>' : '')
+    ];
+    note.innerHTML = msgs[Math.min(step, msgs.length-1)];
+  }
+  sel.addEventListener('change', () => { step = 0; render(); });
+  $('#btnZeroStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
+  $('#btnZeroReset').addEventListener('click', () => { step = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ④ 积的变化规律
+   ========================================================================== */
+(function initLaw(){
+  const range = $('#lawRange'), lab = $('#lawLabel'), stage = $('#lawStage'), note = $('#lawNote');
+  const A = 12;
+  let last = 5;
+  function render(){
+    const b = +range.value;
+    const p = A * b;
+    lab.textContent = `${A} × ${b} = ${p}`;
+    stage.innerHTML = '';
+    const box = document.createElement('div');
+    box.style.cssText = 'text-align:center;font-size:24px;font-weight:800;line-height:2;font-variant-numeric:tabular-nums';
+    const d1 = document.createElement('div');
+    d1.textContent = `${A} × ${last} = ${A * last}`;
+    d1.style.color = 'var(--ink2)';
+    const d2 = document.createElement('div');
+    d2.innerHTML = `<span style="color:var(--accent)">${A} × ${b} = ${p}</span>`;
+    const d3 = document.createElement('div');
+    const ratio = last === 0 ? '' : (b / last);
+    d3.innerHTML = last === b ? '（第二个因数没变，积也没变）'
+      : `第二个因数 ${last} → ${b}，${b > last ? '扩大到' : '缩小到'}原来的 ${(b/last).toFixed(2).replace(/\.?0+$/,'')} 倍，` +
+        `积也${b > last ? '扩大到' : '缩小到'}原来的 ${(b/last).toFixed(2).replace(/\.?0+$/,'')} 倍` +
+        `（${A * last} → ${p}）`;
+    d3.style.cssText = 'font-size:18px;font-weight:600;color:var(--ink2);margin-top:6px';
+    box.append(d1, d2, d3);
+    stage.appendChild(box);
+    note.innerHTML = `<b>规律</b>：一个因数不变，另一个因数乘（除以）几，积就<b>乘（除以）同样的几</b>。` +
+      `<br>例如：12 × 5 = 60，12 × 50 = 600（第二个因数乘 10，积也乘 10）。`;
+    last = b;
+  }
+  range.addEventListener('input', render);
+  $('#btnLawHalf').addEventListener('click', () => { range.value = Math.max(1, Math.round(+range.value / 2)); render(); });
+  $('#btnLawTriple').addEventListener('click', () => { range.value = Math.min(20, +range.value * 3); render(); });
+  $('#btnLawReset').addEventListener('click', () => { range.value = 5; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ⑤ 估算
+   ========================================================================== */
+(function initEstimate(){
+  const ITEMS = [
+    {a:302, b:21, lim:400, unit:'元', ask:'400 元够买这本书吗？'},
+    {a:48, b:29, lim:1500, unit:'个', ask:'1500 个够装这些产品吗？'},
+    {a:198, b:52, lim:10000, unit:'元', ask:'1 万元够付这笔货款吗？'}
+  ];
+  const sel = $('#estSel'), range = $('#estRange'), stage = $('#estStage'), note = $('#estNote');
+  function render(){
+    const it = ITEMS[+sel.value];
+    const mode = +range.value;   /* 0: 都看成整十/整百  1: 只看成整十  2: 不估 */
+    const a = it.a, b = it.b;
+    const aRound = mode === 0 ? Math.round(a / 100) * 100 : Math.round(a / 10) * 10;
+    const bRound = mode === 0 ? Math.round(b / 10) * 10 : Math.round(b / 10) * 10;
+    const est = mode === 2 ? a * b : aRound * bRound;
+    stage.innerHTML = '';
+    const box = document.createElement('div');
+    box.style.cssText = 'text-align:center;font-size:24px;font-weight:800;line-height:2;font-variant-numeric:tabular-nums';
+    const l1 = document.createElement('div');
+    l1.textContent = mode === 2 ? `${a} × ${b} = ${a * b}` : `${a} ≈ ${aRound}，${b} ≈ ${bRound}`;
+    const l2 = document.createElement('div');
+    l2.innerHTML = mode === 2 ? `（没有估算）` : `${a} × ${b} ≈ ${aRound} × ${bRound} = <span style="color:var(--green)">${est}</span>`;
+    const l3 = document.createElement('div');
+    l3.style.cssText = 'font-size:18px;font-weight:600;color:var(--ink2)';
+    l3.textContent = `精确值：${a} × ${b} = ${a * b}　（${mode === 2 ? '' : '估算值 ' + (est >= a * b ? '偏大' : '偏小') + ' ' + Math.abs(est - a * b)}）`;
+    box.append(l1, l2, l3);
+    stage.appendChild(box);
+    const enough = a * b <= it.lim;
+    note.innerHTML = `<b>${it.ask}</b><br>精确值 ${a * b} ${it.unit}，` +
+      `估算值约 ${est} ${it.unit}。` +
+      (mode === 2
+        ? `精确计算得 ${a * b} ${it.unit}，${enough ? '<b>够</b>' : '<b>不够</b>'}。`
+        : `因为估算${est >= a * b ? '偏大' : '偏小'}，` +
+          `所以：${enough ? '精确值比 ' + it.lim + ' 小 → <b>够</b>（估算值大，说明肯定够）' : '精确值比 ' + it.lim + ' 大 → <b>不够</b>（估算值小，说明连估都不够）'}。`);
+  }
+  sel.addEventListener('change', render);
+  range.addEventListener('input', render);
+  $('#btnEstReset').addEventListener('click', () => { range.value = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   分层练习数据
+   ========================================================================== */
+const BASIC_CHOICE = [
+  {q:'口算 20 × 30 =（　）。', opts:['60','600','6000','60000'], a:1,
+   why:'2 × 3 = 6，两个因数末尾一共 2 个 0，积的末尾添 2 个 0 → 600。'},
+  {q:'口算 300 × 40 =（　）。', opts:['1200','12000','120000','1200000'], a:1,
+   why:'3 × 4 = 12，末尾一共 3 个 0 → 12000。'},
+  {q:'笔算 145 × 12，积是（　）。', opts:['1740','17400','2900','1450'], a:0,
+   why:'145 × 2 = 290，145 × 10 = 1450，290 + 1450 = 1740。'},
+  {q:'一个因数不变，另一个因数乘 3，积就（　）。',
+   opts:['乘 3','乘 9','乘 30','不变'], a:0,
+   why:'积的变化规律：一个因数不变，另一个因数乘几，积就乘几。'},
+  {q:'25 × 40 =（　）。', opts:['100','1000','10000','250'], a:1,
+   why:'40 末尾 1 个 0：25 × 4 = 100，再添 1 个 0 → 1000。'},
+  {q:'下面各式中，积是 2400 的是（　）。',
+   opts:['40 × 60','50 × 40','60 × 30','30 × 60'], a:0,
+   why:'40 × 60 = 2400；50 × 40 = 2000；60 × 30 = 1800；30 × 60 = 1800。'},
+  {q:'估算 302 × 21，最合适的结果是（　）。',
+   opts:['6000','60000','6300','6021'], a:0,
+   why:'把 302 看成 300，21 看成 20：300 × 20 = 6000。'},
+  {q:'笔算时，"满几进几"是指（　）。',
+   opts:['哪一位上的积满几十，就向前一位进几','每一位加满十就往前一位加一',
+         '数满十位就进一','进位可以省略不写'], a:0,
+   why:'哪一位上的积满几十，就向前一位进几，进位的数要写清楚。'}
+];
+
+const BASIC_FILL = [
+  {q:'口算 25 × 4 =（　），25 × 40 =（　）。', a:['100','1000'],
+   why:'先算 25 × 4 = 100，40 末尾 1 个 0，积添 1 个 0。'},
+  {q:'口算 12 × 30 =（　）。', a:'360', why:'12 × 3 = 36，添 1 个 0 → 360。'},
+  {q:'笔算 236 × 34 =（　）。', a:'8024',
+   why:'236 × 4 = 944，236 × 30 = 7080，944 + 7080 = 8024。'},
+  {q:'笔算 307 × 25 =（　）。', a:'7675',
+   why:'307 × 5 = 1535，307 × 20 = 6140，1535 + 6140 = 7675。'},
+  {q:'48 × 27 =（　）。', a:'1296', why:'48 × 7 = 336，48 × 20 = 960，336 + 960 = 1296。'},
+  {q:'30 × 40 =（　）。', a:'1200', why:'3 × 4 = 12，末尾 2 个 0 → 1200。'},
+  {q:'已知 25 × 16 = 400，那么 25 × 160 =（　）。', a:'4000',
+   why:'一个因数不变，另一个因数乘 10，积也乘 10。'},
+  {q:'估算 198 × 52 ≈（　）。', a:'10000',
+   why:'把 198 看成 200，52 看成 50：200 × 50 = 10000。'}
+];
+
+const HAND_CHOICE = [
+  {q:'小明计算 24 × 15 时，把 24 × 15 算成了 24 × 10 + 24 × 5，这样算（　）。',
+   opts:['正确，用了乘法分配律','错误，24 × 10 + 24 × 5 = 24 × 15 是对的，但竖式要写清楚',
+         '错误，应该用 24 × 10 + 24 × 10','错误，应该先算 24 + 10'], a:0,
+   why:'24 × 15 = 24 × 10 + 24 × 5 = 240 + 120 = 360，方法正确。'},
+  {q:'商店每个书包 128 元，妈妈带了 1000 元，最多能买（　）个书包。',
+   opts:['7','8','9','10'], a:0,
+   why:'128 × 7 = 896 ≤ 1000，128 × 8 = 1024 > 1000，所以最多 7 个。'},
+  {q:'估算 302 × 21 时，把 302 看成 300，21 看成 20，估算结果是（　）。',
+   opts:['6000','6300','6020','60000'], a:0, why:'300 × 20 = 6000。'},
+  {q:'下面哪个算式的估算结果最接近 49 × 29 的精确积（1421）？',
+   opts:['50 × 30 = 1500','40 × 30 = 1200','50 × 20 = 1000','45 × 29 = 1305'], a:0,
+   why:'把因数看成最接近的整十数：50 × 30 = 1500，与 1421 最接近。'}
+];
+
+const HAND_FILL = [
+  {q:'竖式计算 36 × 25 时，个位上算（　）×（　）=（　），在个位写（　）向十位进（　）；十位上算（　）×（　）=（　）；最后的积是（　）。',
+   a:['6','5','30','0','3','2','5','10','900'],
+   why:'个位：6 × 5 = 30，个位写 0，向十位进 3；十位：2 × 5 = 10，再加进位 3 得 13，写 3 进 1；百位：2 × 2 + 1 = 5，所以积是 900。'},
+  {q:'一个礼盒装 24 支笔，50 个礼盒一共装（　）支笔。', a:'1200',
+   why:'24 × 50 = 24 × 5 × 10 = 1200。'},
+  {q:'每张门票 45 元，30 名同学一共需要（　）元。', a:'1350',
+   why:'45 × 30 = 45 × 3 × 10 = 1350。'},
+  {q:'修一条路，每天修 125 米，8 天修了（　）米。', a:'1000',
+   why:'125 × 8 = 1000。'},
+  {q:'估算：每个书架装 45 本书，21 个书架大约装（　）本。', a:'900',
+   why:'把 21 看成 20：45 × 20 = 900，正好是整十数相乘，好算。'},
+  {q:'一辆车每小时行 60 千米，3 小时行（　）千米。', a:'180',
+   why:'60 × 3 = 180。'},
+  {q:'小明有 240 元，买了 3 个同样的书包，每个（　）元。', a:'80',
+   why:'240 ÷ 3 = 80。'},
+  {q:'25 × 4 = 100，那么 250 × 4 =（　）。', a:'1000',
+   why:'一个因数不变，另一个因数乘 10，积也乘 10。'}
+];
+
+const EXT_CHOICE = [
+  {q:'已知 12 × 25 = 300，那么 12 × 250 =（　）。', opts:['3000','30000','300','30'], a:0,
+   why:'另一个因数乘 10，积也乘 10：300 × 10 = 3000。'},
+  {q:'一个数乘 5 后得 450，这个数乘 50 后得（　）。',
+   opts:['45','450','4500','45000'], a:2, why:'一个因数乘 10，积乘 10：450 × 10 = 4500。'},
+  {q:'要使 25 × □ 的积是 1000，□ 里应填（　）。', opts:['4','40','400','25'], a:1,
+   why:'25 × 40 = 1000。'},
+  {q:'估算 41 × 39 时，下面哪种估法最接近精确积 1599？',
+   opts:['40 × 40 = 1600','50 × 50 = 2500','40 × 30 = 1200','41 × 40 = 1640'], a:0,
+   why:'把两个因数都看成最接近的整十数 40 × 40 = 1600，与 1599 只差 1。'},
+  {q:'每套 4 本书，售价 78 元。买 5 套比买 4 套多花（　）元。',
+   opts:['78','156','390','468'], a:0,
+   why:'多买 1 套，多花 78 元。'},
+  {q:'用 48 × 25 计算，下面哪种算法最简便？',
+   opts:['48 × 25 = 48 × 100 ÷ 4 = 1200','48 × 25 = 48 × 20 + 48 × 5 = 1200',
+         '48 × 25 = (48 + 25) × 2 = 146','48 × 25 = 48 × 5 × 5 = 6000'], a:0,
+   why:'48 × 100 = 4800，4800 ÷ 4 = 1200；用 25 = 100 ÷ 4 最简便。'}
+];
+
+const EXT_FILL = [
+  {q:'已知 a × 15 = 240，那么 a × 150 =（　）。', a:'2400',
+   why:'另一个因数乘 10，积也乘 10。'},
+  {q:'一个长方形的长是 25 厘米，宽是 12 厘米，它的周长是（　）厘米。', a:'74',
+   why:'周长 = (25 + 12) × 2 = 74（25 × 2 = 50，12 × 2 = 24，50 + 24 = 74）。'},
+  {q:'一个长方形的长是 25 厘米，宽是 12 厘米，它的面积是（　）平方厘米。', a:'300',
+   why:'面积 = 25 × 12 = 300（用 25 × 100 ÷ 4 的思路：25 × 12 = 25 × 4 × 3 = 300）。'},
+  {q:'原价 198 元的书包，现在降价 30 元，现价（　）元。', a:'168',
+   why:'198 − 30 = 168。'},
+  {q:'一件商品原价 250 元，降价 50 元后降价率是（　）%。', a:'20',
+   why:'50 ÷ 250 = 0.2 = 20%。'},
+  {q:'一辆汽车 3 小时行 195 千米，照这样计算，7 小时行（　）千米。', a:'455',
+   why:'195 × 7 = 1365；先求每小时：195 ÷ 3 = 65，65 × 7 = 455。'}
+];
+
+bootCourse([
+  {key:'basic', title:'第一档 · 巩固基础（口算、笔算、积的变化规律）', prefix:'基',
+   choice:BASIC_CHOICE, fill:BASIC_FILL,
+   host:'#basicBlock', score:'#scoreBasic', total:'#totalBasic', reset:'#btnResetBasic'},
+  {key:'hand', title:'第二档 · 动手操作（竖式过程、估算与实际应用）', prefix:'动',
+   choice:HAND_CHOICE, fill:HAND_FILL,
+   host:'#handBlock', score:'#scoreHand', total:'#totalHand', reset:'#btnResetHand'},
+  {key:'ext', title:'第三档 · 扩展思维（规律逆推、简便算法、综合应用）', prefix:'拓',
+   choice:EXT_CHOICE, fill:EXT_FILL,
+   host:'#extBlock', score:'#scoreExt', total:'#totalExt', reset:'#btnResetExt'}
+]);
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>加法模型和乘法模型</title>
+<style>
+:root{
+    --accent:#1f9d6b;
+    --accent-l:#e6f7ef;
+    --accent-d:#157a52;
+}
+
+  :root{
+    --ink:#20304a; --ink2:#4b5f7d; --blue:#2f6fd0; --blue-l:#e8f1ff;
+    --orange:#f08a24; --orange-l:#fff2e2; --green:#1f9d6b; --green-l:#e6f7ef;
+    --purple:#7a4fd6; --purple-l:#f1ebff; --red:#d94a4a; --red-l:#fdecec;
+    --teal:#0e8fa8; --teal-l:#e4f6f9;
+    --card:#ffffff; --line:#e3e9f2; --bg:#f4f7fc;
+    --shadow:0 6px 18px rgba(31,52,90,.08);
+    --accent:#2f6fd0; --accent-l:#e8f1ff; --accent-d:#1f5bb0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+    line-height:1.75;font-size:16px}
+  header{background:linear-gradient(135deg,var(--accent-d),var(--accent) 55%,#7a4fd6);
+    color:#fff;padding:32px 20px 28px;text-align:center}
+  header h1{margin:0 0 6px;font-size:30px;letter-spacing:1px}
+  header p{margin:0;opacity:.94;font-size:15px}
+  .badges{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .badges span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+    padding:3px 12px;border-radius:999px;font-size:13px}
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(31,52,90,.05)}
+  nav .inner{max-width:1080px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:8px 14px}
+  nav a{flex:0 0 auto;text-decoration:none;color:var(--ink2);font-size:14px;font-weight:600;
+    padding:7px 13px;border-radius:999px;white-space:nowrap}
+  nav a:hover{background:var(--accent-l);color:var(--accent)}
+  main{max-width:1080px;margin:0 auto;padding:26px 16px 80px}
+  section{margin-bottom:34px}
+  h2.section{font-size:22px;margin:0 0 16px;display:flex;align-items:center;gap:10px;
+    padding-left:12px;border-left:6px solid var(--accent)}
+  h2.section .num{background:var(--accent);color:#fff;font-size:14px;width:26px;height:26px;
+    border-radius:8px;display:grid;place-items:center;font-weight:700}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;
+    box-shadow:var(--shadow);margin-bottom:18px}
+  .card h3{margin:0 0 6px;font-size:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card h3 .tag{font-size:12px;background:var(--accent-l);color:var(--accent);padding:2px 9px;
+    border-radius:999px;font-weight:700}
+  .lead{color:var(--ink2);font-size:15px;margin:0 0 14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:880px){.grid2,.grid3{grid-template-columns:1fr}}
+  .stage{background:#fbfcff;border:1px dashed #cfdcee;border-radius:14px;padding:12px;
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center}
+  .stage svg{max-width:100%;height:auto;display:block}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+  button,.btn{font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent);
+    color:#fff;border:none;border-radius:10px;padding:8px 15px;transition:transform .08s ease,filter .15s ease}
+  button:hover{filter:brightness(1.07)} button:active{transform:translateY(1px)}
+  button.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}
+  button.soft{background:var(--orange)} button.green{background:var(--green)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  input[type=range]{accent-color:var(--accent);width:190px;height:26px}
+  input[type=text],input[type=number]{font:inherit;font-size:15px;padding:6px 10px;border:1.5px solid var(--line);
+    border-radius:8px;outline:none}
+  input[type=text]:focus,input[type=number]:focus{border-color:var(--accent)}
+  .pill{display:inline-block;background:var(--orange-l);color:#b35c00;font-weight:700;
+    padding:4px 12px;border-radius:999px;font-size:14px}
+  .klist{margin:8px 0 0;padding-left:20px;color:var(--ink2);font-size:15px}
+  .klist li{margin:3px 0}
+  .tip{background:var(--accent-l);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;
+    margin-top:12px;font-size:14.5px;color:#26456f}
+  .tip b{color:var(--accent)}
+  .tip.warn{background:var(--orange-l);border-color:var(--orange);color:#8a4a00}
+  .tip.warn b{color:#b35c00}
+  .tip.ok{background:var(--green-l);border-color:var(--green);color:#126b47}
+  .tip.ok b{color:var(--green)}
+  .num-display{font-size:30px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;
+    background:var(--accent-l);padding:4px 16px;border-radius:12px;display:inline-block}
+  table.plain{border-collapse:collapse;width:100%;font-size:14.5px}
+  table.plain th,table.plain td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+  table.plain th{background:var(--accent-l);color:var(--accent)}
+  table.plain td.l,table.plain th.l{text-align:left}
+  /* ---- 练习 ---- */
+  .q{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;background:#fff}
+  .q .qt{font-weight:600;margin-bottom:9px;font-size:15.5px}
+  .q .qt .qno{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;
+    background:var(--purple-l);color:var(--purple);font-size:13px;font-weight:800;margin-right:8px}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{border:1.5px solid var(--line);border-radius:10px;padding:8px 13px;cursor:pointer;
+    background:#fcfdff;font-size:15px;transition:.15s;display:flex;gap:9px;align-items:flex-start}
+  .opt:hover{border-color:var(--accent);background:var(--accent-l)}
+  .opt .k{font-weight:800;color:var(--ink2)}
+  .opt.right{border-color:var(--green);background:var(--green-l)}
+  .opt.right .k{color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:var(--red-l)}
+  .opt.wrong .k{color:var(--red)}
+  .opt.locked{cursor:default}
+  .fb{margin-top:9px;font-size:14px;padding:8px 12px;border-radius:9px;display:none}
+  .fb.show{display:block}
+  .fb.good{background:var(--green-l);color:#126b47}
+  .fb.bad{background:var(--red-l);color:#9b2f2f}
+  .fb .why{display:block;margin-top:4px;color:var(--ink2)}
+  .score{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--accent-l);
+    border-radius:12px;padding:10px 16px;margin-bottom:14px;font-size:15px}
+  .score b{font-size:19px;color:var(--accent)}
+  details.answers{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow)}
+  details.answers summary{cursor:pointer;font-weight:700;color:var(--accent);font-size:16px;outline:none}
+  details.answers[open] summary{margin-bottom:10px;color:var(--orange)}
+  .ans-item{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .ans-item:last-child{border-bottom:none}
+  .ans-item b{color:var(--orange)}
+  /* ---- 通用小组件 ---- */
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .tab{font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink2)}
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .stepper{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .stepper .dot{width:30px;height:30px;border-radius:50%;background:var(--line);color:var(--ink2);
+    display:grid;place-items:center;font-weight:800;font-size:14px}
+  .stepper .dot.on{background:var(--accent);color:#fff}
+  .stepper .dot.done{background:var(--green-l);color:var(--green)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);margin-top:8px}
+  .legend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:5px;vertical-align:-2px}
+  .hstack{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .chip{display:inline-block;background:#fff;border:1.5px solid var(--line);border-radius:999px;
+    padding:3px 12px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .note{font-size:13.5px;color:var(--ink2);margin-top:8px}
+  .big-num{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+  .cell-hl{background:var(--accent-l);border-radius:6px;padding:2px 8px;font-weight:800;color:var(--accent);
+    display:inline-block}
+  .card-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .toggle-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  @media print{
+    header,nav,.controls,.tabs,.score .btn{display:none!important}
+    body{background:#fff}
+    .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+    details.answers{display:block}
+    details.answers summary{display:none}
+    .q{break-inside:avoid}
+  }
+
+</style>
+</head>
+<body>
+<header>
+  <h1>加法模型和乘法模型</h1>
+  <p>人教版（2024年审定）四年级数学上册 · 第四单元 · 总量与分量 / 单价·数量·总价 / 速度·时间·路程 / 模型辨析与综合应用</p>
+  <div class="badges"><span>6 个课时</span>
+    <span>5 个动画模块</span>
+    <span>分层练习 40 题</span>
+    <span>含答案解析</span></div>
+</header>
+<nav><div class="inner">    <a href="#s-add">① 加法模型</a>
+    <a href="#s-price">② 单价·数量·总价</a>
+    <a href="#s-speed">③ 速度·时间·路程</a>
+    <a href="#s-judge">④ 模型辨析</a>
+    <a href="#s-apply">⑤ 综合应用</a>
+    <a href="#quiz">分层练习</a>
+    <a href="#answers">答案解析</a></div></nav>
+<main>
+<section id="s-add">
+  <h2 class="section"><span class="num">1</span>加法模型：总量 = 分量 + 分量</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>两部分合起来是总量</h3>
+    <p class="lead">拖动滑块改变两个部分的数量，看"总量"怎么变。
+      这就是最基本的加法模型：<b>部分量 + 部分量 = 总量</b>；反过来，<b>总量 − 部分量 = 另一部分量</b>。</p>
+    <div class="controls">
+      <span class="pill" id="addLabel">—</span>
+      <input type="range" id="addA" min="0" max="60" value="28">
+      <input type="range" id="addB" min="0" max="60" value="26">
+      <button class="ghost" id="btnAddReset">重置</button>
+    </div>
+    <div class="stage" id="addStage" style="flex-direction:column"></div>
+    <div id="addNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-price">
+  <h2 class="section"><span class="num">2</span>乘法模型一：单价 × 数量 = 总价</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>读购物小票，认出三个量</h3>
+    <p class="lead">从超市小票里找出<b>单价、数量、总价</b>，再用关系式算出缺少的那个量。</p>
+    <div class="stage" id="priceStage" style="flex-direction:column"></div>
+    <div class="controls">
+      <select id="priceSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">牛奶 18 元/盒 × 3 盒</option>
+        <option value="1">苹果 9 元/千克 × 4 千克</option>
+        <option value="2">校服 120 元/套 × 5 套</option>
+        <option value="3">粉笔 840 元 ÷ 4 箱</option>
+        <option value="4">大米 236 元 ÷ 4 袋（原价 84 元/袋）</option>
+      </select>
+      <button id="btnPriceStep">▶ 一步步算</button>
+      <button class="ghost" id="btnPriceReset">重置</button>
+    </div>
+    <div class="stepper" id="priceSteps"></div>
+    <div id="priceNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">要点</span>三个量、三个关系式</h3>
+    <div class="grid3">
+      <div class="tip ok"><b>求总价</b><br>单价 × 数量 = 总价<br><span style="font-size:13.5px">例：120 × 5 = 600（元）</span></div>
+      <div class="tip ok"><b>求单价</b><br>总价 ÷ 数量 = 单价<br><span style="font-size:13.5px">例：840 ÷ 4 = 210（元）</span></div>
+      <div class="tip ok"><b>求数量</b><br>总价 ÷ 单价 = 数量<br><span style="font-size:13.5px">例：600 ÷ 120 = 5（套）</span></div>
+    </div>
+    <div class="tip warn"><b>易错</b>：求数量时用<b>除法</b>，不要写成乘法；写答案要带<b>单位</b>（元、盒、套、千克…）。</div>
+  </div>
+</section>
+
+<section id="s-speed">
+  <h2 class="section"><span class="num">3</span>乘法模型二：速度 × 时间 = 路程</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>小车开多快、走多远</h3>
+    <p class="lead">拖动滑块改变速度和时间，看看小车走了多远。
+      <b>速度</b>是"每单位时间走的路程"，所以单位是复合单位：<b>米/秒、千米/时</b>。</p>
+    <div class="controls">
+      <span class="pill" id="spdLabel">—</span>
+      <input type="range" id="spdV" min="40" max="120" value="60">
+      <input type="range" id="spdT" min="1" max="12" value="3">
+      <button class="ghost" id="btnSpdReset">重置</button>
+    </div>
+    <div class="stage" id="spdStage" style="flex-direction:column"></div>
+    <div id="spdNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-judge">
+  <h2 class="section"><span class="num">4</span>模型辨析：这个问题用哪个模型？</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>四步法：审题 → 判模型 → 找关系 → 列式</h3>
+    <p class="lead">点"下一个"，看每一步该怎么想。最后一步可以自己判断模型类型，再点"看看答案"。</p>
+    <div class="controls">
+      <button id="btnJudgeNext">▶ 下一步</button>
+      <button id="btnJudgeShow">看看答案</button>
+      <button class="ghost" id="btnJudgeReset">重置</button>
+    </div>
+    <div class="stepper" id="judgeSteps"></div>
+    <div class="stage" id="judgeStage" style="flex-direction:column"></div>
+    <div id="judgeNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-apply">
+  <h2 class="section"><span class="num">5</span>综合应用：两个模型一起用</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>先算一步，再算一步</h3>
+    <p class="lead">这类题要<b>分步列式</b>：先想第一步求的是什么，再想第二步怎么用。</p>
+    <div class="controls">
+      <select id="applySel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
+        <option value="0">买 15 双运动鞋，每双 48 元；另外买 30 根跳绳，每根 6 元。一共花多少钱？</option>
+        <option value="1">家到动物园 240 千米，汽车每小时行 80 千米，几小时到达？</option>
+        <option value="2">每箱牛奶 60 元，买 4 箱，付出 300 元，应找回多少钱？</option>
+      </select>
+      <button id="btnApplyStep">▶ 分步算</button>
+      <button class="ghost" id="btnApplyReset">重置</button>
+    </div>
+    <div class="stepper" id="applySteps"></div>
+    <div id="applyNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第一档</span>巩固基础</h3>
+      <span class="note">认模型 · 记关系式 · 会列式</span>
+    </div>
+    <div class="score">已答对 <b id="scoreBasic">0</b> / <span id="totalBasic">0</span> 题
+      <button class="ghost" id="btnResetBasic">重做本档</button></div>
+    <div id="basicBlock"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第二档</span>动手操作</h3>
+      <span class="note">填表格 · 选关系式 · 判模型</span>
+    </div>
+    <div class="score">已答对 <b id="scoreHand">0</b> / <span id="totalHand">0</span> 题
+      <button class="ghost" id="btnResetHand">重做本档</button></div>
+    <div id="handBlock"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第三档</span>扩展思维</h3>
+      <span class="note">综合两步 · 变式 · 错例辨析</span>
+    </div>
+    <div class="score">已答对 <b id="scoreExt">0</b> / <span id="totalExt">0</span> 题
+      <button class="ghost" id="btnResetExt">重做本档</button></div>
+    <div id="extBlock"></div>
+  </div>
+
+<section id="answers">
+  <details class="answers">
+    <summary>📖 答案与解析（讲评时展开 / 可直接打印）</summary>
+    <div id="answerKey"></div>
+  </details>
+</section>
+
+</section>
+
+<section id="answers">
+  <details class="answers">
+    <summary>📖 答案与解析（讲评时展开 / 可直接打印）</summary>
+    <div id="answerKey"></div>
+  </details>
+</section>
+
+
+</main>
+<footer style="max-width:1080px;margin:0 auto;padding:0 16px 40px;color:var(--ink2);font-size:14px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px">
+  <div>人教版（2024年审定）四年级数学上册 · 第四单元动画课件</div>
+  <div class="hstack"><a class="chip" href="../u3_multiply/index.html">← 上一单元</a><a class="chip" href="../u5_parallelogram/index.html">下一单元 →</a></div>
+</footer>
+<script>
+/* ==========================================================================
+   共享引擎：DOM/SVG 工具 + 分层练习引擎 + 答案区生成
+   —— 所有单元课件共用（构建时内联进各自的 index.html）
+   ========================================================================== */
+'use strict';
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+
+/* ---------------- SVG 基础 ---------------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+function s(tag, attrs, parent){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in (attrs||{})) if (attrs[k] !== undefined && attrs[k] !== null) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function clear(node){ while(node && node.firstChild) node.removeChild(node.firstChild); }
+
+/* 角度约定：数学正方向 = 逆时针为正；SVG 的 y 轴向下，换算时翻 y */
+function polar(cx, cy, r, deg){
+  const a = deg * Math.PI / 180;
+  return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+}
+/* 数学逆时针弧：sweep 固定 0；large-arc-flag 由跨角是否大于 180° 决定 */
+function arcPoints(cx, cy, r, startDeg, spanDeg){
+  const p1 = polar(cx, cy, r, startDeg), p2 = polar(cx, cy, r, startDeg + spanDeg);
+  const large = spanDeg > 180 ? 1 : 0;
+  return { p1, p2, d:`M ${p1[0]} ${p1[1]} A ${r} ${r} 0 ${large} 0 ${p2[0]} ${p2[1]}` };
+}
+/* 圆周数字：沿切向旋转 + 白色描边光晕，避免被射线/指针压住 */
+function haloText(parent, x, y, str, deg, opt){
+  const o = Object.assign({size:13, fill:'#20304a', rot:true}, opt||{});
+  const t = s('text', {x, y, 'font-size':o.size, fill:o.fill, 'text-anchor':'middle',
+    'dominant-baseline':'central', 'paint-order':'stroke', stroke:'#fff',
+    'stroke-width':3.5, 'stroke-linejoin':'round'}, parent);
+  if (o.rot && deg !== undefined && deg !== null) t.setAttribute('transform', `rotate(${deg - 90} ${x} ${y})`);
+  t.textContent = str;
+  return t;
+}
+function label(parent, x, y, str, opt){
+  const o = Object.assign({size:14, fill:'#20304a', anchor:'middle', weight:600}, opt||{});
+  const t = s('text', {x, y, 'font-size':o.size, fill:o.fill, 'text-anchor':o.anchor,
+    'font-weight':o.weight}, parent);
+  t.textContent = str;
+  return t;
+}
+function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+
+/* ---------------- 画一个角（通用） ---------------- */
+/* vertex=(vx,vy)，a1/a2 为两条边的极角（度，逆时针为正） */
+function drawAngle(svg, vx, vy, a1, a2, opt){
+  const o = Object.assign({r:120, color:'#2f6fd0', arc:true, arcColor:'#f08a24',
+    arcR:34, label:null, lw:3, dash:null}, opt||{});
+  const p1 = polar(vx, vy, o.r, a1), p2 = polar(vx, vy, o.r, a2);
+  s('line', {x1:vx, y1:vy, x2:p1[0], y2:p1[1], stroke:o.color, 'stroke-width':o.lw,
+    'stroke-linecap':'round', 'stroke-dasharray':o.dash || ''}, svg);
+  s('line', {x1:vx, y1:vy, x2:p2[0], y2:p2[1], stroke:o.color, 'stroke-width':o.lw,
+    'stroke-linecap':'round', 'stroke-dasharray':o.dash || ''}, svg);
+  if (o.arc){
+    let start = a1, span = a2 - a1;
+    if (span < 0){ start = a2; span = -span; }   /* 走短弧 */
+    if (span > 360) span = 360;
+    const arc = arcPoints(vx, vy, o.arcR, start, span);
+    s('path', {d:arc.d, fill:'none', stroke:o.arcColor, 'stroke-width':3.5,
+      'stroke-linecap':'round'}, svg);
+    const mid = polar(vx, vy, o.arcR, start + span/2);
+    if (o.label) haloText(svg, mid[0], mid[1], o.label, null, {size:15, fill:'#b35c00'});
+  }
+  s('circle', {cx:vx, cy:vy, r:4.5, fill:o.color}, svg);
+  return {p1, p2};
+}
+
+/* ---------------- 答案归一化 ---------------- */
+const CN_D = {'零':0,'〇':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9};
+const CN_U = {'十':10,'百':100,'千':1000};
+/* 中文数字 → 阿拉伯数字（支持 三千五百万 / 十二万 / 3千万 / 3.5万 等混写） */
+function cn2num(str){
+  const toks = str.match(/\d+(?:\.\d+)?|[零〇一二两三四五六七八九十百千万亿]/g) || [];
+  let out = 0, section = 0, num = 0;
+  for (const t of toks){
+    if (/^\d/.test(t)) num = parseFloat(t);
+    else if (t in CN_D) num = CN_D[t];
+    else if (t in CN_U){ section += (num || 1) * CN_U[t]; num = 0; }
+    else if (t === '万'){ section = (section + num) * 10000; out += section; section = 0; num = 0; }
+    else if (t === '亿'){ out = (out + section + num) * 100000000; section = 0; num = 0; }
+  }
+  return out + section + num;
+}
+function norm(v){
+  let t = String(v).trim();
+  t = t.replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+  if (/[零〇一二两三四五六七八九十百千万亿]/.test(t)){
+    const v2 = cn2num(t); t = (Number.isFinite(v2) ? String(v2) : t);
+  }
+  t = t.replace(/\s/g, '')
+       .replace(/[，。、；：]/g, '')
+       .replace(/[，,]/g, '')
+       .replace(/[．。]/g, '.')
+       .replace(/[（(]/g, '(').replace(/[）)]/g, ')')
+       .replace(/[×xX*]/g, '*').replace(/[÷]/g, '/')
+       .replace(/[＝=]/g, '=')
+       .replace(/[约≈]/g, '')
+       .replace(/[度°]/g, '')
+       .replace(/平方千米/g, 'km2').replace(/平方千米/g, 'km2')
+       .replace(/平方厘米/g, 'cm2').replace(/平方分米/g, 'dm2').replace(/平方米/g, 'm2')
+       .replace(/平方毫米/g, 'mm2')
+       .replace(/千米|公里/g, 'km').replace(/米/g, 'm')
+       .replace(/公顷/g, 'ha')
+       .replace(/时/g, 'h').replace(/分/g, 'min').replace(/秒/g, 's')
+       .replace(/元/g, 'yuan');
+  return t;
+}
+
+/* ==========================================================================
+   练习引擎
+   item: { q, opts?[], a:index | index[] | string | string[], why, hint }
+   ========================================================================== */
+const LETTERS = ['A','B','C','D','E','F'];
+function makeCounter(scoreId, totalId, total){
+  return { ok:0, total, scoreEl:$(scoreId), totalEl:$(totalId) };
+}
+function updateCounter(c){
+  if (!c) return;
+  if (c.scoreEl) c.scoreEl.textContent = c.ok;
+  if (c.totalEl) c.totalEl.textContent = c.total;
+}
+
+/* 把一组题目渲染进 host；返回重做函数 */
+function mountQuizInto(host, items, c, prefix, offset){
+  clear(host);
+  const state = items.map(()=>({done:false, ok:false}));
+  const isChoice = it => Array.isArray(it.opts) && it.opts.length;
+  const optsOf  = it => (it.opts||[]).map(o => typeof o === 'string' ? o : (o.t || ''));
+
+  items.forEach((q, i) => {
+    const box = document.createElement('div'); box.className = 'q';
+    const qt = document.createElement('div'); qt.className = 'qt';
+    qt.innerHTML = `<span class="qno">${prefix}${i + 1 + offset}</span>${q.q}`;
+    box.appendChild(qt);
+    const fb = document.createElement('div'); fb.className = 'fb';
+
+    if (isChoice(q)){
+      const opts = document.createElement('div'); opts.className = 'opts';
+      optsOf(q).forEach((o, k) => {
+        const d = document.createElement('div'); d.className = 'opt'; d.dataset.k = k;
+        d.innerHTML = `<span class="k">${LETTERS[k]}.</span><span>${o}</span>`;
+        d.addEventListener('click', () => choose(k, d));
+        opts.appendChild(d);
+      });
+      box.appendChild(opts);
+    } else {
+      /* 填空题：按题干中的空数渲染输入框（多空题逐空作答、逐空比对） */
+      const answers = Array.isArray(q.a) ? q.a : [q.a];
+      const blanks = (q.q.match(/（\s*）/g) || []).length;
+      const n = Math.max(1, blanks);
+      const wrap = document.createElement('div'); wrap.className = 'controls';
+      const inputs = [];
+      for (let k = 0; k < n; k++){
+        const inp = document.createElement('input'); inp.type = 'text';
+        inp.placeholder = n > 1 ? `第 ${k+1} 空` : '答案填这里';
+        inp.style.cssText = `width:${n > 1 ? 96 : 180}px;text-align:center;font-weight:700`;
+        wrap.appendChild(inp); inputs.push(inp);
+      }
+      const btn = document.createElement('button'); btn.className = 'ghost'; btn.textContent = '检查';
+      wrap.appendChild(btn); box.appendChild(wrap);
+      const check = () => {
+        if (state[i].done) return;
+        const ok = (n === 1)
+          ? answers.some(a => norm(a) === norm(inputs[0].value))
+          : (answers.length >= n && inputs.every((inp, k) => norm(inp.value) === norm(answers[k])));
+        inputs.forEach(inp => inp.classList.add(ok ? 'ok' : 'no'));
+        if (ok){
+          state[i].done = true; state[i].ok = true; c.ok++; updateCounter(c);
+          inputs.forEach(inp => inp.readOnly = true);
+          fb.className = 'fb show good';
+          fb.innerHTML = `✅ 答对了！${q.why ? '<span class="why">💡 ' + q.why + '</span>' : ''}`;
+        } else {
+          fb.className = 'fb show bad';
+          fb.innerHTML = `❌ 答案不对，再想想～<span class="why">💡 提示：${q.hint || '回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
+        }
+      };
+      btn.addEventListener('click', check);
+      inputs.forEach(inp => inp.addEventListener('keydown', e => { if (e.key === 'Enter') check(); }));
+    }
+    box.appendChild(fb); host.appendChild(box);
+
+    function choose(k, el){
+      if (state[i].done) return;
+      const answer = Array.isArray(q.a) ? q.a : [q.a];
+      if (answer.includes(k)){
+        state[i].done = true; state[i].ok = true; c.ok++; updateCounter(c);
+        [...el.parentElement.children].forEach(x => {
+          x.classList.add('locked');
+          if (+x.dataset.k === k) x.classList.add('right');
+        });
+        fb.className = 'fb show good';
+        fb.innerHTML = `✅ 答对了！${q.why ? '<span class="why">💡 ' + q.why + '</span>' : ''}`;
+      } else {
+        el.classList.add('wrong');
+        fb.className = 'fb show bad';
+        fb.innerHTML = `❌ 再想想～<span class="why">💡 提示：${q.hint || '回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
+      }
+    }
+  });
+
+  return function reset(){
+    c.ok -= state.filter(x => x.ok).length;
+    state.forEach(x => { x.done = false; x.ok = false; });
+    mountQuizInto(host, items, c, prefix, offset);
+    updateCounter(c);
+  };
+}
+
+/* 答案区：按分组渲染 */
+function renderAnswers(hostSel, groups){
+  const host = $(hostSel); if (!host) return;
+  let html = '';
+  groups.forEach(g => {
+    html += `<h4 style="margin:16px 0 6px;color:var(--accent)">${g.title}</h4>`;
+    g.items.forEach((q, i) => {
+      const ans = (Array.isArray(q.opts) && q.opts.length)
+        ? (Array.isArray(q.a) ? q.a : [q.a]).map(k => `${LETTERS[k]}. ${q.opts[k]}`).join(' / ')
+        : (Array.isArray(q.a) ? q.a.join(' 或 ') : q.a);
+      html += `<div class="ans-item"><b>${g.prefix || ''}${i + 1}. ${ans}</b> —— ${q.why || ''}</div>`;
+    });
+  });
+  host.innerHTML = html;
+}
+
+/* 标准装配：三档练习（巩固 / 动手 / 扩展） */
+function bootCourse(groups){
+  const resets = [], answerGroups = [];
+  groups.forEach(g => {
+    const items = [].concat(g.choice || [], g.fill || []);
+    const c = makeCounter(g.score, g.total, items.length);
+    const host = $(g.host);
+    if (!host) return;
+    /* 一次性挂载全部题目：mountQuizInto 内部会 clear(host)，
+       若分两次挂载，后一次（填空）会把前一次（选择）整块覆盖掉。 */
+    mountQuizInto(host, items, c, g.prefix || '', 0);
+    const resetFn = () => {
+      c.ok = 0; updateCounter(c);
+      mountQuizInto(host, items, c, g.prefix || '', 0);
+    };
+    resets.push(resetFn);
+    answerGroups.push({title:g.title, prefix:g.prefix || '', items});
+    updateCounter(c);
+  });
+  renderAnswers('#answerKey', answerGroups);
+  /* 暴露题目数据，便于自动化测试与二次开发 */
+  window.__QUIZ_DATA__ = groups.map(g => ({
+    key: g.key, title: g.title, prefix: g.prefix || '',
+    choice: g.choice || [], fill: g.fill || []
+  }));
+  window.__ANSWER_KEY__ = answerGroups;
+  groups.forEach((g, i) => {
+    const btn = $(g.reset); if (btn) btn.addEventListener('click', () => resets[i] && resets[i]());
+  });
+}
+
+</script>
+<script>
+(function(){
+/* ==========================================================================
+   第四单元 加法模型和乘法模型 —— 交互模块
+   ========================================================================== */
+
+/* ==========================================================================
+   ① 加法模型
+   ========================================================================== */
+(function initAdd(){
+  const a = $('#addA'), b = $('#addB'), lab = $('#addLabel'), stage = $('#addStage'), note = $('#addNote');
+  function render(){
+    const A = +a.value, B = +b.value, T = A + B;
+    lab.textContent = `${A} + ${B} = ${T}`;
+    stage.innerHTML = '';
+    const box = document.createElement('div');
+    box.style.cssText = 'text-align:center;width:100%;max-width:620px';
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap';
+    const unitW = 16;
+    const mk = (val, color, bg, title) => {
+      const d = document.createElement('div');
+      d.style.cssText = `display:flex;flex-wrap:wrap;gap:3px;justify-content:center;padding:8px;border-radius:12px;background:${bg};border:2px solid ${color}`;
+      const n = Math.min(val, 120);
+      for (let i = 0; i < n; i++){
+        const u = document.createElement('div');
+        u.style.cssText = `width:${unitW}px;height:${unitW}px;border-radius:4px;background:${color}`;
+        d.appendChild(u);
+      }
+      const t = document.createElement('div');
+      t.style.cssText = 'width:100%;text-align:center;font-size:14px;font-weight:700;color:' + color;
+      t.textContent = title + ' ' + val;
+      d.appendChild(t);
+      return d;
+    };
+    const p1 = mk(A, '#2f6fd0', '#e8f1ff', '甲班');
+    const plus = document.createElement('div');
+    plus.textContent = '+'; plus.style.cssText = 'font-size:26px;font-weight:800;color:var(--ink2)';
+    const p2 = mk(B, '#f08a24', '#fff2e2', '乙班');
+    row.append(p1, plus, p2);
+    const eq = document.createElement('div');
+    eq.textContent = '='; eq.style.cssText = 'font-size:26px;font-weight:800;color:var(--ink2);margin:6px 0';
+    const tot = mk(T, '#1f9d6b', '#e6f7ef', '合计');
+    box.append(row, eq, tot);
+    stage.appendChild(box);
+    note.innerHTML = `加法模型：<b>甲班 ${A} 人 + 乙班 ${B} 人 = 合计 ${T} 人</b>。<br>` +
+      `求"一共"用加法；知道<b>总数</b>和其中一部分，求另一部分用<b>减法</b>：${T} − ${A} = ${B}。`;
+  }
+  a.addEventListener('input', render); b.addEventListener('input', render);
+  $('#btnAddReset').addEventListener('click', () => { a.value = 28; b.value = 26; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ② 单价 · 数量 · 总价
+   ========================================================================== */
+(function initPrice(){
+  const ITEMS = [
+    {name:'牛奶', unit:'盒', price:18, qty:3, mode:'price'},
+    {name:'苹果', unit:'千克', price:9, qty:4, mode:'price'},
+    {name:'校服', unit:'套', price:120, qty:5, mode:'price'},
+    {name:'粉笔', unit:'箱', price:null, qty:4, total:840, mode:'unit'},
+    {name:'大米', unit:'袋', price:null, qty:4, total:236, mode:'unit2'}
+  ];
+  const sel = $('#priceSel'), stage = $('#priceStage'), note = $('#priceNote'), steps = $('#priceSteps');
+  let step = 0;
+  function render(){
+    const it = ITEMS[+sel.value];
+    stage.innerHTML = '';
+    /* 小票 */
+    const rec = document.createElement('div');
+    rec.style.cssText = 'width:300px;border:1.5px dashed var(--ink2);border-radius:10px;padding:14px 18px;background:#fff;font-size:15px';
+    let lines = [`超市购物小票`, '────────────────'];
+    if (it.mode === 'price'){
+      lines.push(`商品：${it.name}`);
+      lines.push(`单价：${it.price} 元 / ${it.unit}`);
+      lines.push(`数量：${it.qty} ${it.unit}`);
+      lines.push(it.step === 2 ? `总价：${it.price * it.qty} 元` : `总价：？ 元`);
+    } else if (it.mode === 'unit'){
+      lines.push(`商品：${it.name}`);
+      lines.push(`总价：${it.total} 元`);
+      lines.push(`数量：${it.qty} ${it.unit}`);
+      lines.push(`单价：？ 元 / ${it.unit}`);
+    } else {
+      lines.push(`商品：${it.name}`);
+      lines.push(`原价：84 元 / ${it.unit}`);
+      lines.push(`数量：${it.qty} ${it.unit}`);
+      lines.push(`现价：${it.total} 元（每袋便宜了 84 − ${it.total / it.qty} = ${84 - it.total / it.qty} 元）`);
+    }
+    lines.forEach(l => {
+      const d = document.createElement('div');
+      d.textContent = l;
+      rec.appendChild(d);
+    });
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:center';
+    wrap.appendChild(rec);
+
+    const calc = document.createElement('div');
+    calc.style.cssText = 'text-align:left;font-size:18px;line-height:2';
+    let msg = '';
+    if (it.mode === 'price'){
+      if (step === 0) msg = `先认出三个量：<b>单价 ${it.price} 元/${it.unit}</b>、<b>数量 ${it.qty} ${it.unit}</b>、<b>总价</b>（小票上还没算出来）。`;
+      if (step === 1) msg = `求<b>总价</b>，用乘法：<b>单价 × 数量 = 总价</b>。`;
+      if (step === 2) msg = `<b>${it.price} × ${it.qty} = ${it.price * it.qty}（元）</b>，所以总价是 ${it.price * it.qty} 元。`;
+      if (step >= 3) msg = `答案：总价 <b>${it.price * it.qty} 元</b>（别忘写单位"元"）。`;
+    } else if (it.mode === 'unit'){
+      if (step === 0) msg = `小票上给的是<b>总价 ${it.total} 元</b>和<b>数量 ${it.qty} ${it.unit}</b>，要求<b>单价</b>。`;
+      if (step === 1) msg = `求<b>单价</b>，用除法：<b>总价 ÷ 数量 = 单价</b>。`;
+      if (step === 2) msg = `<b>${it.total} ÷ ${it.qty} = ${it.total / it.qty}（元）</b>。`;
+      if (step >= 3) msg = `答案：单价 <b>${it.total / it.qty} 元 / ${it.unit}</b>。`;
+    } else {
+      if (step === 0) msg = `原价 <b>84 元/袋</b>，现价共 ${it.total} 元，共 ${it.qty} 袋——单价是<b>变化</b>的，要先算现价的单价。`;
+      if (step === 1) msg = `第一步：求<b>现价单价</b>：<b>总价 ÷ 数量 = ${it.total} ÷ ${it.qty} = ${it.total / it.qty}（元/袋）</b>。`;
+      if (step === 2) msg = `第二步：求<b>便宜多少</b>：<b>84 − ${it.total / it.qty} = ${84 - it.total / it.qty}（元）</b>。`;
+      if (step >= 3) msg = `答：每袋比原价便宜 <b>${84 - it.total / it.qty} 元</b>。`;
+    }
+    calc.innerHTML = msg;
+    wrap.appendChild(calc);
+    stage.appendChild(wrap);
+    steps.innerHTML = ['①读信息','②想关系','③列式算','④写答']
+      .map((l, i) => `<div class="dot ${i < step ? 'done' : (i === step ? 'on' : '')}" title="${l}">${i+1}</div>`).join('');
+    note.innerHTML = msg;
+  }
+  sel.addEventListener('change', () => { step = 0; render(); });
+  $('#btnPriceStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
+  $('#btnPriceReset').addEventListener('click', () => { step = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ③ 速度 · 时间 · 路程
+   ========================================================================== */
+(function initSpeed(){
+  const v = $('#spdV'), t = $('#spdT'), lab = $('#spdLabel'), stage = $('#spdStage'), note = $('#spdNote');
+  function render(){
+    const V = +v.value, T = +t.value, S = V * T;
+    lab.textContent = `${V} 千米/时 × ${T} 小时 = ${S} 千米`;
+    stage.innerHTML = '';
+    const box = document.createElement('div');
+    box.style.cssText = 'width:100%;max-width:660px';
+    /* 公路 */
+    const road = document.createElement('div');
+    road.style.cssText = 'position:relative;height:110px;background:#eef3fb;border-radius:12px;overflow:hidden';
+    const car = document.createElement('div');
+    car.style.cssText = 'position:absolute;left:12px;top:34px;font-size:34px';
+    car.textContent = '🚗';
+    const bar = document.createElement('div');
+    bar.style.cssText = `position:absolute;left:56px;top:46px;height:10px;border-radius:6px;background:linear-gradient(90deg,var(--accent),#7a4fd6);width:${Math.min(96, S/9)}%`;
+    const home = document.createElement('div');
+    home.style.cssText = 'position:absolute;left:10px;top:78px;font-size:13px;color:var(--ink2)';
+    home.textContent = '家';
+    const dst = document.createElement('div');
+    dst.style.cssText = 'position:absolute;right:10px;top:78px;font-size:13px;color:var(--ink2)';
+    dst.textContent = '学校';
+    road.append(car, bar, home, dst);
+    const info = document.createElement('div');
+    info.style.cssText = 'margin-top:10px;font-size:19px;text-align:center;font-weight:700';
+    info.innerHTML = `速度 <b style="color:var(--accent)">${V} 千米/时</b> × 时间 <b style="color:var(--orange)">${T} 小时</b> = 路程 <b style="color:var(--purple)">${S} 千米</b>`;
+    box.append(road, info);
+    stage.appendChild(box);
+    note.innerHTML = `路程 = 速度 × 时间；反过来：<b>速度 = 路程 ÷ 时间</b>，<b>时间 = 路程 ÷ 速度</b>。<br>` +
+      `<b>注意</b>：速度是复合单位，写成"${V} 千米/时"，读作"${V} 千米每时"。`;
+  }
+  v.addEventListener('input', render); t.addEventListener('input', render);
+  $('#btnSpdReset').addEventListener('click', () => { v.value = 60; t.value = 3; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ④ 模型辨析（四步法）
+   ========================================================================== */
+(function initJudge(){
+  const CASES = [
+    {q:'图书角有故事书 56 本，科技书 38 本，一共有多少本？',
+     model:'加法模型', why:'求"一共"，把两部分合起来：56 + 38 = 94（本）。'},
+    {q:'每套故事书 18 元，买 6 套要多少钱？',
+     model:'乘法模型', why:'单价 × 数量 = 总价：18 × 6 = 108（元）。'},
+    {q:'一辆汽车 3 小时行了 180 千米，平均每小时行多少千米？',
+     model:'乘法模型', why:'速度 = 路程 ÷ 时间：180 ÷ 3 = 60（千米/时）。'},
+    {q:'书架上原来有 72 本书，借走了 25 本，还剩多少本？',
+     model:'加法模型', why:'总量 − 分量 = 另一部分量：72 − 25 = 47（本）。'},
+    {q:'一箱牛奶 48 元，学校买了 4 箱，付了 200 元，应找回多少元？',
+     model:'乘法模型', why:'先算总价 48 × 4 = 192（元），再算 200 − 192 = 8（元）。'}
+  ];
+  const stage = $('#judgeStage'), note = $('#judgeNote'), steps = $('#judgeSteps');
+  let idx = 0, step = 0;
+  function render(){
+    const c = CASES[idx];
+    stage.innerHTML = '';
+    const q = document.createElement('div');
+    q.style.cssText = 'font-size:20px;font-weight:700;text-align:center;max-width:620px;line-height:1.8';
+    q.textContent = '题目：' + c.q;
+    stage.appendChild(q);
+    const flow = document.createElement('div');
+    flow.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px';
+    const labels = ['① 审题', '② 判模型', '③ 找关系', '④ 列式'];
+    labels.forEach((l, i) => {
+      const d = document.createElement('div');
+      d.textContent = l;
+      d.style.cssText = `padding:8px 14px;border-radius:999px;font-size:14px;font-weight:700;` +
+        `background:${i < step ? 'var(--green-l)' : 'var(--accent-l)'};color:${i < step ? '#126b47' : 'var(--accent)'};` +
+        `border:1.5px solid ${i < step ? 'var(--green)' : 'var(--accent-l)'}`;
+      flow.appendChild(d);
+    });
+    stage.appendChild(flow);
+    steps.innerHTML = labels.map((l, i) =>
+      `<div class="dot ${i < step ? 'done' : (i === step ? 'on' : '')}" title="${l}">${i+1}</div>`).join('');
+    const msgs = [
+      '第 ① 步 <b>审题</b>：把题目读两遍，用笔画出<b>已知条件</b>和<b>要问的问题</b>。',
+      `第 ② 步 <b>判模型</b>：这是<b>${c.model}</b>。`,
+      '第 ③ 步 <b>找关系</b>：写出关系式——' +
+        (c.model === '加法模型' ? '部分量 + 部分量 = 总量；总量 − 部分量 = 部分量。' :
+                                 '单价 × 数量 = 总价；总价 ÷ 数量 = 单价；总价 ÷ 单价 = 数量。' +
+                                 (c.q.includes('千米') ? '路程 = 速度 × 时间。' : '')),
+      '第 ④ 步 <b>列式计算</b>并<b>写答</b>：' + c.why
+    ];
+    note.innerHTML = msgs[Math.min(step, msgs.length - 1)];
+  }
+  $('#btnJudgeNext').addEventListener('click', () => { step = (step + 1) % 4; render(); });
+  $('#btnJudgeShow').addEventListener('click', () => { step = 4; render(); });
+  $('#btnJudgeReset').addEventListener('click', () => { step = 0; idx = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ⑤ 综合应用（两步问题）
+   ========================================================================== */
+(function initApply(){
+  const ITEMS = [
+    {q:'买 15 双运动鞋，每双 48 元；另外买 30 根跳绳，每根 6 元。一共花多少钱？',
+     s1:'先算运动鞋的钱：单价 × 数量 = 总价 → 48 × 15 = 720（元）',
+     s2:'再算跳绳的钱：6 × 30 = 180（元）',
+     s3:'最后合起来：720 + 180 = 900（元）',
+     a:'900'},
+    {q:'家到动物园 240 千米，汽车每小时行 80 千米，几小时到达？',
+     s1:'求<b>时间</b>，用<b>路程 ÷ 速度</b>',
+     s2:'列式：240 ÷ 80 = 3（小时）',
+     s3:'答：3 小时到达',
+     a:'3'},
+    {q:'每箱牛奶 60 元，买 4 箱，付出 300 元，应找回多少钱？',
+     s1:'先算<b>总价</b>：60 × 4 = 240（元）',
+     s2:'再算<b>找回</b>：300 − 240 = 60（元）',
+     s3:'答：应找回 60 元',
+     a:'60'}
+  ];
+  const sel = $('#applySel'), note = $('#applyNote'), steps = $('#applySteps');
+  let step = 0;
+  function render(){
+    const it = ITEMS[+sel.value];
+    steps.innerHTML = ['①第一步','②第二步','③第三步']
+      .map((l, i) => `<div class="dot ${i < step ? 'done' : (i === step ? 'on' : '')}" title="${l}">${i+1}</div>`).join('');
+    const msgs = [
+      `<b>题目</b>：${it.q}`,
+      it.s1,
+      it.s2,
+      it.s3
+    ];
+    note.innerHTML = msgs[Math.min(step, msgs.length - 1)];
+    if (step === 0) note.className = 'tip';
+  }
+  sel.addEventListener('change', () => { step = 0; render(); });
+  $('#btnApplyStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
+  $('#btnApplyReset').addEventListener('click', () => { step = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   分层练习数据
+   ========================================================================== */
+const BASIC_CHOICE = [
+  {q:'"每支笔 3 元，买 8 支"中，"3 元"是（　）。',
+   opts:['单价','数量','总价','速度'], a:0,
+   why:'表示"每支多少钱"，是单价。'},
+  {q:'已知总价和数量，求单价用（　）。',
+   opts:['总价 ÷ 数量','总价 × 数量','数量 ÷ 总价','总价 + 数量'], a:0,
+   why:'总价 ÷ 数量 = 单价。'},
+  {q:'一辆车每小时行 60 千米，4 小时行（　）千米。',
+   opts:['15','64','240','150'], a:2, why:'速度 × 时间 = 路程：60 × 4 = 240。'},
+  {q:'图书角有故事书 56 本，科技书 38 本，一共有（　）本。',
+   opts:['18','94','88','76'], a:1, why:'部分 + 部分 = 总量：56 + 38 = 94。'},
+  {q:'每套校服 120 元，买 5 套需要（　）元。',
+   opts:['25','125','600','610'], a:2, why:'120 × 5 = 600。'},
+  {q:'下面各式中，求"路程"正确的是（　）。',
+   opts:['路程 = 速度 × 时间','路程 = 速度 ÷ 时间','路程 = 时间 ÷ 速度','路程 = 速度 + 时间'], a:0,
+   why:'速度 × 时间 = 路程。'},
+  {q:'3 小时行 240 千米，速度是（　）。',
+   opts:['80 千米','80 千米/时','720 千米','8 千米/时'], a:1,
+   why:'速度 = 路程 ÷ 时间 = 240 ÷ 3 = 80，单位要写"千米/时"。'},
+  {q:'要买 6 支单价 12 元的笔，付出 100 元，应找回（　）元。',
+   opts:['28','72','88','100'], a:0,
+   why:'总价 12 × 6 = 72，100 − 72 = 28。'}
+];
+
+const BASIC_FILL = [
+  {q:'单价 × 数量 =（　）；总价 ÷ 数量 =（　）。', a:['总价','单价'],
+   why:'乘法模型的三量关系。'},
+  {q:'速度 × 时间 =（　）；路程 ÷ 时间 =（　）。', a:['路程','速度'],
+   why:'速度、时间的乘法模型。'},
+  {q:'每套 68 元，买了 4 套，一共（　）元。', a:'272', why:'68 × 4 = 272。'},
+  {q:'一共 270 元买了 5 个同样的书包，每个（　）元。', a:'54', why:'270 ÷ 5 = 54。'},
+  {q:'一箱橘子 150 元，买了 6 箱，共（　）元。', a:'900', why:'150 × 6 = 900。'},
+  {q:'汽车 4 小时行了 320 千米，平均每小时行（　）千米。', a:'80', why:'320 ÷ 4 = 80。'},
+  {q:'甲仓库有 45 吨货，乙仓库有 38 吨，甲比乙多（　）吨。', a:'7', why:'45 − 38 = 7。'},
+  {q:'停车场有 128 辆车，开走 45 辆，还剩（　）辆。', a:'83', why:'128 − 45 = 83。'}
+];
+
+const HAND_CHOICE = [
+  {q:'下面各题中，属于"乘法模型"的是（　）。',
+   opts:['一共有多少本书','每本多少钱','一共买了 6 本书，每本 15 元，共多少钱','还剩多少本'], a:2,
+   why:'出现"单价 × 数量 = 总价"关系的是乘法模型。'},
+  {q:'每千克苹果 8 元，买 5 千克，付出 50 元，应找回（　）元。',
+   opts:['8','10','40','50'], a:1, why:'总价 8 × 5 = 40，50 − 40 = 10。'},
+  {q:'妈妈买了 3 千克排骨，每千克 38 元，付了 200 元，应找回（　）元。',
+   opts:['86','114','124','200'], a:0, why:'38 × 3 = 114，200 − 114 = 86。'},
+  {q:'一辆汽车 5 小时行 300 千米，2 小时行（　）千米。',
+   opts:['100','120','150','600'], a:1, why:'先求速度：300 ÷ 5 = 60，60 × 2 = 120。'}
+];
+
+const HAND_FILL = [
+  {q:'填表：单价 25 元，数量 8 个，总价（　）元。', a:'200', why:'25 × 8 = 200。'},
+  {q:'填表：总价 360 元，数量 12 个，单价（　）元。', a:'30', why:'360 ÷ 12 = 30。'},
+  {q:'填表：速度 80 千米/时，时间 3 小时，路程（　）千米。', a:'240', why:'80 × 3 = 240。'},
+  {q:'填表：路程 480 千米，速度 60 千米/时，时间（　）小时。', a:'8', why:'480 ÷ 60 = 8。'},
+  {q:'学校买 6 个足球，每个 85 元，又买 8 根跳绳，每根 12 元，一共花了（　）元。',
+   a:'606', why:'85 × 6 = 510，12 × 8 = 96，510 + 96 = 606。'},
+  {q:'一辆客车每小时行 65 千米，行了 4 小时后离目的地还有 60 千米，全程（　）千米。',
+   a:'320', why:'65 × 4 = 260，260 + 60 = 320。'},
+  {q:'甲乙两班做纸盒，甲班做了 128 个，乙班比甲班多做了 36 个，乙班做了（　）个。',
+   a:'164', why:'128 + 36 = 164。'},
+  {q:'果园里有梨树 85 棵，桃树的棵数比梨树的 2 倍多 20 棵，桃树有（　）棵。',
+   a:'190', why:'85 × 2 = 170，170 + 20 = 190。'}
+];
+
+const EXT_CHOICE = [
+  {q:'小刚 3 小时走了 21 千米，照这样计算，他走 8 小时要走（　）千米。',
+   opts:['56','49','63','42'], a:0, why:'先求速度 21 ÷ 3 = 7，7 × 8 = 56。'},
+  {q:'一个数的 3 倍是 240，这个数的 5 倍是（　）。',
+   opts:['400','240','480','800'], a:0, why:'这个数 = 240 ÷ 3 = 80，80 × 5 = 400。'},
+  {q:'甲乙两地相距 450 千米，两车同时从两地相对开出，甲车每小时行 40 千米，乙车每小时行 50 千米，几小时相遇？',
+   opts:['4','4.5','5','6'], a:2,
+   why:'两车同时相对开出，每小时一共行 40 + 50 = 90 千米，450 ÷ 90 = 5（小时）。'},
+  {q:'下面说法正确的是（　）。',
+   opts:['单价越贵，总价一定越贵','数量越多，总价一定越多（单价不变时）',
+         '速度越快，路程一定越远','时间越长，路程一定越长'], a:1,
+   why:'总价 = 单价 × 数量，单价不变时数量越多总价越大；其他说法都缺少条件。'},
+  {q:'一支钢笔 15 元，一个笔记本 6 元，买 3 支钢笔的钱最多可以买（　）个笔记本。',
+   opts:['6','7','8','9'], a:1,
+   why:'15 × 3 = 45（元），45 ÷ 6 = 7……7；买 8 个要 48 元，不够，所以最多买 7 个。'},
+  {q:'一本书 28 页，小明每天看 6 页，几天能看完？',
+   opts:['4','5','6','7'], a:0, why:'28 ÷ 6 = 4 余 4，要 5 天才能看完。'}
+];
+
+const EXT_FILL = [
+  {q:'商店运来 5 箱饮料，每箱 48 瓶，卖出 138 瓶后还剩（　）瓶。',
+   a:'102', why:'48 × 5 = 240，240 − 138 = 102。'},
+  {q:'一辆车 5 小时行 250 千米，照这样计算，8 小时行（　）千米。',
+   a:'400', why:'250 ÷ 5 = 50，50 × 8 = 400。'},
+  {q:'每套 168 元的演出票，买 8 张，付 1500 元，应找回（　）元。',
+   a:'156', why:'168 × 8 = 1344，1500 − 1344 = 156。'},
+  {q:'妈妈买了 2 千克排骨和 1 千克鱼，排骨每千克 38 元，鱼每千克 56 元，一共花了（　）元。',
+   a:'132', why:'38 × 2 = 76，76 + 56 = 132。'},
+  {q:'某校四年级有 3 个班，每班 42 人，五年级人数比四年级多 26 人，五年级有（　）人。',
+   a:'152', why:'42 × 3 = 126，126 + 26 = 152。'},
+  {q:'一个数的 4 倍比它的 3 倍多 25，这个数是（　）。',
+   a:'25', why:'多出来的是 1 倍：25 ÷ (4 − 3) = 25。'}
+];
+
+bootCourse([
+  {key:'basic', title:'第一档 · 巩固基础（两个模型、三组关系式）', prefix:'基',
+   choice:BASIC_CHOICE, fill:BASIC_FILL,
+   host:'#basicBlock', score:'#scoreBasic', total:'#totalBasic', reset:'#btnResetBasic'},
+  {key:'hand', title:'第二档 · 动手操作（表格填充、选关系式、实际购物）', prefix:'动',
+   choice:HAND_CHOICE, fill:HAND_FILL,
+   host:'#handBlock', score:'#scoreHand', total:'#totalHand', reset:'#btnResetHand'},
+  {key:'ext', title:'第三档 · 扩展思维（两步以上、逆推、变式与陷阱）', prefix:'拓',
+   choice:EXT_CHOICE, fill:EXT_FILL,
+   host:'#extBlock', score:'#scoreExt', total:'#totalExt', reset:'#btnResetExt'}
+]);
+
+})();
+</script>
+</body>
+</html>

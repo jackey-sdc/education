@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>条形统计图</title>
+<style>
+:root{
+    --accent:#0e8fa8;
+    --accent-l:#e4f6f9;
+    --accent-d:#0a6b7e;
+}
+
+  :root{
+    --ink:#20304a; --ink2:#4b5f7d; --blue:#2f6fd0; --blue-l:#e8f1ff;
+    --orange:#f08a24; --orange-l:#fff2e2; --green:#1f9d6b; --green-l:#e6f7ef;
+    --purple:#7a4fd6; --purple-l:#f1ebff; --red:#d94a4a; --red-l:#fdecec;
+    --teal:#0e8fa8; --teal-l:#e4f6f9;
+    --card:#ffffff; --line:#e3e9f2; --bg:#f4f7fc;
+    --shadow:0 6px 18px rgba(31,52,90,.08);
+    --accent:#2f6fd0; --accent-l:#e8f1ff; --accent-d:#1f5bb0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+    line-height:1.75;font-size:16px}
+  header{background:linear-gradient(135deg,var(--accent-d),var(--accent) 55%,#7a4fd6);
+    color:#fff;padding:32px 20px 28px;text-align:center}
+  header h1{margin:0 0 6px;font-size:30px;letter-spacing:1px}
+  header p{margin:0;opacity:.94;font-size:15px}
+  .badges{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .badges span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+    padding:3px 12px;border-radius:999px;font-size:13px}
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(31,52,90,.05)}
+  nav .inner{max-width:1080px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:8px 14px}
+  nav a{flex:0 0 auto;text-decoration:none;color:var(--ink2);font-size:14px;font-weight:600;
+    padding:7px 13px;border-radius:999px;white-space:nowrap}
+  nav a:hover{background:var(--accent-l);color:var(--accent)}
+  main{max-width:1080px;margin:0 auto;padding:26px 16px 80px}
+  section{margin-bottom:34px}
+  h2.section{font-size:22px;margin:0 0 16px;display:flex;align-items:center;gap:10px;
+    padding-left:12px;border-left:6px solid var(--accent)}
+  h2.section .num{background:var(--accent);color:#fff;font-size:14px;width:26px;height:26px;
+    border-radius:8px;display:grid;place-items:center;font-weight:700}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;
+    box-shadow:var(--shadow);margin-bottom:18px}
+  .card h3{margin:0 0 6px;font-size:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card h3 .tag{font-size:12px;background:var(--accent-l);color:var(--accent);padding:2px 9px;
+    border-radius:999px;font-weight:700}
+  .lead{color:var(--ink2);font-size:15px;margin:0 0 14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:880px){.grid2,.grid3{grid-template-columns:1fr}}
+  .stage{background:#fbfcff;border:1px dashed #cfdcee;border-radius:14px;padding:12px;
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center}
+  .stage svg{max-width:100%;height:auto;display:block}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+  button,.btn{font:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--accent);
+    color:#fff;border:none;border-radius:10px;padding:8px 15px;transition:transform .08s ease,filter .15s ease}
+  button:hover{filter:brightness(1.07)} button:active{transform:translateY(1px)}
+  button.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}
+  button.soft{background:var(--orange)} button.green{background:var(--green)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  input[type=range]{accent-color:var(--accent);width:190px;height:26px}
+  input[type=text],input[type=number]{font:inherit;font-size:15px;padding:6px 10px;border:1.5px solid var(--line);
+    border-radius:8px;outline:none}
+  input[type=text]:focus,input[type=number]:focus{border-color:var(--accent)}
+  .pill{display:inline-block;background:var(--orange-l);color:#b35c00;font-weight:700;
+    padding:4px 12px;border-radius:999px;font-size:14px}
+  .klist{margin:8px 0 0;padding-left:20px;color:var(--ink2);font-size:15px}
+  .klist li{margin:3px 0}
+  .tip{background:var(--accent-l);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;
+    margin-top:12px;font-size:14.5px;color:#26456f}
+  .tip b{color:var(--accent)}
+  .tip.warn{background:var(--orange-l);border-color:var(--orange);color:#8a4a00}
+  .tip.warn b{color:#b35c00}
+  .tip.ok{background:var(--green-l);border-color:var(--green);color:#126b47}
+  .tip.ok b{color:var(--green)}
+  .num-display{font-size:30px;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums;
+    background:var(--accent-l);padding:4px 16px;border-radius:12px;display:inline-block}
+  table.plain{border-collapse:collapse;width:100%;font-size:14.5px}
+  table.plain th,table.plain td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+  table.plain th{background:var(--accent-l);color:var(--accent)}
+  table.plain td.l,table.plain th.l{text-align:left}
+  /* ---- 练习 ---- */
+  .q{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;background:#fff}
+  .q .qt{font-weight:600;margin-bottom:9px;font-size:15.5px}
+  .q .qt .qno{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;
+    background:var(--purple-l);color:var(--purple);font-size:13px;font-weight:800;margin-right:8px}
+  .opts{display:flex;flex-direction:column;gap:7px}
+  .opt{border:1.5px solid var(--line);border-radius:10px;padding:8px 13px;cursor:pointer;
+    background:#fcfdff;font-size:15px;transition:.15s;display:flex;gap:9px;align-items:flex-start}
+  .opt:hover{border-color:var(--accent);background:var(--accent-l)}
+  .opt .k{font-weight:800;color:var(--ink2)}
+  .opt.right{border-color:var(--green);background:var(--green-l)}
+  .opt.right .k{color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:var(--red-l)}
+  .opt.wrong .k{color:var(--red)}
+  .opt.locked{cursor:default}
+  .fb{margin-top:9px;font-size:14px;padding:8px 12px;border-radius:9px;display:none}
+  .fb.show{display:block}
+  .fb.good{background:var(--green-l);color:#126b47}
+  .fb.bad{background:var(--red-l);color:#9b2f2f}
+  .fb .why{display:block;margin-top:4px;color:var(--ink2)}
+  .score{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--accent-l);
+    border-radius:12px;padding:10px 16px;margin-bottom:14px;font-size:15px}
+  .score b{font-size:19px;color:var(--accent)}
+  details.answers{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow)}
+  details.answers summary{cursor:pointer;font-weight:700;color:var(--accent);font-size:16px;outline:none}
+  details.answers[open] summary{margin-bottom:10px;color:var(--orange)}
+  .ans-item{padding:7px 0;border-bottom:1px dashed var(--line);font-size:14.5px}
+  .ans-item:last-child{border-bottom:none}
+  .ans-item b{color:var(--orange)}
+  /* ---- 通用小组件 ---- */
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .tab{font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;cursor:pointer;
+    border:1.5px solid var(--line);background:#fff;color:var(--ink2)}
+  .tab.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .stepper{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .stepper .dot{width:30px;height:30px;border-radius:50%;background:var(--line);color:var(--ink2);
+    display:grid;place-items:center;font-weight:800;font-size:14px}
+  .stepper .dot.on{background:var(--accent);color:#fff}
+  .stepper .dot.done{background:var(--green-l);color:var(--green)}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);margin-top:8px}
+  .legend i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:5px;vertical-align:-2px}
+  .hstack{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .chip{display:inline-block;background:#fff;border:1.5px solid var(--line);border-radius:999px;
+    padding:3px 12px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+  .chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .note{font-size:13.5px;color:var(--ink2);margin-top:8px}
+  .big-num{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+  .cell-hl{background:var(--accent-l);border-radius:6px;padding:2px 8px;font-weight:800;color:var(--accent);
+    display:inline-block}
+  .card-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .toggle-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  @media print{
+    header,nav,.controls,.tabs,.score .btn{display:none!important}
+    body{background:#fff}
+    .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+    details.answers{display:block}
+    details.answers summary{display:none}
+    .q{break-inside:avoid}
+  }
+
+</style>
+</head>
+<body>
+<header>
+  <h1>条形统计图</h1>
+  <p>人教版（2024年审定）四年级数学上册 · 第六单元 · 单式条形统计图 / 复式条形统计图 / 数据的收集与整理 / 读图分析</p>
+  <div class="badges"><span>5 个课时</span>
+    <span>4 个动画模块</span>
+    <span>分层练习 31 题</span>
+    <span>含答案解析</span></div>
+</header>
+<nav><div class="inner">    <a href="#s-single">① 单式条形统计图</a>
+    <a href="#s-double">② 复式条形统计图</a>
+    <a href="#s-collect">③ 数据的收集与整理</a>
+    <a href="#s-read">④ 读图分析与决策</a>
+    <a href="#quiz">分层练习</a>
+    <a href="#answers">答案解析</a></div></nav>
+<main>
+<section id="s-single">
+  <h2 class="section"><span class="num">1</span>单式条形统计图</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>一格代表几？条形要多宽？</h3>
+    <p class="lead">拖动滑块改变"1 格代表几"，看直条的高度怎么变。
+      画条形统计图有<b>四要素</b>：<b>标题、横轴项目、纵轴（单位）、直条</b>；还要注意<b>直条宽窄一致、间隔相同</b>。</p>
+    <div class="controls">
+      <span class="pill" id="scLabel">—</span>
+      <input type="range" id="scUnit" min="1" max="5" value="1">
+      <button class="ghost" id="btnScReset">重置</button>
+    </div>
+    <div class="stage" id="scStage"></div>
+    <div id="scNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-double">
+  <h2 class="section"><span class="num">2</span>复式条形统计图</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>两组数据放在一起比</h3>
+    <p class="lead">复式条形统计图能同时表示两组数据，方便<b>直接比较</b>。注意要有<b>图例</b>。</p>
+    <div class="controls">
+      <button id="btnDbStep">▶ 一步步画</button>
+      <button class="ghost" id="btnDbAll">完整图</button>
+      <button class="ghost" id="btnDbReset">重置</button>
+    </div>
+    <div class="stepper" id="dbSteps"></div>
+    <div class="stage" id="dbStage"></div>
+    <div id="dbNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-collect">
+  <h2 class="section"><span class="num">3</span>数据的收集与整理</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>调查 → 记录 → 整理 → 画图</h3>
+    <p class="lead">点"下一步"，看一份问卷调查数据是怎么一步步变成条形统计图的。</p>
+    <div class="controls">
+      <button id="btnClStep">▶ 下一步</button>
+      <button class="ghost" id="btnClReset">重置</button>
+    </div>
+    <div class="stepper" id="clSteps"></div>
+    <div class="stage" id="clStage" style="flex-direction:column"></div>
+    <div id="clNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-read">
+  <h2 class="section"><span class="num">4</span>读图分析与决策</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>从统计图里能读出什么？</h3>
+    <p class="lead">点下面的问题，逐个分析（复式图：四（1）班与四（2）班每天课外阅读时间）。</p>
+    <div class="controls">
+      <button id="btnRdStep">▶ 下一个问题</button>
+      <button class="ghost" id="btnRdReset">重置</button>
+    </div>
+    <div class="stage" id="rdStage" style="flex-direction:column"></div>
+    <div id="rdNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第一档</span>巩固基础</h3>
+      <span class="note">统计图的要素 · 读数</span>
+    </div>
+    <div class="score">已答对 <b id="scoreBasic">0</b> / <span id="totalBasic">0</span> 题
+      <button class="ghost" id="btnResetBasic">重做本档</button></div>
+    <div id="basicBlock"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第二档</span>动手操作</h3>
+      <span class="note">填表 · 画图步骤 · 选图</span>
+    </div>
+    <div class="score">已答对 <b id="scoreHand">0</b> / <span id="totalHand">0</span> 题
+      <button class="ghost" id="btnResetHand">重做本档</button></div>
+    <div id="handBlock"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title-row">
+      <h3><span class="tag">第三档</span>扩展思维</h3>
+      <span class="note">复式分析 · 平均数 · 综合</span>
+    </div>
+    <div class="score">已答对 <b id="scoreExt">0</b> / <span id="totalExt">0</span> 题
+      <button class="ghost" id="btnResetExt">重做本档</button></div>
+    <div id="extBlock"></div>
+  </div>
+
+<section id="answers">
+  <details class="answers">
+    <summary>📖 答案与解析（讲评时展开 / 可直接打印）</summary>
+    <div id="answerKey"></div>
+  </details>
+</section>
+
+</section>
+
+<section id="answers">
+  <details class="answers">
+    <summary>📖 答案与解析（讲评时展开 / 可直接打印）</summary>
+    <div id="answerKey"></div>
+  </details>
+</section>
+
+
+</main>
+<footer style="max-width:1080px;margin:0 auto;padding:0 16px 40px;color:var(--ink2);font-size:14px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px">
+  <div>人教版（2024年审定）四年级数学上册 · 第六单元动画课件</div>
+  <div class="hstack"><a class="chip" href="../u5_parallelogram/index.html">← 上一单元</a><a class="chip" href="../u7_practice/index.html">下一单元 →</a></div>
+</footer>
+<script>
+/* ==========================================================================
+   共享引擎：DOM/SVG 工具 + 分层练习引擎 + 答案区生成
+   —— 所有单元课件共用（构建时内联进各自的 index.html）
+   ========================================================================== */
+'use strict';
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
+
+/* ---------------- SVG 基础 ---------------- */
+const SVGNS = 'http://www.w3.org/2000/svg';
+function s(tag, attrs, parent){
+  const n = document.createElementNS(SVGNS, tag);
+  for (const k in (attrs||{})) if (attrs[k] !== undefined && attrs[k] !== null) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+function clear(node){ while(node && node.firstChild) node.removeChild(node.firstChild); }
+
+/* 角度约定：数学正方向 = 逆时针为正；SVG 的 y 轴向下，换算时翻 y */
+function polar(cx, cy, r, deg){
+  const a = deg * Math.PI / 180;
+  return [cx + r * Math.cos(a), cy - r * Math.sin(a)];
+}
+/* 数学逆时针弧：sweep 固定 0；large-arc-flag 由跨角是否大于 180° 决定 */
+function arcPoints(cx, cy, r, startDeg, spanDeg){
+  const p1 = polar(cx, cy, r, startDeg), p2 = polar(cx, cy, r, startDeg + spanDeg);
+  const large = spanDeg > 180 ? 1 : 0;
+  return { p1, p2, d:`M ${p1[0]} ${p1[1]} A ${r} ${r} 0 ${large} 0 ${p2[0]} ${p2[1]}` };
+}
+/* 圆周数字：沿切向旋转 + 白色描边光晕，避免被射线/指针压住 */
+function haloText(parent, x, y, str, deg, opt){
+  const o = Object.assign({size:13, fill:'#20304a', rot:true}, opt||{});
+  const t = s('text', {x, y, 'font-size':o.size, fill:o.fill, 'text-anchor':'middle',
+    'dominant-baseline':'central', 'paint-order':'stroke', stroke:'#fff',
+    'stroke-width':3.5, 'stroke-linejoin':'round'}, parent);
+  if (o.rot && deg !== undefined && deg !== null) t.setAttribute('transform', `rotate(${deg - 90} ${x} ${y})`);
+  t.textContent = str;
+  return t;
+}
+function label(parent, x, y, str, opt){
+  const o = Object.assign({size:14, fill:'#20304a', anchor:'middle', weight:600}, opt||{});
+  const t = s('text', {x, y, 'font-size':o.size, fill:o.fill, 'text-anchor':o.anchor,
+    'font-weight':o.weight}, parent);
+  t.textContent = str;
+  return t;
+}
+function fmt(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+
+/* ---------------- 画一个角（通用） ---------------- */
+/* vertex=(vx,vy)，a1/a2 为两条边的极角（度，逆时针为正） */
+function drawAngle(svg, vx, vy, a1, a2, opt){
+  const o = Object.assign({r:120, color:'#2f6fd0', arc:true, arcColor:'#f08a24',
+    arcR:34, label:null, lw:3, dash:null}, opt||{});
+  const p1 = polar(vx, vy, o.r, a1), p2 = polar(vx, vy, o.r, a2);
+  s('line', {x1:vx, y1:vy, x2:p1[0], y2:p1[1], stroke:o.color, 'stroke-width':o.lw,
+    'stroke-linecap':'round', 'stroke-dasharray':o.dash || ''}, svg);
+  s('line', {x1:vx, y1:vy, x2:p2[0], y2:p2[1], stroke:o.color, 'stroke-width':o.lw,
+    'stroke-linecap':'round', 'stroke-dasharray':o.dash || ''}, svg);
+  if (o.arc){
+    let start = a1, span = a2 - a1;
+    if (span < 0){ start = a2; span = -span; }   /* 走短弧 */
+    if (span > 360) span = 360;
+    const arc = arcPoints(vx, vy, o.arcR, start, span);
+    s('path', {d:arc.d, fill:'none', stroke:o.arcColor, 'stroke-width':3.5,
+      'stroke-linecap':'round'}, svg);
+    const mid = polar(vx, vy, o.arcR, start + span/2);
+    if (o.label) haloText(svg, mid[0], mid[1], o.label, null, {size:15, fill:'#b35c00'});
+  }
+  s('circle', {cx:vx, cy:vy, r:4.5, fill:o.color}, svg);
+  return {p1, p2};
+}
+
+/* ---------------- 答案归一化 ---------------- */
+const CN_D = {'零':0,'〇':0,'一':1,'二':2,'两':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9};
+const CN_U = {'十':10,'百':100,'千':1000};
+/* 中文数字 → 阿拉伯数字（支持 三千五百万 / 十二万 / 3千万 / 3.5万 等混写） */
+function cn2num(str){
+  const toks = str.match(/\d+(?:\.\d+)?|[零〇一二两三四五六七八九十百千万亿]/g) || [];
+  let out = 0, section = 0, num = 0;
+  for (const t of toks){
+    if (/^\d/.test(t)) num = parseFloat(t);
+    else if (t in CN_D) num = CN_D[t];
+    else if (t in CN_U){ section += (num || 1) * CN_U[t]; num = 0; }
+    else if (t === '万'){ section = (section + num) * 10000; out += section; section = 0; num = 0; }
+    else if (t === '亿'){ out = (out + section + num) * 100000000; section = 0; num = 0; }
+  }
+  return out + section + num;
+}
+function norm(v){
+  let t = String(v).trim();
+  t = t.replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+  if (/[零〇一二两三四五六七八九十百千万亿]/.test(t)){
+    const v2 = cn2num(t); t = (Number.isFinite(v2) ? String(v2) : t);
+  }
+  t = t.replace(/\s/g, '')
+       .replace(/[，。、；：]/g, '')
+       .replace(/[，,]/g, '')
+       .replace(/[．。]/g, '.')
+       .replace(/[（(]/g, '(').replace(/[）)]/g, ')')
+       .replace(/[×xX*]/g, '*').replace(/[÷]/g, '/')
+       .replace(/[＝=]/g, '=')
+       .replace(/[约≈]/g, '')
+       .replace(/[度°]/g, '')
+       .replace(/平方千米/g, 'km2').replace(/平方千米/g, 'km2')
+       .replace(/平方厘米/g, 'cm2').replace(/平方分米/g, 'dm2').replace(/平方米/g, 'm2')
+       .replace(/平方毫米/g, 'mm2')
+       .replace(/千米|公里/g, 'km').replace(/米/g, 'm')
+       .replace(/公顷/g, 'ha')
+       .replace(/时/g, 'h').replace(/分/g, 'min').replace(/秒/g, 's')
+       .replace(/元/g, 'yuan');
+  return t;
+}
+
+/* ==========================================================================
+   练习引擎
+   item: { q, opts?[], a:index | index[] | string | string[], why, hint }
+   ========================================================================== */
+const LETTERS = ['A','B','C','D','E','F'];
+function makeCounter(scoreId, totalId, total){
+  return { ok:0, total, scoreEl:$(scoreId), totalEl:$(totalId) };
+}
+function updateCounter(c){
+  if (!c) return;
+  if (c.scoreEl) c.scoreEl.textContent = c.ok;
+  if (c.totalEl) c.totalEl.textContent = c.total;
+}
+
+/* 把一组题目渲染进 host；返回重做函数 */
+function mountQuizInto(host, items, c, prefix, offset){
+  clear(host);
+  const state = items.map(()=>({done:false, ok:false}));
+  const isChoice = it => Array.isArray(it.opts) && it.opts.length;
+  const optsOf  = it => (it.opts||[]).map(o => typeof o === 'string' ? o : (o.t || ''));
+
+  items.forEach((q, i) => {
+    const box = document.createElement('div'); box.className = 'q';
+    const qt = document.createElement('div'); qt.className = 'qt';
+    qt.innerHTML = `<span class="qno">${prefix}${i + 1 + offset}</span>${q.q}`;
+    box.appendChild(qt);
+    const fb = document.createElement('div'); fb.className = 'fb';
+
+    if (isChoice(q)){
+      const opts = document.createElement('div'); opts.className = 'opts';
+      optsOf(q).forEach((o, k) => {
+        const d = document.createElement('div'); d.className = 'opt'; d.dataset.k = k;
+        d.innerHTML = `<span class="k">${LETTERS[k]}.</span><span>${o}</span>`;
+        d.addEventListener('click', () => choose(k, d));
+        opts.appendChild(d);
+      });
+      box.appendChild(opts);
+    } else {
+      /* 填空题：按题干中的空数渲染输入框（多空题逐空作答、逐空比对） */
+      const answers = Array.isArray(q.a) ? q.a : [q.a];
+      const blanks = (q.q.match(/（\s*）/g) || []).length;
+      const n = Math.max(1, blanks);
+      const wrap = document.createElement('div'); wrap.className = 'controls';
+      const inputs = [];
+      for (let k = 0; k < n; k++){
+        const inp = document.createElement('input'); inp.type = 'text';
+        inp.placeholder = n > 1 ? `第 ${k+1} 空` : '答案填这里';
+        inp.style.cssText = `width:${n > 1 ? 96 : 180}px;text-align:center;font-weight:700`;
+        wrap.appendChild(inp); inputs.push(inp);
+      }
+      const btn = document.createElement('button'); btn.className = 'ghost'; btn.textContent = '检查';
+      wrap.appendChild(btn); box.appendChild(wrap);
+      const check = () => {
+        if (state[i].done) return;
+        const ok = (n === 1)
+          ? answers.some(a => norm(a) === norm(inputs[0].value))
+          : (answers.length >= n && inputs.every((inp, k) => norm(inp.value) === norm(answers[k])));
+        inputs.forEach(inp => inp.classList.add(ok ? 'ok' : 'no'));
+        if (ok){
+          state[i].done = true; state[i].ok = true; c.ok++; updateCounter(c);
+          inputs.forEach(inp => inp.readOnly = true);
+          fb.className = 'fb show good';
+          fb.innerHTML = `✅ 答对了！${q.why ? '<span class="why">💡 ' + q.why + '</span>' : ''}`;
+        } else {
+          fb.className = 'fb show bad';
+          fb.innerHTML = `❌ 答案不对，再想想～<span class="why">💡 提示：${q.hint || '回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
+        }
+      };
+      btn.addEventListener('click', check);
+      inputs.forEach(inp => inp.addEventListener('keydown', e => { if (e.key === 'Enter') check(); }));
+    }
+    box.appendChild(fb); host.appendChild(box);
+
+    function choose(k, el){
+      if (state[i].done) return;
+      const answer = Array.isArray(q.a) ? q.a : [q.a];
+      if (answer.includes(k)){
+        state[i].done = true; state[i].ok = true; c.ok++; updateCounter(c);
+        [...el.parentElement.children].forEach(x => {
+          x.classList.add('locked');
+          if (+x.dataset.k === k) x.classList.add('right');
+        });
+        fb.className = 'fb show good';
+        fb.innerHTML = `✅ 答对了！${q.why ? '<span class="why">💡 ' + q.why + '</span>' : ''}`;
+      } else {
+        el.classList.add('wrong');
+        fb.className = 'fb show bad';
+        fb.innerHTML = `❌ 再想想～<span class="why">💡 提示：${q.hint || '回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
+      }
+    }
+  });
+
+  return function reset(){
+    c.ok -= state.filter(x => x.ok).length;
+    state.forEach(x => { x.done = false; x.ok = false; });
+    mountQuizInto(host, items, c, prefix, offset);
+    updateCounter(c);
+  };
+}
+
+/* 答案区：按分组渲染 */
+function renderAnswers(hostSel, groups){
+  const host = $(hostSel); if (!host) return;
+  let html = '';
+  groups.forEach(g => {
+    html += `<h4 style="margin:16px 0 6px;color:var(--accent)">${g.title}</h4>`;
+    g.items.forEach((q, i) => {
+      const ans = (Array.isArray(q.opts) && q.opts.length)
+        ? (Array.isArray(q.a) ? q.a : [q.a]).map(k => `${LETTERS[k]}. ${q.opts[k]}`).join(' / ')
+        : (Array.isArray(q.a) ? q.a.join(' 或 ') : q.a);
+      html += `<div class="ans-item"><b>${g.prefix || ''}${i + 1}. ${ans}</b> —— ${q.why || ''}</div>`;
+    });
+  });
+  host.innerHTML = html;
+}
+
+/* 标准装配：三档练习（巩固 / 动手 / 扩展） */
+function bootCourse(groups){
+  const resets = [], answerGroups = [];
+  groups.forEach(g => {
+    const items = [].concat(g.choice || [], g.fill || []);
+    const c = makeCounter(g.score, g.total, items.length);
+    const host = $(g.host);
+    if (!host) return;
+    /* 一次性挂载全部题目：mountQuizInto 内部会 clear(host)，
+       若分两次挂载，后一次（填空）会把前一次（选择）整块覆盖掉。 */
+    mountQuizInto(host, items, c, g.prefix || '', 0);
+    const resetFn = () => {
+      c.ok = 0; updateCounter(c);
+      mountQuizInto(host, items, c, g.prefix || '', 0);
+    };
+    resets.push(resetFn);
+    answerGroups.push({title:g.title, prefix:g.prefix || '', items});
+    updateCounter(c);
+  });
+  renderAnswers('#answerKey', answerGroups);
+  /* 暴露题目数据，便于自动化测试与二次开发 */
+  window.__QUIZ_DATA__ = groups.map(g => ({
+    key: g.key, title: g.title, prefix: g.prefix || '',
+    choice: g.choice || [], fill: g.fill || []
+  }));
+  window.__ANSWER_KEY__ = answerGroups;
+  groups.forEach((g, i) => {
+    const btn = $(g.reset); if (btn) btn.addEventListener('click', () => resets[i] && resets[i]());
+  });
+}
+
+</script>
+<script>
+(function(){
+/* ==========================================================================
+   第六单元 条形统计图 —— 交互模块
+   ========================================================================== */
+
+/* 通用：画条形统计图 */
+function barChart(svg, opt){
+  const o = Object.assign({w:640, h:340, pad:{l:56, r:20, t:34, b:52}, unit:1,
+    maxV:null, title:'', yLabel:'', series:[{name:'', color:'#2f6fd0', data:[]}],
+    cats:[], grid:true, legend:true, highlight:-1, valueLabels:true}, opt||{});
+  const {w, h, pad} = o;
+  const maxV = o.maxV || Math.max(...o.series.flatMap(sr => sr.data)) ;
+  const top = Math.ceil(maxV / o.unit) * o.unit;
+  const cw = (w - pad.l - pad.r) / o.cats.length;
+  const chartH = h - pad.t - pad.b;
+  const yOf = v => pad.t + chartH - (v / top) * chartH;
+  /* 标题 */
+  if (o.title) label(svg, w / 2, 20, o.title, {size:17, weight:800, fill:'#20304a'});
+  /* 网格与纵轴刻度 */
+  if (o.grid){
+    for (let v = 0; v <= top; v += o.unit){
+      const y = yOf(v);
+      s('line', {x1:pad.l, y1:y, x2:w - pad.r, y2:y, stroke: v === 0 ? '#8fa3bd' : '#eef2f8',
+        'stroke-width': v === 0 ? 1.6 : 1}, svg);
+      haloText(svg, pad.l - 10, y, String(v), null, {size:12, fill:'#4b5f7d', rot:false});
+    }
+  }
+  /* 纵轴单位 */
+  if (o.yLabel) label(svg, pad.l - 10, pad.t - 16, o.yLabel, {size:12, fill:'#4b5f7d', anchor:'end'});
+  /* 直条 */
+  const nS = o.series.length;
+  const barW = Math.min(34, (cw * 0.62) / nS);
+  o.cats.forEach((c, ci) => {
+    o.series.forEach((sr, si) => {
+      const v = sr.data[ci];
+      if (v === undefined) return;
+      const cx = pad.l + cw * ci + cw / 2;
+      const x = cx - (nS * barW + (nS - 1) * 4) / 2 + si * (barW + 4);
+      const y = yOf(v);
+      const hl = o.highlight === ci;
+      s('rect', {x, y, width:barW, height:pad.t + chartH - y, rx:3,
+        fill:hl ? '#f08a24' : sr.color, opacity:hl ? 1 : 0.92}, svg);
+      if (o.valueLabels) haloText(svg, x + barW / 2, y - 9, String(v), null,
+        {size:12.5, fill:hl ? '#b35c00' : sr.color, rot:false});
+    });
+    /* 横轴标签 */
+    haloText(svg, pad.l + cw * ci + cw / 2, h - pad.b + 18, c, null, {size:13, fill:'#20304a', rot:false});
+  });
+  /* 图例 */
+  if (o.legend && nS > 0){
+    let lx = pad.l;
+    o.series.forEach(sr => {
+      s('rect', {x:lx, y:h - 18, width:14, height:14, rx:3, fill:sr.color}, svg);
+      label(svg, lx + 20, h - 7, sr.name, {size:12.5, fill:'#4b5f7d', anchor:'start'});
+      lx += 26 + sr.name.length * 13;
+    });
+  }
+  return {yOf, cw, top};
+}
+
+/* ==========================================================================
+   ① 单式条形统计图
+   ========================================================================== */
+(function initSingle(){
+  const unit = $('#scUnit'), lab = $('#scLabel'), stage = $('#scStage'), note = $('#scNote');
+  const CATS = ['足球', '篮球', '跳绳', '毽子', '其他'];
+  const DATA = [28, 22, 18, 12, 6];
+  function render(){
+    const u = +unit.value;
+    const maxV = Math.max(...DATA);
+    const top = Math.ceil(maxV / u) * u;
+    lab.textContent = `1 格代表 ${u} 人`;
+    stage.innerHTML = '';
+    const svg = s('svg', {viewBox:'0 0 640 340', width:640, height:340});
+    stage.appendChild(svg);
+    barChart(svg, {cats:CATS, unit:u, maxV:top,
+      title:'四年级同学最喜欢的运动人数统计', yLabel:'人数',
+      series:[{name:'人数', color:'#0e8fa8', data:DATA}]});
+    note.innerHTML = `<b>四要素</b>：标题、横轴（项目）、纵轴（单位：人数）、直条。<br>` +
+      `本图 <b>1 格代表 ${u} 人</b>，纵轴一共到 ${top} 人。<b>数据最大是 ${maxV}，所以至少要画到 ${Math.ceil(maxV/u)*u}</b>——` +
+      `直条不能超出纵轴的最高格。<br><b>画图要求</b>：直条<b>宽窄一样</b>、<b>间隔相同</b>、直条要贴紧纵轴。`;
+  }
+  unit.addEventListener('input', render);
+  $('#btnScReset').addEventListener('click', () => { unit.value = 1; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ② 复式条形统计图
+   ========================================================================== */
+(function initDouble(){
+  const stage = $('#dbStage'), note = $('#dbNote'), steps = $('#dbSteps');
+  const CATS = ['周一', '周二', '周三', '周四', '周五'];
+  const A = [20, 25, 22, 30, 28];
+  const B = [15, 18, 20, 24, 26];
+  let step = 0;
+  function render(){
+    stage.innerHTML = '';
+    const svg = s('svg', {viewBox:'0 0 640 340', width:640, height:340});
+    stage.appendChild(svg);
+    const shown = step >= 5 ? 2 : (step >= 3 ? 1 : 0);
+    const series = [];
+    if (shown >= 1) series.push({name:'四（1）班', color:'#0e8fa8', data:A});
+    if (shown >= 2) series.push({name:'四（2）班', color:'#f08a24', data:B});
+    barChart(svg, {cats:CATS, unit:5, maxV:30,
+      title:'四（1）班与四（2）班每天课外阅读时间', yLabel:'分钟',
+      series:series.length ? series : [{name:'', color:'#cfdcee', data:[0,0,0,0,0]}],
+      valueLabels: shown >= 2});
+    const msgs = [
+      '第 ① 步：确定<b>标题</b>和<b>横轴项目</b>（星期），选好<b>纵轴单位</b>（1 格代表 5 分钟）。',
+      '第 ② 步：先画<b>四（1）班</b>的直条：周一 20 分钟、周二 25 分钟……',
+      '第 ③ 步：在每个项目旁边画<b>四（2）班</b>的直条，两组直条<b>并排</b>、宽窄一致。',
+      '第 ④ 步：写上<b>图例</b>，让人知道哪种颜色表示哪个班。',
+      '第 ⑤ 步：检查——纵轴到 30 分钟够吗？直条有没有超出？图例写了吗？'
+    ];
+    steps.innerHTML = ['①定标题','②画一组','③画另一组','④写图例','⑤检查']
+      .map((l, i) => `<div class="dot ${i < step ? 'done' : (i === step ? 'on' : '')}" title="${l}">${i+1}</div>`).join('');
+    note.innerHTML = msgs[Math.min(step, msgs.length - 1)];
+  }
+  $('#btnDbStep').addEventListener('click', () => { step = (step + 1) % 6; render(); });
+  $('#btnDbAll').addEventListener('click', () => { step = 6; render(); });
+  $('#btnDbReset').addEventListener('click', () => { step = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ③ 数据的收集与整理
+   ========================================================================== */
+(function initCollect(){
+  const stage = $('#clStage'), note = $('#clNote'), steps = $('#clSteps');
+  const ITEMS = ['苹果', '香蕉', '橙子', '葡萄', '草莓'];
+  const COUNTS = [12, 18, 9, 15, 6];
+  let step = 0;
+  function render(){
+    stage.innerHTML = '';
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'width:100%;max-width:640px';
+    if (step === 0){
+      const d = document.createElement('div');
+      d.style.cssText = 'font-size:17px;line-height:2';
+      d.innerHTML = '<b>第 ① 步：明确调查目的与对象。</b><br>' +
+        '问题："四年级同学最喜欢吃哪种水果？"　对象：四年级全体同学<br>' +
+        '方法：每人只能选一种，用<b>投票（举手）</b>的方式记录。';
+      wrap.appendChild(d);
+    } else if (step === 1){
+      const d = document.createElement('div');
+      d.style.cssText = 'font-size:17px;line-height:2';
+      d.innerHTML = '<b>第 ② 步：记录数据（用"正"字记录）。</b><br>' +
+        '<div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:8px">' +
+        ITEMS.map((it, i) => `<div>${it}：${'正'.repeat(Math.ceil(COUNTS[i]/5))} ${COUNTS[i]}</div>`).join('') +
+        '</div>';
+      wrap.appendChild(d);
+    } else if (step === 2){
+      const d = document.createElement('div');
+      d.style.cssText = 'font-size:17px;line-height:2';
+      d.innerHTML = '<b>第 ③ 步：整理成统计表。</b><br>' +
+        '<table class="plain" style="margin-top:8px"><tr><th>水果</th>' +
+        ITEMS.map(i => `<th>${i}</th>`).join('') + '</tr>' +
+        '<tr><td class="l">人数</td>' + COUNTS.map(c => `<td>${c}</td>`).join('') + '</tr></table>';
+      wrap.appendChild(d);
+    } else {
+      const svg = s('svg', {viewBox:'0 0 640 340', width:640, height:340});
+      wrap.appendChild(svg);
+      barChart(svg, {cats:ITEMS, unit:2, maxV:20,
+        title:'四年级同学最喜欢吃的水果人数统计', yLabel:'人数',
+        series:[{name:'人数', color:'#0e8fa8', data:COUNTS}]});
+    }
+    stage.appendChild(wrap);
+    steps.innerHTML = ['①定目的','②记数据','③整成表','④画统计图']
+      .map((l, i) => `<div class="dot ${i < step ? 'done' : (i === step ? 'on' : '')}" title="${l}">${i+1}</div>`).join('');
+    const msgs = [
+      '调查统计一般分四步：<b>确定调查目的 → 记录数据 → 整理成统计表 → 画统计图</b>。',
+      '记录数据可以用<b>"正"字法</b>，每人在相应的水果下面画一笔"正"，最后数一数有几笔。',
+      '把数据<b>整理成统计表</b>，一眼就能看清各项目的多少。',
+      '最后画成<b>条形统计图</b>，直条的高度表示人数的多少。'
+    ];
+    note.innerHTML = msgs[Math.min(step, msgs.length - 1)];
+  }
+  $('#btnClStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
+  $('#btnClReset').addEventListener('click', () => { step = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   ④ 读图分析
+   ========================================================================== */
+(function initRead(){
+  const stage = $('#rdStage'), note = $('#rdNote');
+  const A = [20, 25, 22, 30, 28], B = [15, 18, 20, 24, 26];
+  const CATS = ['周一', '周二', '周三', '周四', '周五'];
+  const QS = [
+    {q:'四（1）班周四阅读多长时间？', a:'30 分钟', why:'看四（1）班（蓝色）周四的直条，正好到 30。'},
+    {q:'哪一天两个班阅读时间相差最大？', a:'周一', why:'周一 20 − 15 = 5，周二 25 − 18 = 7，周三 22 − 20 = 2，周四 30 − 24 = 6，周五 28 − 26 = 2，最大是周二的 7 分钟。'},
+    {q:'四（2）班五天共阅读多少分钟？', a:'103 分钟', why:'15 + 18 + 20 + 24 + 26 = 103。'},
+    {q:'四（1）班比四（2）班阅读时间多吗？为什么用复式统计图？', a:'多，复式图能直接比', why:'四（1）班每天都比四（2）班多；复式条形统计图把两组数据放在一起，一眼就能比较。'}
+  ];
+  let idx = 0;
+  function render(){
+    stage.innerHTML = '';
+    const svg = s('svg', {viewBox:'0 0 640 340', width:640, height:340});
+    stage.appendChild(svg);
+    barChart(svg, {cats:CATS, unit:5, maxV:30,
+      title:'四（1）班与四（2）班每天课外阅读时间', yLabel:'分钟',
+      series:[{name:'四（1）班', color:'#0e8fa8', data:A},
+              {name:'四（2）班', color:'#f08a24', data:B}]});
+    const q = document.createElement('div');
+    q.style.cssText = 'font-size:18px;font-weight:700;text-align:center;margin-top:8px';
+    q.textContent = `问题 ${idx + 1}：${QS[idx].q}`;
+    stage.appendChild(q);
+    note.innerHTML = `<b>分析</b>：${QS[idx].a}。${QS[idx].why}`;
+  }
+  $('#btnRdStep').addEventListener('click', () => { idx = (idx + 1) % QS.length; render(); });
+  $('#btnRdReset').addEventListener('click', () => { idx = 0; render(); });
+  render();
+})();
+
+/* ==========================================================================
+   分层练习数据
+   ========================================================================== */
+const BASIC_CHOICE = [
+  {q:'条形统计图中，1 格表示 5 人，某直条高 4 格，表示（　）人。',
+   opts:['4','9','20','25'], a:2, why:'4 × 5 = 20 人。'},
+  {q:'画条形统计图时，下面做法正确的是（　）。',
+   opts:['直条宽窄可以不一样','直条间隔可以随便定','直条要一样宽、间隔相同，且不能超出纵轴',
+         '纵轴上的格子数可以比最大数据小'], a:2,
+   why:'这是画条形统计图的基本要求。'},
+  {q:'统计图上画的是四年级各班人数，横轴表示的是（　）。',
+   opts:['人数','班级','单位','标题'], a:1, why:'横轴表示项目（班级），纵轴表示数量（人数）。'},
+  {q:'要看两个班参加社团的人数多少，最好选用（　）。',
+   opts:['单式条形统计图','复式条形统计图','统计表就行','折线统计图'], a:1,
+   why:'复式条形统计图能同时表示两组数据，方便比较。'},
+  {q:'条形统计图中，直条的高度表示（　）。',
+   opts:['项目的多少','项目的名称','单位','图例'], a:0, why:'直条越高表示这一项目的数量越多。'},
+  {q:'下面说法正确的是（　）。',
+   opts:['直条越长，说明这个班人数越少','纵轴上 1 格代表的数越大，直条就越矮',
+         '统计图能反映数量的多少','条形统计图能看出变化趋势'], a:2,
+   why:'条形统计图能一眼看出数量的多少；折线统计图才看变化趋势。'}
+];
+
+const BASIC_FILL = [
+  {q:'条形统计图一般包括（　）、（　）、（　）和直条。',
+   a:['标题','横轴项目','纵轴'], why:'四要素。'},
+  {q:'1 格代表 10 本，某个直条高 7 格，表示（　）本。', a:'70', why:'7 × 10 = 70。'},
+  {q:'1 格代表 2 人，某直条高 9 格，表示（　）人。', a:'18', why:'9 × 2 = 18。'},
+  {q:'画条形统计图时，纵轴最高格必须不小于数据中的（　）。', a:'最大数',
+   why:'否则直条会画出图外。'},
+  {q:'两个班参加同一社团的人数分别是 18 人和 24 人，相差（　）人。', a:'6', why:'24 − 18 = 6。'},
+  {q:'统计图中一个直条高 12 格，1 格代表 3 人，表示（　）人。', a:'36', why:'12 × 3 = 36。'}
+];
+
+const HAND_CHOICE = [
+  {q:'要表示一周中每天的最高气温变化，选用（　）比较合适。',
+   opts:['条形统计图','折线统计图','统计表','扇形统计图'], a:1,
+   why:'表示变化趋势用折线统计图；表示数量的多少用条形统计图。'},
+  {q:'一个统计图中，1 格表示 5 人，某直条高 8 格，要改成 1 格表示 10 人，这个直条应该画（　）格高。',
+   opts:['4','8','16','20'], a:0, why:'数量不变：8 × 5 = 40 人，40 ÷ 10 = 4 格。'},
+  {q:'下面是四（1）班参加社团人数统计：足球 12、篮球 15、合唱 9、手工 6。人数最多的比最少的多（　）人。',
+   opts:['3','6','9','12'], a:2, why:'15 − 6 = 9。'}
+];
+
+const HAND_FILL = [
+  {q:'下面是一（1）班图书角借书情况：故事书 26 本、科技书 18 本、连环画 12 本。借科技书的比借连环画的多（　）本。',
+   a:'6', why:'18 − 12 = 6。'},
+  {q:'一（1）班共有 45 人，参加数学兴趣小组的 18 人，参加英语兴趣小组的 15 人，两组都没参加的有（　）人。',
+   a:'12', why:'18 + 15 = 33，45 − 33 = 12。'},
+  {q:'某商店本月卖出运动鞋 120 双，凉鞋 85 双，运动鞋比凉鞋多卖（　）双。', a:'35', why:'120 − 85 = 35。'},
+  {q:'统计图中 1 格代表 20 个，两根直条分别高 5 格和 3 格，两数相差（　）个。', a:'40',
+   why:'(5 − 3) × 20 = 40。'},
+  {q:'把"1 格代表 5 人"改成"1 格代表 10 人"，原来高 6 格的直条要画（　）格高。', a:'3',
+   why:'6 × 5 = 30 人，30 ÷ 10 = 3 格。'},
+  {q:'四（1）班 30 人，平均每组 6 人，可以分成（　）组。', a:'5', why:'30 ÷ 6 = 5。'}
+];
+
+const EXT_CHOICE = [
+  {q:'两组数据要比较"相差多少"，用复式条形统计图比单式的优势是（　）。',
+   opts:['画起来更快','两组数据放在一起，可以直接比高低',
+         '看起来更好看','能表示变化趋势'], a:1, why:'复式图把两组直条并排，一眼比出高低。'},
+  {q:'甲、乙两组数据画成复式条形统计图，甲的直条总是比乙高，说明（　）。',
+   opts:['甲的数据总量一定大','甲每一项数据都比乙大','甲的平均数一定大','无法判断'], a:1,
+   why:'每根直条都比对方高，说明每一项甲都更大；但总量结论需要具体数据才能下。'},
+  {q:'统计图中，一共有 5 个项目，1 格代表 4 人，其中最高的直条高 15 格，这一项有（　）人。',
+   opts:['15','45','60','75'], a:2, why:'15 × 4 = 60。'},
+  {q:'下面各统计图中，能看出数量多少但看不出变化趋势的是（　）。',
+   opts:['条形统计图','折线统计图','扇形统计图','统计表'], a:0,
+   why:'条形统计图用直条高度表示数量多少。'}
+];
+
+const EXT_FILL = [
+  {q:'四（1）班 45 人，四（2）班 48 人，两个班一共（　）人。', a:'93', why:'45 + 48 = 93。'},
+  {q:'某班平均每人捐书 3 本，全班 40 人，一共捐（　）本。', a:'120', why:'3 × 40 = 120。'},
+  {q:'统计图记录了 5 天的人数，分别是 12、15、18、15、20，最多的比最少的多（　）人。',
+   a:'8', why:'20 − 12 = 8。'},
+  {q:'两个班的图书角藏书分别是 128 本和 96 本，如果每个班都借出 35 本，两个班一共借出（　）本。',
+   a:'70', why:'35 × 2 = 70。'},
+  {q:'4 个数的平均数是 15，增加一个数 20 后，新的 5 个数的平均数是（　）。', a:'16',
+   why:'原来 4 个数的和是 15 × 4 = 60，加上 20 得 80，80 ÷ 5 = 16。'},
+  {q:'四（1）班和四（2）班参加航模小组的人数分别是 24 人和 18 人，如果每 3 人分成一组，两班一共能分成（　）组。',
+   a:'14', why:'(24 + 18) ÷ 3 = 42 ÷ 3 = 14（组）。'}
+];
+
+bootCourse([
+  {key:'basic', title:'第一档 · 巩固基础（统计图的要素与读数）', prefix:'基',
+   choice:BASIC_CHOICE, fill:BASIC_FILL,
+   host:'#basicBlock', score:'#scoreBasic', total:'#totalBasic', reset:'#btnResetBasic'},
+  {key:'hand', title:'第二档 · 动手操作（填表、换算单位、选统计图）', prefix:'动',
+   choice:HAND_CHOICE, fill:HAND_FILL,
+   host:'#handBlock', score:'#scoreHand', total:'#totalHand', reset:'#btnResetHand'},
+  {key:'ext', title:'第三档 · 扩展思维（复式图分析、平均数、综合）', prefix:'拓',
+   choice:EXT_CHOICE, fill:EXT_FILL,
+   host:'#extBlock', score:'#scoreExt', total:'#totalExt', reset:'#btnResetExt'}
+]);
+
+})();
+</script>
+</body>
+</html>
