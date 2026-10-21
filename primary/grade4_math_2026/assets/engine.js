@@ -258,3 +258,66 @@ function bootCourse(groups){
     const btn = $(g.reset); if (btn) btn.addEventListener('click', () => resets[i] && resets[i]());
   });
 }
+
+/* ==========================================================================
+   左侧章节栏：点击隐藏/展开（状态记忆）+ 滚动高亮当前章节
+   ========================================================================== */
+(function initSideNav(){
+  const KEY = 'g4m_nav_collapsed';
+  const body = document.body;
+  let collapsed = false;
+  try { collapsed = localStorage.getItem(KEY) === '1'; } catch (err) {}
+  body.classList.toggle('nav-collapsed', collapsed);
+
+  const toggle = document.getElementById('navToggle');
+  const handle = document.getElementById('navShow');
+  const scrim  = document.getElementById('navScrim');
+
+  function setCollapsed(v){
+    collapsed = v;
+    body.classList.toggle('nav-collapsed', v);
+    body.classList.remove('nav-open');
+    try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (err) {}
+    if (toggle) toggle.setAttribute('aria-expanded', String(!v));
+    if (toggle) toggle.title = v ? '显示章节栏' : '隐藏章节栏';
+  }
+  const isMobile = () => window.matchMedia('(max-width:940px)').matches;
+  if (toggle) toggle.addEventListener('click', () => {
+    if (isMobile()) body.classList.toggle('nav-open');   /* 移动端：抽屉式 */
+    else setCollapsed(!collapsed);                        /* 桌面端：折叠式 */
+  });
+  if (handle) handle.addEventListener('click', () => {
+    if (isMobile()) body.classList.add('nav-open');
+    else setCollapsed(false);   /* 桌面的把手 = 重新展开章节栏 */
+  });
+  if (scrim)  scrim.addEventListener('click', () => body.classList.remove('nav-open'));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') body.classList.remove('nav-open');
+    if (e.key === '[' && (e.metaKey || e.ctrlKey)) setCollapsed(!collapsed);
+  });
+
+  /* 移动端点导航后自动收起 */
+  $$('.sidenav a').forEach(a => a.addEventListener('click', () => {
+    if (window.matchMedia('(max-width:940px)').matches) body.classList.remove('nav-open');
+  }));
+
+  /* 滚动到哪一章，左栏就高亮哪一章 */
+  const links = $$('.sidenav a[href^="#"]');
+  const map = new Map();
+  links.forEach(a => {
+    const el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) map.set(el, a);
+  });
+  if (map.size && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        links.forEach(l => l.classList.remove('active'));
+        const a = map.get(en.target);
+        if (a) a.classList.add('active');
+      });
+    }, {rootMargin:'-8% 0px -78% 0px', threshold:0});
+    map.forEach((a, el) => io.observe(el));
+  }
+  setCollapsed(collapsed);
+})();

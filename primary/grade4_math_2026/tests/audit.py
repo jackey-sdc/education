@@ -181,6 +181,31 @@ def run_browser(pg, unit: str):
     for n in norm:
         issues.append(f'填空答案归一化异常: {n}')
 
+    # —— 交互层：左侧章节栏（存在 / 可折叠 / 把手可展开 / 状态记忆）
+    nav = pg.evaluate("""()=>{
+      const side=document.querySelector('.sidenav');
+      const toggle=document.getElementById('navToggle');
+      const handle=document.getElementById('navShow');
+      if(!side||!toggle) return {missing:true};
+      const vis=()=>side.getBoundingClientRect().width>0;
+      const before=vis();
+      toggle.click();
+      const after=vis();
+      const handleVisible=handle?handle.getBoundingClientRect().width>0:false;
+      if(handle){handle.click();}
+      const back=vis();
+      return {missing:false, before, after, handleVisible, back,
+              links:side.querySelectorAll('a').length};
+    }""")
+    if nav.get('missing'):
+        issues.append('缺少左侧章节栏或折叠按钮')
+    else:
+        if not nav['before']: issues.append('章节栏默认未显示')
+        if nav['after']: issues.append('点击折叠后章节栏仍可见')
+        if not nav['handleVisible']: issues.append('折叠后未出现"展开章节栏"把手')
+        if not nav['back']: issues.append('点击把手后章节栏未恢复')
+        if nav['links'] < 3: issues.append(f'章节栏链接过少（{nav["links"]}）')
+
     # —— 视觉层：出框检查（SVG 子元素是否越出 viewBox）
     out = pg.evaluate("""()=>{
       const bad=[];

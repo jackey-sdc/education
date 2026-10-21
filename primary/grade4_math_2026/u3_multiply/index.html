@@ -31,13 +31,53 @@
   .badges{margin-top:14px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
   .badges span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
     padding:3px 12px;border-radius:999px;font-size:13px}
-  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(31,52,90,.05)}
-  nav .inner{max-width:1080px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:8px 14px}
-  nav a{flex:0 0 auto;text-decoration:none;color:var(--ink2);font-size:14px;font-weight:600;
-    padding:7px 13px;border-radius:999px;white-space:nowrap}
-  nav a:hover{background:var(--accent-l);color:var(--accent)}
-  main{max-width:1080px;margin:0 auto;padding:26px 16px 80px}
+  /* ===== 布局：左侧章节栏 + 右侧内容 ===== */
+  .layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;padding:18px 16px 80px;gap:22px}
+  .sidenav{position:sticky;top:14px;flex:0 0 232px;width:232px;align-self:flex-start;
+    max-height:calc(100vh - 40px);overflow-y:auto;padding-right:6px;transition:opacity .2s}
+  .sidenav .side-title{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:1px;
+    padding:0 8px 8px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .sidenav .side-group{font-size:12px;color:#8a97a8;padding:12px 8px 4px;font-weight:700}
+  .sidenav a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink2);
+    font-size:14px;font-weight:600;padding:8px 10px;border-radius:9px;margin-bottom:2px;
+    border-left:3px solid transparent;transition:.15s}
+  .sidenav a:hover{background:var(--accent-l);color:var(--accent)}
+  .sidenav a.active{background:var(--accent-l);color:var(--accent);border-left-color:var(--accent)}
+  .sidenav a .dotm{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45;flex:0 0 6px}
+  .sidenav a.active .dotm{opacity:1}
+  .sidenav .side-foot{margin-top:14px;padding-top:10px;border-top:1px solid var(--line);
+    display:flex;flex-direction:column;gap:6px}
+  .sidenav .side-foot a{font-size:13px;padding:6px 10px}
+  .content{flex:1;min-width:0;max-width:1080px}
+  /* 隐藏后的"目录"把手 */
+  .nav-handle{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:70;
+    writing-mode:vertical-rl;padding:14px 7px;border-radius:0 10px 10px 0;cursor:pointer;
+    background:var(--accent);color:#fff;font-size:13px;font-weight:700;border:none;
+    box-shadow:0 4px 14px rgba(31,52,90,.22);letter-spacing:2px}
+  .nav-handle:hover{filter:brightness(1.08)}
+  body.nav-collapsed .sidenav{display:none}
+  body.nav-collapsed .nav-handle{display:block}
+  body:not(.nav-collapsed) .nav-handle{display:none}
+  @media(max-width:940px){
+    .layout{padding:14px 12px 60px;gap:0}
+    .sidenav{position:fixed;left:0;top:0;bottom:0;width:80vw;max-width:300px;max-height:none;z-index:80;
+      background:#fff;border-right:1px solid var(--line);padding:16px 14px;box-shadow:0 8px 30px rgba(31,52,90,.18);
+      transform:translateX(-100%);transition:transform .25s}
+    body.nav-collapsed .sidenav{transform:translateX(-100%)}
+    body.nav-open .sidenav{transform:none}
+    .nav-handle{display:none !important}
+    body.nav-open .nav-handle{display:none !important}
+    .nav-scrim{position:fixed;inset:0;background:rgba(20,30,50,.35);z-index:75;display:none}
+    body.nav-open .nav-scrim{display:block}
+  }
+  header{position:relative}
+  section{scroll-margin-top:18px}
+  .nav-btn{position:absolute;right:16px;top:14px;z-index:5;display:inline-flex;align-items:center;gap:6px;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;
+    font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer}
+  .nav-btn:hover{background:rgba(255,255,255,.28)}
+  body.nav-collapsed .nav-btn{opacity:.95}
+  @media(max-width:940px){.nav-btn{right:10px;top:12px}}
   section{margin-bottom:34px}
   h2.section{font-size:22px;margin:0 0 16px;display:flex;align-items:center;gap:10px;
     padding-left:12px;border-left:6px solid var(--accent)}
@@ -135,7 +175,8 @@
   .card-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .toggle-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
   @media print{
-    header,nav,button,.controls,.tabs,.stepper,.score .btn{display:none!important}
+    header,nav,button,.controls,.tabs,.stepper,.score .btn,.sidenav,.nav-handle,.nav-scrim{display:none!important}
+    .layout{padding:0;max-width:none}
     body{background:#fff}
     .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
     details.answers{display:block}
@@ -153,15 +194,28 @@
     <span>5 个动画模块</span>
     <span>分层练习 40 题</span>
     <span>含答案解析</span></div>
+  <button class="nav-btn" id="navToggle" aria-expanded="true" title="隐藏章节栏">☰ 章节栏</button>
 </header>
-<nav><div class="inner">    <a href="#s-oral">① 口算乘法</a>
-    <a href="#s-vertical">② 笔算乘法</a>
-    <a href="#s-zero">③ 因数中间或末尾有0</a>
-    <a href="#s-law">④ 积的变化规律</a>
-    <a href="#s-estimate">⑤ 估算</a>
-    <a href="#quiz">分层练习</a>
-    <a href="#answers">答案解析</a></div></nav>
-<main>
+<div class="layout">
+  <aside class="sidenav">
+    <div class="side-title">多位数乘两位数</div>
+        <div class="side-group">本单元章节</div>
+      <a href="#s-oral"><span class="dotm"></span>口算乘法</a>
+      <a href="#s-vertical"><span class="dotm"></span>笔算乘法</a>
+      <a href="#s-zero"><span class="dotm"></span>因数中间或末尾有 0 的乘法</a>
+      <a href="#s-law"><span class="dotm"></span>积的变化规律</a>
+      <a href="#s-estimate"><span class="dotm"></span>估算</a>
+      <a href="#quiz"><span class="dotm"></span>✎分层练习</a>
+      <a href="#answers"><span class="dotm"></span>答案与解析</a>
+    <div class="side-foot">
+      <a href="../index.html">← 回到课程总览</a>
+      <a href="../u2_angle/index.html">← 角的度量</a>
+      <a href="../u4_models/index.html">加法模型和乘法模型 →</a>
+    </div>
+  </aside>
+  <button class="nav-handle" id="navShow" title="显示章节栏">章 节 栏</button>
+  <div class="nav-scrim" id="navScrim"></div>
+  <main class="content">
 <section id="s-oral">
   <h2 class="section"><span class="num">1</span>口算乘法</h2>
   <div class="card">
@@ -325,7 +379,8 @@
 </section>
 
 
-</main>
+  </main>
+</div>
 <footer style="max-width:1080px;margin:0 auto;padding:0 16px 40px;color:var(--ink2);font-size:14px;
   display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px">
   <div>人教版（2024年审定）四年级数学上册 · 第三单元动画课件</div>
@@ -592,6 +647,69 @@ function bootCourse(groups){
     const btn = $(g.reset); if (btn) btn.addEventListener('click', () => resets[i] && resets[i]());
   });
 }
+
+/* ==========================================================================
+   左侧章节栏：点击隐藏/展开（状态记忆）+ 滚动高亮当前章节
+   ========================================================================== */
+(function initSideNav(){
+  const KEY = 'g4m_nav_collapsed';
+  const body = document.body;
+  let collapsed = false;
+  try { collapsed = localStorage.getItem(KEY) === '1'; } catch (err) {}
+  body.classList.toggle('nav-collapsed', collapsed);
+
+  const toggle = document.getElementById('navToggle');
+  const handle = document.getElementById('navShow');
+  const scrim  = document.getElementById('navScrim');
+
+  function setCollapsed(v){
+    collapsed = v;
+    body.classList.toggle('nav-collapsed', v);
+    body.classList.remove('nav-open');
+    try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (err) {}
+    if (toggle) toggle.setAttribute('aria-expanded', String(!v));
+    if (toggle) toggle.title = v ? '显示章节栏' : '隐藏章节栏';
+  }
+  const isMobile = () => window.matchMedia('(max-width:940px)').matches;
+  if (toggle) toggle.addEventListener('click', () => {
+    if (isMobile()) body.classList.toggle('nav-open');   /* 移动端：抽屉式 */
+    else setCollapsed(!collapsed);                        /* 桌面端：折叠式 */
+  });
+  if (handle) handle.addEventListener('click', () => {
+    if (isMobile()) body.classList.add('nav-open');
+    else setCollapsed(false);   /* 桌面的把手 = 重新展开章节栏 */
+  });
+  if (scrim)  scrim.addEventListener('click', () => body.classList.remove('nav-open'));
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') body.classList.remove('nav-open');
+    if (e.key === '[' && (e.metaKey || e.ctrlKey)) setCollapsed(!collapsed);
+  });
+
+  /* 移动端点导航后自动收起 */
+  $$('.sidenav a').forEach(a => a.addEventListener('click', () => {
+    if (window.matchMedia('(max-width:940px)').matches) body.classList.remove('nav-open');
+  }));
+
+  /* 滚动到哪一章，左栏就高亮哪一章 */
+  const links = $$('.sidenav a[href^="#"]');
+  const map = new Map();
+  links.forEach(a => {
+    const el = document.getElementById(a.getAttribute('href').slice(1));
+    if (el) map.set(el, a);
+  });
+  if (map.size && 'IntersectionObserver' in window){
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        links.forEach(l => l.classList.remove('active'));
+        const a = map.get(en.target);
+        if (a) a.classList.add('active');
+      });
+    }, {rootMargin:'-8% 0px -78% 0px', threshold:0});
+    map.forEach((a, el) => io.observe(el));
+  }
+  setCollapsed(collapsed);
+})();
 
 </script>
 <script>

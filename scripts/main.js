@@ -32,7 +32,8 @@ function setupEventListeners() {
         item.addEventListener('click', () => {
             const path = item.getAttribute('data-path');
             if (path) {
-                loadContent(path);
+                const label = item.querySelector('span');
+                loadContent(path, label ? label.textContent.trim() : '');
                 
                 // 更新活动状态
                 navItems.forEach(navItem => navItem.classList.remove('active'));
@@ -90,22 +91,21 @@ function setupEventListeners() {
 }
 
 // 加载内容到iframe
-function loadContent(path) {
+function loadContent(path, label) {
     // 显示加载动画
     contentFrame.style.opacity = '0.6';
     
     // 加载新内容
     contentFrame.src = path;
     
-    // 更新标题（从路径中提取）
+    // 更新标题：优先用左侧目录里的中文名，没有再退回文件名
     const pathParts = path.split('/');
     const fileName = pathParts[pathParts.length - 1].split('.')[0];
-    const formattedTitle = fileName
+    const fromPath = fileName
         .split('_')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
-    
-    contentTitle.textContent = formattedTitle;
+    contentTitle.textContent = label || fromPath;
     
     // 内容加载完成后的动画
     contentFrame.onload = () => {
@@ -207,3 +207,31 @@ function handleFullscreenChange() {
         fullscreenBtn.innerHTML = '<i class="bi bi-arrows-fullscreen"></i> 全屏';
     }
 }
+// ============================================================
+// 左侧目录栏：点击隐藏 / 展开（状态记忆）
+// ============================================================
+(function initSidebarCollapse(){
+    const body = document.body;
+    const toggle = document.getElementById('sidebarToggle');
+    const handle = document.getElementById('sidebarHandle');
+    const KEY = 'edu_sidebar_collapsed';
+
+    let collapsed = false;
+    try { collapsed = localStorage.getItem(KEY) === '1'; } catch (e) {}
+
+    function apply(v){
+        collapsed = v;
+        body.classList.toggle('sidebar-collapsed', v);
+        try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (e) {}
+        if (toggle) toggle.title = v ? '显示目录' : '隐藏目录（点击可展开）';
+        // 折叠后把焦点还给内容区，避免焦点卡在隐藏的按钮上
+        if (v && toggle) toggle.blur();
+    }
+
+    if (toggle) toggle.addEventListener('click', () => apply(!collapsed));
+    if (handle) handle.addEventListener('click', () => apply(false));
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && collapsed) apply(false);
+    });
+    apply(collapsed);
+})();

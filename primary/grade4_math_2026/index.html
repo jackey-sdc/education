@@ -10,7 +10,11 @@
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
     font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;line-height:1.8}
-  header{background:linear-gradient(135deg,#1f5bb0,#2f6fd0 45%,#7a4fd6);color:#fff;padding:38px 20px 34px;text-align:center}
+  header{position:relative;background:linear-gradient(135deg,#1f5bb0,#2f6fd0 45%,#7a4fd6);color:#fff;padding:38px 20px 34px;text-align:center}
+  .nav-btn{position:absolute;right:16px;top:14px;z-index:5;display:inline-flex;align-items:center;gap:6px;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;
+    font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer}
+  .nav-btn:hover{background:rgba(255,255,255,.28)}
   header h1{margin:0 0 8px;font-size:32px;letter-spacing:1px}
   header p{margin:4px 0;opacity:.94;font-size:15px}
   .badges{margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
@@ -38,6 +42,45 @@
   .tip.warn{background:#fff2e2;border-color:var(--orange);color:#8a4a00}
   .tip.ok{background:#e6f7ef;border-color:var(--green);color:#126b47}
   .chip{display:inline-block;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+  /* ===== 布局：左侧章节栏 + 右侧内容 ===== */
+  .layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;padding:18px 16px 80px;gap:22px}
+  .sidenav{position:sticky;top:14px;flex:0 0 232px;width:232px;align-self:flex-start;
+    max-height:calc(100vh - 40px);overflow-y:auto;padding-right:6px;transition:opacity .2s}
+  .sidenav .side-title{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:1px;
+    padding:0 8px 8px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .sidenav .side-group{font-size:12px;color:#8a97a8;padding:12px 8px 4px;font-weight:700}
+  .sidenav a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink2);
+    font-size:14px;font-weight:600;padding:8px 10px;border-radius:9px;margin-bottom:2px;
+    border-left:3px solid transparent;transition:.15s}
+  .sidenav a:hover{background:var(--accent-l);color:var(--accent)}
+  .sidenav a.active{background:var(--accent-l);color:var(--accent);border-left-color:var(--accent)}
+  .sidenav a .dotm{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45;flex:0 0 6px}
+  .sidenav a.active .dotm{opacity:1}
+  .sidenav .side-foot{margin-top:14px;padding-top:10px;border-top:1px solid var(--line);
+    display:flex;flex-direction:column;gap:6px}
+  .sidenav .side-foot a{font-size:13px;padding:6px 10px}
+  .content{flex:1;min-width:0;max-width:1080px}
+  /* 隐藏后的"目录"把手 */
+  .nav-handle{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:70;
+    writing-mode:vertical-rl;padding:14px 7px;border-radius:0 10px 10px 0;cursor:pointer;
+    background:var(--accent);color:#fff;font-size:13px;font-weight:700;border:none;
+    box-shadow:0 4px 14px rgba(31,52,90,.22);letter-spacing:2px}
+  .nav-handle:hover{filter:brightness(1.08)}
+  body.nav-collapsed .sidenav{display:none}
+  body.nav-collapsed .nav-handle{display:block}
+  body:not(.nav-collapsed) .nav-handle{display:none}
+  @media(max-width:940px){
+    .layout{padding:14px 12px 60px;gap:0}
+    .sidenav{position:fixed;left:0;top:0;bottom:0;width:80vw;max-width:300px;max-height:none;z-index:80;
+      background:#fff;border-right:1px solid var(--line);padding:16px 14px;box-shadow:0 8px 30px rgba(31,52,90,.18);
+      transform:translateX(-100%);transition:transform .25s}
+    body.nav-collapsed .sidenav{transform:translateX(-100%)}
+    body.nav-open .sidenav{transform:none}
+    .nav-handle{display:none !important}
+    body.nav-open .nav-handle{display:none !important}
+    .nav-scrim{position:fixed;inset:0;background:rgba(20,30,50,.35);z-index:75;display:none}
+    body.nav-open .nav-scrim{display:block}
+  }
   ul.klist{margin:8px 0 0;padding-left:20px;color:var(--ink2);font-size:15px}
   ul.klist li{margin:4px 0}
   a{color:var(--accent)}
@@ -48,14 +91,38 @@
 <header>
   <h1>人教版四年级数学上册 · 动画课件总览</h1>
   <p>2026 年秋季学期使用（依据 2024 年审定教材）· 7 个单元课件 + 2 个综合实践</p>
+  <button class="nav-btn" id="navToggle" aria-expanded="true" title="隐藏章节栏">☰ 章节栏</button>
   <div class="badges">
     <span>7 个单元课件</span><span>37 个交互动画</span><span>分层练习 259 题</span>
     <span>每单元含答案解析</span><span>单文件离线可用</span>
   </div>
 </header>
-<main>
+<div class="layout">
+  <aside class="sidenav">
+    <div class="side-title">四年级数学上册</div>
+    <div class="side-group">七个单元课件</div>
+      <a href="u1_big_number/index.html"><span class="dotm"></span>① 万以上数的认识</a>
+      <a href="u2_angle/index.html"><span class="dotm"></span>② 角的度量</a>
+      <a href="u3_multiply/index.html"><span class="dotm"></span>③ 多位数乘两位数</a>
+      <a href="u4_models/index.html"><span class="dotm"></span>④ 加法模型和乘法模型</a>
+      <a href="u5_parallelogram/index.html"><span class="dotm"></span>⑤ 平行四边形和梯形</a>
+      <a href="u6_barchart/index.html"><span class="dotm"></span>⑥ 条形统计图</a>
+      <a href="u7_practice/index.html"><span class="dotm"></span>⑦ 复习与关联</a>
+    <div class="side-group">本页导览</div>
+      <a href="#structure"><span class="dotm"></span>课程结构（教材单元表）</a>
+      <a href="#units"><span class="dotm"></span>单元课件入口</a>
+      <a href="#flow"><span class="dotm"></span>通用教学流程</a>
+      <a href="#errors"><span class="dotm"></span>全册易错点速查</a>
+      <a href="#eval"><span class="dotm"></span>评价建议</a>
+    <div class="side-foot">
+      <a href="../index.html">← 回到教育实验平台</a>
+    </div>
+  </aside>
+  <button class="nav-handle" id="navShow" title="显示章节栏">章 节 栏</button>
+  <div class="nav-scrim" id="navScrim"></div>
+  <main class="content">
 
-<h2 class="section">① 课程结构（2026 秋 · 人教版四上）</h2>
+<h2 class="section" id="structure">① 课程结构（2026 秋 · 人教版四上）</h2>
 <div class="card">
   <p class="lead">本册共 8 个板块（含 2 个综合实践）。下表是教材的<b>官方单元顺序</b>，与本仓库的课件一一对应。</p>
   <table class="plain">
@@ -72,7 +139,7 @@
   <div class="tip"><b>教学建议</b>：单元内部按"概念 → 图形/算理 → 应用"推进；每个单元结束后用本课件的<b>第三档（扩展思维）</b>作为单元检测的后半段。</div>
 </div>
 
-<h2 class="section">② 单元课件（点击进入）</h2>
+<h2 class="section" id="units">② 单元课件（点击进入）</h2>
 <div class="grid2">
   <a class="unit" href="u1_big_number/index.html" style="border-left-color:#2f6fd0">
     <h3>① 万以上数的认识 <span class="tag">8 课时</span></h3>
@@ -127,7 +194,7 @@
   </div>
 </div>
 
-<h2 class="section">③ 通用教学流程（一节课怎么用这份课件）</h2>
+<h2 class="section" id="flow">③ 通用教学流程（一节课怎么用这份课件）</h2>
 <div class="card">
   <table class="plain">
     <tr><th style="width:70px">环节</th><th class="l">时间</th><th class="l">操作</th></tr>
@@ -140,7 +207,7 @@
   <div class="tip ok"><b>练习设计说明</b>：每档题量固定、单独计分、可单独重做；答错给<b>提示</b>并指向对应的动画模块，答对才给<b>解析</b>；答案集中折叠在页面末尾，便于讲评与打印。</div>
 </div>
 
-<h2 class="section">④ 全册易错点速查（讲评时可直接投屏）</h2>
+<h2 class="section" id="errors">④ 全册易错点速查（讲评时可直接投屏）</h2>
 <div class="card">
   <table class="plain">
     <tr><th class="l">单元</th><th class="l">高频错误</th><th class="l">纠正办法</th></tr>
@@ -154,7 +221,7 @@
   </table>
 </div>
 
-<h2 class="section">⑤ 评价建议</h2>
+<h2 class="section" id="eval">⑤ 评价建议</h2>
 <div class="card">
   <ul class="klist">
     <li><b>过程性评价</b>（60%）：动画课堂的观察记录 + 第一/二档练习的正确率与订正质量。</li>
@@ -164,10 +231,37 @@
   </ul>
 </div>
 
-</main>
+  </main>
+</div>
 <footer>
   人教版（2024 年审定）四年级数学上册动画课件 · 本仓库 <code>primary/grade4_math_2026/</code> ·
   课件由 <code>build.py</code> 从 <code>assets/</code> + 各单元 <code>body.html</code>/<code>app.js</code> 构建
 </footer>
+<script>
+/* 左侧章节栏：折叠/抽屉 + 滚动高亮 */
+(function(){
+  const KEY='g4m_nav_collapsed', body=document.body;
+  const isMobile=()=>window.matchMedia('(max-width:940px)').matches;
+  let collapsed=false; try{collapsed=localStorage.getItem(KEY)==='1';}catch(e){}
+  const toggle=document.getElementById('navToggle'), handle=document.getElementById('navShow'), scrim=document.getElementById('navScrim');
+  function setCollapsed(v){collapsed=v;body.classList.toggle('nav-collapsed',v);body.classList.remove('nav-open');
+    try{localStorage.setItem(KEY,v?'1':'0');}catch(e){}}
+  body.classList.toggle('nav-collapsed',collapsed);
+  if(toggle) toggle.addEventListener('click',()=>{ isMobile()?body.classList.toggle('nav-open'):setCollapsed(!collapsed); });
+  if(handle) handle.addEventListener('click',()=>{ isMobile()?body.classList.add('nav-open'):setCollapsed(false); });
+  if(scrim) scrim.addEventListener('click',()=>body.classList.remove('nav-open'));
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape')body.classList.remove('nav-open'); });
+  const links=[...document.querySelectorAll('.sidenav a[href^="#"]')];
+  links.forEach(a=>a.addEventListener('click',()=>{ if(isMobile())body.classList.remove('nav-open'); }));
+  const map=new Map();
+  links.forEach(a=>{const el=document.getElementById(a.getAttribute('href').slice(1)); if(el)map.set(el,a);});
+  if(map.size&&'IntersectionObserver'in window){
+    const io=new IntersectionObserver(es=>{es.forEach(en=>{if(!en.isIntersecting)return;
+      links.forEach(l=>l.classList.remove('active'));const a=map.get(en.target);if(a)a.classList.add('active');});
+    },{rootMargin:'-8% 0px -78% 0px',threshold:0});
+    map.forEach((a,el)=>io.observe(el));
+  }
+})();
+</script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """单元课件构建器：把 assets/ 的共享样式与引擎 + 各单元的 body/app 合成
 单个零依赖、可离线双击打开的 index.html。"""
-import json, pathlib, sys
+import json, pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
 CSS  = (ROOT / 'assets/style.css').read_text(encoding='utf-8')
@@ -23,13 +23,26 @@ HEAD = """<!DOCTYPE html>
   <h1>{title}</h1>
   <p>{subtitle}</p>
   <div class="badges">{badges}</div>
+  <button class="nav-btn" id="navToggle" aria-expanded="true" title="隐藏章节栏">☰ 章节栏</button>
 </header>
-<nav><div class="inner">{nav}</div></nav>
-<main>
+<div class="layout">
+  <aside class="sidenav">
+    <div class="side-title">{unit_title}</div>
+    {side_nav}
+    <div class="side-foot">
+      <a href="../index.html">← 回到课程总览</a>
+      {prev_side}
+      {next_side}
+    </div>
+  </aside>
+  <button class="nav-handle" id="navShow" title="显示章节栏">章 节 栏</button>
+  <div class="nav-scrim" id="navScrim"></div>
+  <main class="content">
 """
 
 FOOT = """
-</main>
+  </main>
+</div>
 <footer style="max-width:1080px;margin:0 auto;padding:0 16px 40px;color:var(--ink2);font-size:14px;
   display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px">
   <div>{footleft}</div>
@@ -69,6 +82,29 @@ ANSWERS = """
 """
 
 
+def sections_of(body: str):
+    """从 body.html 抽出 (id, 标题)，用于生成左侧章节栏"""
+    out = []
+    pat = re.compile(r'<section[^>]*id="([^"]+)"[^>]*>(.*?)</section>', re.S)
+    for sid, inner in pat.findall(body):
+        m = re.search(r'<h2[^>]*>(.*?)</h2>', inner, re.S)
+        if not m:
+            continue
+        title = re.sub(r'<[^>]+>', '', m.group(1))
+        title = re.sub(r'\s+', ' ', title).strip()
+        title = re.sub(r'^[0-9①-⑩\s]+', '', title).strip()   # 去掉序号
+        out.append((sid, title))
+    return out
+
+
+def side_nav_html(body: str):
+    items = []
+    for sid, title in sections_of(body):
+        items.append(f'      <a href="#{sid}"><span class="dotm"></span>{title}</a>')
+    items.append('      <a href="#answers"><span class="dotm"></span>答案与解析</a>')
+    return ('    <div class="side-group">本单元章节</div>\n' + '\n'.join(items)) if items else ''
+
+
 def build(unit_dir: pathlib.Path):
     meta = json.loads((unit_dir / 'meta.json').read_text(encoding='utf-8'))
     body = (unit_dir / 'body.html').read_text(encoding='utf-8')
@@ -84,8 +120,12 @@ def build(unit_dir: pathlib.Path):
     body = body.replace('<!--ANSWERS-->', ANSWERS)
     prev = f'<a class="chip" href="{meta["prev"]}">← 上一单元</a>' if meta.get('prev') else ''
     next_ = f'<a class="chip" href="{meta["next"]}">下一单元 →</a>' if meta.get('next') else ''
+    prev_side = (f'<a href="{meta["prev"]}">← {meta.get("prev_title","上一单元")}</a>') if meta.get('prev') else ''
+    next_side = (f'<a href="{meta["next"]}">{meta.get("next_title","下一单元")} →</a>') if meta.get('next') else ''
     html = (HEAD.format(title=meta['title'], subtitle=meta['subtitle'], badges=badges,
-                        nav=nav, css=accents + '\n' + CSS)
+                        nav=nav, css=accents + '\n' + CSS,
+                        unit_title=meta['title'], side_nav=side_nav_html(body),
+                        prev_side=prev_side, next_side=next_side)
             + body
             + FOOT.format(engine=ENG, app=app,
                           footleft=meta.get('foot', '人教版（2024年审定）四年级数学上册 · 动画课件'),
