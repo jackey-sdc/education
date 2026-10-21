@@ -135,7 +135,7 @@
   .card-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .toggle-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
   @media print{
-    header,nav,.controls,.tabs,.score .btn{display:none!important}
+    header,nav,button,.controls,.tabs,.stepper,.score .btn{display:none!important}
     body{background:#fff}
     .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
     details.answers{display:block}
@@ -759,36 +759,48 @@ function bootCourse(groups){
    ========================================================================== */
 (function initTrap(){
   const stage = $('#trapStage'), note = $('#trapNote');
+  /* 三种梯形的真实几何：dl/dr 是上下底两端在水平方向的错位量
+     等腰：dl === dr（两腰相等）；直角：dl === 0（左腰垂直于两底） */
+  const KINDS = [
+    {t:'一般梯形', topW:150, botW:240, dl:30, dr:60,
+     desc:'只有<b>一组</b>对边平行（上底 ∥ 下底），两腰<b>既不平行也不相等</b>。'},
+    {t:'等腰梯形', topW:140, botW:240, dl:50, dr:50,
+     desc:'两腰<b>相等</b>（是轴对称图形）。上下底相差 ' + (240-140) + ' 厘米，两腰的水平错位各 ' + 50 + ' 厘米。'},
+    {t:'直角梯形', topW:160, botW:240, dl:0, dr:80,
+     desc:'有一个角是<b>直角</b>，左腰<b>垂直</b>于两底（dl = 0）。'}
+  ];
   let kind = 0;
   function render(){
     stage.innerHTML = '';
-    const svg = s('svg', {viewBox:'0 0 480 280', width:480, height:280});
+    const svg = s('svg', {viewBox:'0 0 480 300', width:480, height:300});
     stage.appendChild(svg);
-    const oy = 210, topY = 110;
-    let topW = 120, botW = 240, left = 120;
-    let title, desc;
-    if (kind === 0){ title = '一般梯形'; desc = '只有<b>一组</b>对边平行（上底 ∥ 下底），另一组对边不平行。'; }
-    if (kind === 1){ title = '等腰梯形'; desc = '两腰<b>相等</b>（是轴对称图形），上底 <b>130</b>，两腰各 <b>65</b>。'; topW = 130; left = 115; }
-    if (kind === 2){ title = '直角梯形'; desc = '有一个角是<b>直角</b>，其中一条腰<b>垂直</b>于两底。'; topW = 140; left = 120; }
-    const A = [left, oy], B = [left + botW, oy], C = [left + botW - (botW - topW) / 2, topY], D = [left + (botW - topW) / 2, topY];
+    const K = KINDS[kind];
+    const oy = 220, topY = 120, left = 130;
+    const botW = K.botW, topW = K.topW;
+    const A = [left, oy], B = [left + botW, oy],
+          C = [left + botW - K.dr, topY], D = [left + K.dl, topY];
     s('polygon', {points:`${A} ${B} ${C} ${D}`, fill:'rgba(122,79,214,.10)', stroke:'#7a4fd6', 'stroke-width':3}, svg);
     [[A,'A'],[B,'B'],[C,'C'],[D,'D']].forEach(([p, t]) => {
       s('circle', {cx:p[0], cy:p[1], r:4, fill:'#20304a'}, svg);
       label(svg, p[0] + (t === 'B' || t === 'C' ? -12 : 12), p[1] + (t === 'A' || t === 'B' ? 16 : -8), t, {size:14, fill:'#20304a'});
     });
-    /* 上底下底高 */
-    s('line', {x1:D[0], y1:D[1] - 22, x2:C[0], y2:C[1] - 22, stroke:'#2f6fd0', 'stroke-width':2, 'stroke-dasharray':'6 4'}, svg);
-    label(svg, (D[0]+C[0])/2, D[1] - 32, '上底 = ' + topW, {size:14, fill:'#2f6fd0'});
-    s('line', {x1:A[0], y1:A[1] + 26, x2:B[0], y2:B[1] + 26, stroke:'#2f6fd0', 'stroke-width':2, 'stroke-dasharray':'6 4'}, svg);
-    label(svg, (A[0]+B[0])/2, A[1] + 44, '下底 = ' + botW, {size:14, fill:'#2f6fd0'});
-    s('line', {x1:A[0] - 26, y1:A[1], x2:A[0] - 26, y2:D[1], stroke:'#1f9d6b', 'stroke-width':2, 'stroke-dasharray':'6 4'}, svg);
-    label(svg, A[0] - 46, (A[1]+D[1])/2, '高 = ' + (oy - topY), {size:14, fill:'#1f9d6b'});
-    label(svg, 240, 34, title, {size:18, fill:'#7a4fd6'});
-    note.innerHTML = `<b>${title}</b>：${desc}<br>` +
+    /* 直角梯形标出直角符号 */
+    if (kind === 2){
+      s('path', {d:`M ${A[0]+14} ${A[1]} L ${A[0]+14} ${A[1]-14} L ${A[0]} ${A[1]-14}`,
+        fill:'none', stroke:'#7a4fd6', 'stroke-width':1.6}, svg);
+    }
+    /* 上底 / 下底 / 高 */
+    s('line', {x1:D[0], y1:D[1] - 24, x2:C[0], y2:C[1] - 24, stroke:'#2f6fd0', 'stroke-width':2, 'stroke-dasharray':'6 4'}, svg);
+    label(svg, (D[0]+C[0])/2, D[1] - 34, '上底 = ' + topW, {size:14, fill:'#2f6fd0'});
+    s('line', {x1:A[0], y1:A[1] + 28, x2:B[0], y2:B[1] + 28, stroke:'#2f6fd0', 'stroke-width':2, 'stroke-dasharray':'6 4'}, svg);
+    label(svg, (A[0]+B[0])/2, A[1] + 46, '下底 = ' + botW, {size:14, fill:'#2f6fd0'});
+    s('line', {x1:A[0] - 28, y1:A[1], x2:A[0] - 28, y2:D[1], stroke:'#1f9d6b', 'stroke-width':2, 'stroke-dasharray':'6 4'}, svg);
+    label(svg, A[0] - 48, (A[1]+D[1])/2, '高 = ' + (oy - topY), {size:14, fill:'#1f9d6b'});
+    label(svg, 240, 34, K.t, {size:18, fill:'#7a4fd6'});
+    note.innerHTML = `<b>${K.t}</b>：${K.desc}<br>` +
       `梯形有<b>一组</b>对边平行（上底 ∥ 下底），另一组对边<b>不平行</b>。<br>` +
       `梯形的高：从上底上的一点向下底画<b>垂线段</b>，这条垂线段的长度就是高（每个梯形的高都相等）。`;
   }
-  $('#trapStage').addEventListener('click', e => {});
   document.querySelectorAll('button[data-t]').forEach(b => b.addEventListener('click', () => {
     kind = +b.dataset.t; render();
   }));

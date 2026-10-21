@@ -135,7 +135,7 @@
   .card-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .toggle-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
   @media print{
-    header,nav,.controls,.tabs,.score .btn{display:none!important}
+    header,nav,button,.controls,.tabs,.stepper,.score .btn{display:none!important}
     body{background:#fff}
     .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
     details.answers{display:block}
@@ -692,8 +692,9 @@ function bootCourse(groups){
     const grid = document.createElement('div');
     grid.style.cssText = 'display:grid;grid-template-columns:repeat(' + cols + ',46px);gap:0;font-variant-numeric:tabular-nums';
     const cell = (txt, opt) => {
-      const o = Object.assign({color:'var(--ink)', size:26, weight:700, bg:'transparent', border:'none'}, opt||{});
+      const o = Object.assign({color:'var(--ink)', size:26, weight:700, bg:'transparent', border:'none', cls:''}, opt||{});
       const d = document.createElement('div');
+      if (o.cls) d.className = o.cls;
       d.textContent = txt;
       d.style.cssText = `text-align:center;font-size:${o.size}px;font-weight:${o.weight};color:${o.color};` +
         `height:38px;line-height:38px;background:${o.bg};border:${o.border};`;
@@ -757,7 +758,7 @@ function bootCourse(groups){
     grid.appendChild(line2);
     resRow.forEach(txt => {
       grid.appendChild(cell(txt, {color: cur >= total ? 'var(--green)' : 'var(--ink2)',
-        size: 26, weight:800}));
+        size: 26, weight:800, cls:'res'}));
     });
     wrap.appendChild(grid);
 

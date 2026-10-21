@@ -15,43 +15,54 @@
     {name:'射线', ends:1, dir:1},
     {name:'直线', ends:0, dir:2}
   ];
+  /* 箭头：dir=1 向右，dir=-1 向左；箭头长 16、底边宽 18 */
+  const arrow = (g, x, y, dir, color) => {
+    const L = 16, W = 9;
+    s('polygon', {points:`${x + dir*L},${y} ${x},${y-W} ${x},${y+W}`, fill:color}, g);
+  };
   function render(){
     stage.innerHTML = '';
-    const W = 460, H = 150;
+    const W = 460, H = 188;
     const svg = s('svg', {viewBox:`0 0 ${W} ${H}`, width:W, height:H});
     stage.appendChild(svg);
     KINDS.forEach((k, i) => {
-      const y = 44 + i * 52, x0 = 150, len = 90 + step * 55;
+      const y = 58 + i * 58, x0 = 200, len = 75 + step * 40;
       const g = s('g', {}, svg);
       if (k.name === '线段'){
         s('line', {x1:x0, y1:y, x2:x0+len, y2:y, stroke:'#2f6fd0', 'stroke-width':4, 'stroke-linecap':'round'}, g);
         s('circle', {cx:x0, cy:y, r:6, fill:'#20304a'}, g);
         s('circle', {cx:x0+len, cy:y, r:6, fill:'#20304a'}, g);
         if (step > 0){
-          s('line', {x1:x0-len*0.6, y1:y, x2:x0, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
-          s('line', {x1:x0+len, y1:y, x2:x0+len+len*0.6, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+          /* 线段不能延长：圈出两个端点并标注 */
+          s('circle', {cx:x0, cy:y, r:11, fill:'none', stroke:'#f08a24', 'stroke-width':2.5}, g);
+          s('circle', {cx:x0+len, cy:y, r:11, fill:'none', stroke:'#f08a24', 'stroke-width':2.5}, g);
+          label(svg, x0 + len + 18, y - 16, '两个端点，不能再延长', {size:13, fill:'#b35c00', anchor:'start'});
         }
       } else if (k.name === '射线'){
         s('line', {x1:x0, y1:y, x2:x0+len, y2:y, stroke:'#1f9d6b', 'stroke-width':4, 'stroke-linecap':'round'}, g);
         s('circle', {cx:x0, cy:y, r:6, fill:'#20304a'}, g);
+        arrow(g, x0+len, y, 1, '#1f9d6b');
         if (step > 0){
-          s('line', {x1:x0+len, y1:y, x2:x0+len+len*0.8, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+          /* 射线向一个方向无限延伸 */
+          s('line', {x1:x0+len+18, y1:y, x2:x0+len+len*0.8, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+          arrow(g, x0+len+len*0.8, y, 1, '#9db4d8');
+          label(svg, x0 + len + 20, y - 16, '向一个方向无限延伸', {size:13, fill:'#4b5f7d', anchor:'start'});
         }
-        const p = polar(x0, y, 14, 0);
-        s('polygon', {points:`${x0+len+16},${y} ${p[0]},${p[1]-9} ${p[0]},${p[1]+9}`, fill:'#1f9d6b'}, g);
       } else {
         s('line', {x1:x0-len, y1:y, x2:x0+len, y2:y, stroke:'#7a4fd6', 'stroke-width':4, 'stroke-linecap':'round'}, g);
-        [x0-len, x0+len].forEach(x => {
-          const p = polar(x, y, 14, x === x0+len ? 0 : 180);
-          s('polygon', {points:`${x+(x===x0+len?16:-16)},${y} ${p[0]},${p[1]-9} ${p[0]},${p[1]+9}`, fill:'#7a4fd6'}, g);
-        });
+        arrow(g, x0-len, y, -1, '#7a4fd6');
+        arrow(g, x0+len, y, 1, '#7a4fd6');
         if (step > 0){
-          s('line', {x1:x0-len-len*0.7, y1:y, x2:x0-len, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
-          s('line', {x1:x0+len, y1:y, x2:x0+len+len*0.7, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+          s('line', {x1:x0-len-len*0.7, y1:y, x2:x0-len-18, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+          arrow(g, x0-len-len*0.7, y, -1, '#9db4d8');
+          s('line', {x1:x0+len+18, y1:y, x2:x0+len+len*0.7, y2:y, stroke:'#9db4d8', 'stroke-width':3, 'stroke-dasharray':'7 6'}, g);
+          arrow(g, x0+len+len*0.7, y, 1, '#9db4d8');
+          label(svg, x0 + len + 20, y - 16, '向两个方向无限延伸', {size:13, fill:'#4b5f7d', anchor:'start'});
         }
       }
-      label(svg, 120, y + 6, k.name, {size:16, anchor:'end', fill:'#20304a'});
+      label(svg, 26, y - 15, k.name, {size:16, anchor:'start', fill:'#20304a'});
     });
+
     const msgs = [
       '线段有 <b>2 个端点</b>，可以量出长度；射线有 <b>1 个端点</b>；直线<b>没有端点</b>。点"延伸"看它们怎么变。',
       '线段：<b>不能</b>再延长——两个端点是它的一部分。',
@@ -343,7 +354,14 @@ function highlightScale(g, cx, cy, R, ring, from, to, color){
    ========================================================================== */
 function miniAngleSVG(theta, opt){
   const o = Object.assign({w:130, h:100, mark:true}, opt||{});
-  const cx = 26, cy = o.h - 20, r = 82;
+  const cy = o.h - 20;
+  /* 顶点与半径自适应：保证两条边的端点都落在画布内（钝角时尤其重要） */
+  const cosT = Math.cos(theta * Math.PI / 180);
+  let r = 82, cx = 26;
+  if (cosT < 0){
+    cx = 8 - r * cosT;
+    if (cx + r > 122){ r = 122 - cx; }
+  }
   const p1 = polar(cx, cy, r, 0), p2 = polar(cx, cy, r, theta);
   const arc = arcPoints(cx, cy, 24, 0, theta);
   return `<svg width="${o.w}" height="${o.h}" viewBox="0 0 ${o.w} ${o.h}" style="vertical-align:middle;background:#fbfcff;border:1px solid #e3e9f2;border-radius:8px">` +

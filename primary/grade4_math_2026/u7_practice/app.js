@@ -158,8 +158,8 @@
         label(svg, 120, y + 6, r[0], {size:16, anchor:'end'});
       });
       /* 角 */
-      drawAngle(svg, 400, 200, 0, 60, {r:90, color:'#f08a24', arcColor:'#f08a24', arcR:26, label:'60°'});
-      label(svg, 400, 235, '角', {size:14, fill:'#4b5f7d'});
+      drawAngle(svg, 372, 200, 0, 60, {r:84, color:'#f08a24', arcColor:'#f08a24', arcR:26, label:'60°'});
+      label(svg, 372, 238, '角', {size:14, fill:'#4b5f7d'});
       note.innerHTML = '<b>线与角</b>：线段 2 个端点、射线 1 个、直线 0 个；角由<b>一个顶点和两条射线</b>组成，' +
         '量角用<b>量角器</b>（内圈 0 在右、外圈 0 在左；锐角读内圈、钝角读外圈）。';
     } else if (g === 1){

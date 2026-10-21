@@ -95,9 +95,27 @@ python3 tests/make_preview.py
 
 ```bash
 pip install playwright && playwright install chromium
-python3 tests/test_answers.py            # 259 题回填标准答案，应全部判定正确
-python3 u2_angle/tests/test_unit.py       # 单个单元：JS 报错 / 交互巡检 / 样式自检
+
+python3 tests/audit.py            # ★ 四层验收：结构 / 内容 / 交互 / 视觉（全部单元）
+python3 tests/audit.py u2_angle   # 只查一个单元
+python3 tests/test_answers.py     # 回填标准答案，验证题答自洽（259 题）
+python3 u2_angle/tests/test_unit.py   # 该单元几何断言 + 交互巡检 + 样式自检
+python3 tests/make_preview.py     # 重新生成预览图
+python3 tests/make_contact.py     # 生成各 section 截图联系表（人工过目用）
 ```
+
+> `tests/contact/` 下会生成每个 section 的截图与一张联系表 `index.html`，
+> 用于"逐 section 人工过目"（排版、留白、投屏可读性）。**自动断言抓不到"形状画错"**，
+> 这一步不能省——本轮就是靠它抓到"射线被画成实心楔形""直角梯形画成了等腰梯形"两处问题。
+
+`tests/audit.py` 覆盖的检查项：
+
+| 层 | 检查项 |
+|---|---|
+| 结构 | 无外部资源引用（CDN/字体/外链）、`lang`/`title`/`viewport`、打印样式、相对路径有效 |
+| 内容 | 导航锚点有对应 section、**显示题数 == 标称总题数**、题目数 == 答案数 == 解析数、解析非空、每题有答案、口径关键词齐全 |
+| 交互 | 零 console error / pageerror、答对计分 +1、"重做本档"原地重建且计分归零、**答错文案不含正确答案**、填空答案归一化（"180" / "180度" / "180°" 都算对）、打印模式隐藏按钮且答案区可见 |
+| 视觉 | **SVG 元素出框检查**（`getBBox()` 与 `viewBox` 比对）、各单元几何断言（"图 = 数"同源） |
 
 > 注：`tests/test_unit.py` 还会检查 **CSS 自定义属性是否生效**——
 > 早期版本曾因 `:root` 规则被破坏导致按钮白底白字、肉眼极易漏检，因此此项已固化为自动断言。

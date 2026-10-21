@@ -1,4 +1,5 @@
-# 测试过程截图（可由 tests/_smoke.py 重新生成）
+# 测试过程截图（可由 tests/_smoke.py、tests/make_contact.py 重新生成）
 shots/
+tests/contact/
 __pycache__/
 *.pyc

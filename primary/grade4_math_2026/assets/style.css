@@ -122,7 +122,7 @@
   .card-title-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .toggle-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px}
   @media print{
-    header,nav,.controls,.tabs,.score .btn{display:none!important}
+    header,nav,button,.controls,.tabs,.stepper,.score .btn{display:none!important}
     body{background:#fff}
     .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
     details.answers{display:block}

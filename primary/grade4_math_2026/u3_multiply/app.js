@@ -94,8 +94,9 @@
     const grid = document.createElement('div');
     grid.style.cssText = 'display:grid;grid-template-columns:repeat(' + cols + ',46px);gap:0;font-variant-numeric:tabular-nums';
     const cell = (txt, opt) => {
-      const o = Object.assign({color:'var(--ink)', size:26, weight:700, bg:'transparent', border:'none'}, opt||{});
+      const o = Object.assign({color:'var(--ink)', size:26, weight:700, bg:'transparent', border:'none', cls:''}, opt||{});
       const d = document.createElement('div');
+      if (o.cls) d.className = o.cls;
       d.textContent = txt;
       d.style.cssText = `text-align:center;font-size:${o.size}px;font-weight:${o.weight};color:${o.color};` +
         `height:38px;line-height:38px;background:${o.bg};border:${o.border};`;
@@ -159,7 +160,7 @@
     grid.appendChild(line2);
     resRow.forEach(txt => {
       grid.appendChild(cell(txt, {color: cur >= total ? 'var(--green)' : 'var(--ink2)',
-        size: 26, weight:800}));
+        size: 26, weight:800, cls:'res'}));
     });
     wrap.appendChild(grid);
 
