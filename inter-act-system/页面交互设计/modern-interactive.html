@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交互式科学教育辅助系统</title>
+    <style>
+        /* CSS变量定义 */
+        :root {
+            /* 色彩系统 */
+            --primary-color: #3a86ff;
+            --secondary-color: #8338ec;
+            --accent-color: #ff006e;
+            --text-primary: #f8f9fa;
+            --text-secondary: #adb5bd;
+            --text-tertiary: #6c757d;
+            --bg-primary: #0f172a;
+            --bg-secondary: rgba(30, 41, 59, 0.7);
+            --bg-tertiary: rgba(15, 23, 42, 0.8);
+            --glass-bg: rgba(30, 41, 59, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.15);
+            --shadow-heavy: 0 16px 48px rgba(0, 0, 0, 0.2);
+            
+            /* 排版 */
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-serif: 'Georgia', serif;
+            --font-mono: 'Fira Code', monospace;
+            
+            /* 间距 */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            --space-3xl: 4rem;
+            
+            /* 圆角 */
+            --radius-sm: 0.25rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+            --radius-full: 9999px;
+            
+            /* 过渡 */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+        
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(58, 134, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(131, 56, 236, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+        
+        /* 玻璃态效果 */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        /* 渐变文本 */
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 渐变按钮 */
+        .gradient-btn {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            padding: var(--space-sm) var(--space-lg);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(58, 134, 255, 0.3);
+        }
+        
+        .gradient-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left var(--transition-slow);
+        }
+        
+        .gradient-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-light);
+            transition: all var(--transition-normal);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 导航栏 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: var(--space-md) 0;
+            transition: all var(--transition-normal);
+        }
+        
+        .navbar.scrolled {
+            background: var(--bg-tertiary);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-light);
+        }
+        
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--space-xl);
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: var(--space-xl);
+        }
+        
+        .nav-menu a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+            position: relative;
+        }
+        
+        .nav-menu a:hover {
+            color: var(--text-primary);
+        }
+        
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width var(--transition-normal);
+        }
+        
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-full);
+            padding: var(--space-sm) var(--space-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        /* 主内容区 */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-xl);
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: var(--space-3xl) 0;
+            position: relative;
+        }
+        
+        .hero-content {
+            flex: 1;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-xl);
+            max-width: 600px;
+        }
+        
+        .hero-actions {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+        
+        .hero-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .hero-animation {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(58, 134, 255, 0.1), rgba(131, 56, 236, 0.1));
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(58, 134, 255, 0.2), transparent);
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .animation-icon {
+            font-size: 8rem;
+            z-index: 1;
+        }
+        
+        /* 学科选择 */
+        .subjects {
+            padding: var(--space-3xl) 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+        }
+        
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-xl);
+        }
+        
+        .subject-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .subject-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: var(--space-lg);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .subject-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+        
+        .subject-card p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+        
+        /* 特色功能 */
+        .features {
+            padding: var(--space-3xl) 0;
+            background: var(--bg-secondary);
+            margin: var(--space-3xl) 0;
+            border-radius: var(--radius-2xl);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-xl);
+        }
+        
+        .feature-card {
+            text-align: center;
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto var(--space-lg);
+            background: linear-gradient(135deg, rgba(58, 134, 255, 0.1), rgba(131, 56, 236, 0.1));
+            border: 1px solid var(--glass-border);
+            transition: all var(--transition-normal);
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, rgba(58, 134, 255, 0.2), rgba(131, 56, 236, 0.2));
+        }
+        
+        .feature-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+        }
+        
+        /* 解题页面 */
+        .problem-page {
+            padding: var(--space-3xl) 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        
+        .problem-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: var(--space-2xl);
+            align-items: start;
+        }
+        
+        .problem-detail {
+            position: sticky;
+            top: 120px;
+        }
+        
+        .problem-header {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .problem-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+        
+        .problem-meta {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .difficulty-badge {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .difficulty-easy {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .difficulty-medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        .difficulty-hard {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .problem-content {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .problem-content p {
+            margin-bottom: var(--space-md);
+            line-height: 1.7;
+        }
+        
+        .knowledge-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .knowledge-tag {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            background: rgba(58, 134, 255, 0.1);
+            color: var(--primary-color);
+            border: 1px solid rgba(58, 134, 255, 0.2);
+        }
+        
+        .solution-steps {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .solution-steps h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .step {
+            margin-bottom: var(--space-lg);
+            padding: var(--space-lg);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .step-number {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .step-content {
+            color: var(--text-secondary);
+        }
+        
+        .animation-container {
+            min-height: 500px;
+        }
+        
+        .animation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .animation-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .animation-controls {
+            display: flex;
+            gap: var(--space-md);
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+        
+        .control-group label {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+        
+        .control-group input {
+            padding: var(--space-xs) var(--space-sm);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        
+        .control-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .animation-canvas {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(58, 134, 255, 0.05), rgba(131, 56, 236, 0.05));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .animation-canvas::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .canvas-content {
+            z-index: 1;
+            text-align: center;
+        }
+        
+        .canvas-icon {
+            font-size: 4rem;
+            margin-bottom: var(--space-md);
+        }
+        
+        .canvas-text {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+        }
+        
+        /* 学习中心 */
+        .learning-center {
+            padding: var(--space-3xl) 0;
+            min-height: 100vh;
+        }
+        
+        .learning-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-2xl);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: var(--space-xl);
+        }
+        
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .learning-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-xl);
+        }
+        
+        .progress-section {
+            margin-bottom: var(--space-xl);
+        }
+        
+        .section-heading {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .progress-item {
+            margin-bottom: var(--space-lg);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .progress-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .progress-percentage {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+            transition: width var(--transition-slow);
+        }
+        
+        .recent-activities {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .activity-item {
+            padding: var(--space-lg) 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .activity-title {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+        }
+        
+        .activity-status {
+            font-size: 0.75rem;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            display: inline-block;
+        }
+        
+        .status-completed {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .status-in-progress {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: var(--space-2xl) 0;
+            }
+            
+            .hero-content,
+            .hero-visual {
+                flex: none;
+                width: 100%;
+            }
+            
+            .hero-visual {
+                margin-top: var(--space-2xl);
+            }
+            
+            .problem-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .problem-detail {
+                position: static;
+            }
+            
+            .learning-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-container {
+                padding: 0 var(--space-lg);
+            }
+            
+            .nav-menu {
+                display: none;
+            }
+            
+            .main-container {
+                padding: 0 var(--space-lg);
+            }
+            
+            .hero-actions {
+                justify-content: center;
+            }
+            
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .learning-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-animation {
+                width: 300px;
+                height: 300px;
+            }
+            
+            .animation-icon {
+                font-size: 6rem;
+            }
+            
+            .learning-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* 可访问性 */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
+        /* 键盘导航 */
+        a:focus,
+        button:focus,
+        input:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <div class="logo-icon">I</div>
+                <span class="gradient-text">InterAct</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#subjects">学科</a></li>
+                <li><a href="#features">功能</a></li>
+                <li><a href="#problem">解题</a></li>
+                <li><a href="#learning">学习中心</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-outline">登录</button>
+                <button class="gradient-btn">注册</button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 英雄区域 -->
+    <section id="home" class="hero">
+        <div class="main-container">
+            <div style="display: flex; align-items: center; gap: var(--space-2xl);">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        交互式<span class="gradient-text">科学教育</span>辅助系统
+                    </h1>
+                    <p class="hero-subtitle">
+                        通过沉浸式动画和引导式解题，让抽象的科学概念变得直观易懂，激发学习兴趣，建立知识与实践的联系。
+                    </p>
+                    <div class="hero-actions">
+                        <button class="gradient-btn">开始探索</button>
+                        <button class="btn-outline">了解更多</button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-animation glass">
+                        <div class="animation-icon">⚡</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 学科选择 -->
+    <section id="subjects" class="subjects">
+        <div class="main-container">
+            <div class="section-header">
+                <h2 class="section-title">选择学科</h2>
+                <p class="section-subtitle">
+                    探索数学、物理和化学的奥秘，通过交互式动画和引导式解题，加深对抽象概念的理解。
+                </p>
+            </div>
+            <div class="subjects-grid">
+                <div class="card subject-card">
+                    <div class="subject-icon">📐</div>
+                    <h3>数学</h3>
+                    <p>几何图形变换、函数图像绘制、概率分布可视化，让数学变得直观易懂。</p>
+                    <button class="gradient-btn">开始学习</button>
+                </div>
+                <div class="card subject-card">
+                    <div class="subject-icon">⚡</div>
+                    <h3>物理</h3>
+                    <p>力学运动模拟、电磁现象可视化、光学实验模拟，探索物理世界的规律。</p>
+                    <button class="gradient-btn">开始学习</button>
+                </div>
+                <div class="card subject-card">
+                    <div class="subject-icon">🧪</div>
+                    <h3>化学</h3>
+                    <p>分子结构展示、化学反应过程、元素周期表交互，理解化学的微观世界。</p>
+                    <button class="gradient-btn">开始学习</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 特色功能 -->
+    <section id="features" class="features">
+        <div class="main-container">
+            <div class="section-header">
+                <h2 class="section-title">核心功能</h2>
+                <p class="section-subtitle">
+                    我们提供一系列强大的功能，帮助学生更好地理解和掌握科学知识。
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>智能题目分析</h3>
+                    <p>解析题目内容，识别知识点和解题步骤，为学生提供个性化的学习路径。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>引导式解题</h3>
+                    <p>基于题目难度和学生水平，提供分步骤引导，帮助学生理解解题思路。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3>交互式动画</h3>
+                    <p>根据题目类型生成相应的可视化动画，让抽象概念变得直观易懂。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔗</div>
+                    <h3>实际应用关联</h3>
+                    <p>关联题目知识点与工业、生活实际应用案例，建立知识与实践的联系。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>学习进度追踪</h3>
+                    <p>记录学生解题过程和掌握情况，生成个性化学习报告。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>多设备同步</h3>
+                    <p>支持PC、平板和移动设备，随时随地继续学习。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 解题页面 -->
+    <section id="problem" class="problem-page">
+        <div class="main-container">
+            <div class="problem-container">
+                <div class="glass problem-detail">
+                    <div class="problem-header">
+                        <h2 class="problem-title">二次函数图像与性质</h2>
+                        <div class="problem-meta">
+                            <div class="meta-item">
+                                <span>📐</span>
+                                <span>数学</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="difficulty-badge difficulty-medium">中等</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>⏱️</span>
+                                <span>10分钟</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="problem-content">
+                        <p>已知二次函数 f(x) = ax² + bx + c 的图像经过点 (0, 3)，且当 x = 1 时取得最小值 2，求函数的解析式。</p>
+                    </div>
+                    <div class="knowledge-tags">
+                        <span class="knowledge-tag">二次函数</span>
+                        <span class="knowledge-tag">顶点式</span>
+                        <span class="knowledge-tag">最小值</span>
+                    </div>
+                    <div class="solution-steps">
+                        <h3>解题步骤</h3>
+                        <div class="step">
+                            <div class="step-number">步骤 1：确定二次函数的顶点式</div>
+                            <div class="step-content">
+                                由于二次函数在 x = 1 时取得最小值，因此顶点坐标为 (1, 2)，可以设函数的顶点式为 f(x) = a(x - 1)² + 2。
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">步骤 2：利用已知点求参数 a</div>
+                            <div class="step-content">
+                                函数图像经过点 (0, 3)，代入顶点式得：3 = a(0 - 1)² + 2，解得 a = 1。
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">步骤 3：展开顶点式得到一般式</div>
+                            <div class="step-content">
+                                将 a = 1 代入顶点式，展开得：f(x) = (x - 1)² + 2 = x² - 2x + 3。
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--space-xl);">
+                        <button class="gradient-btn">提交答案</button>
+                    </div>
+                </div>
+                <div class="glass animation-container">
+                    <div class="animation-header">
+                        <h3 class="animation-title">二次函数图像</h3>
+                        <div class="animation-controls">
+                            <div class="control-group">
+                                <label for="a-value">a 值</label>
+                                <input type="number" id="a-value" value="1" min="-5" max="5" step="0.1">
+                            </div>
+                            <div class="control-group">
+                                <label for="b-value">b 值</label>
+                                <input type="number" id="b-value" value="-2" min="-10" max="10" step="0.1">
+                            </div>
+                            <div class="control-group">
+                                <label for="c-value">c 值</label>
+                                <input type="number" id="c-value" value="3" min="-10" max="10" step="0.1">
+                            </div>
+                            <button class="gradient-btn" onclick="updateAnimation()">更新</button>
+                        </div>
+                    </div>
+                    <div class="animation-canvas">
+                        <div class="canvas-content">
+                            <div class="canvas-icon">📈</div>
+                            <div class="canvas-text" id="canvas-text">
+                                f(x) = x² - 2x + 3
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 学习中心 -->
+    <section id="learning" class="learning-center">
+        <div class="main-container">
+            <div class="section-header">
+                <h2 class="section-title">学习中心</h2>
+                <p class="section-subtitle">
+                    跟踪你的学习进度，了解知识点掌握情况，获取个性化学习建议。
+                </p>
+            </div>
+            <div class="learning-stats">
+                <div class="card stat-card">
+                    <div class="stat-value">42</div>
+                    <div class="stat-label">已解题目</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value">85%</div>
+                    <div class="stat-label">正确率</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">学习时长（小时）</div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">掌握知识点</div>
+                </div>
+            </div>
+            <div class="learning-content">
+                <div>
+                    <div class="progress-section">
+                        <h3 class="section-heading">知识点掌握情况</h3>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-title">二次函数</span>
+                                <span class="progress-percentage">90%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-title">牛顿运动定律</span>
+                                <span class="progress-percentage">75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-title">化学平衡</span>
+                                <span class="progress-percentage">60%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="recent-activities">
+                    <h3 class="section-heading">最近活动</h3>
+                    <div class="activity-item">
+                        <div class="activity-header">
+                            <span class="activity-title">完成二次函数题目</span>
+                            <span class="activity-time">今天 14:30</span>
+                        </div>
+                        <span class="activity-status status-completed">已完成</span>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-header">
+                            <span class="activity-title">学习牛顿运动定律</span>
+                            <span class="activity-time">今天 13:15</span>
+                        </div>
+                        <span class="activity-status status-completed">已完成</span>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-header">
+                            <span class="activity-title">尝试化学平衡题目</span>
+                            <span class="activity-time">今天 11:45</span>
+                        </div>
+                        <span class="activity-status status-in-progress">进行中</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // 动画更新函数
+        function updateAnimation() {
+            const a = parseFloat(document.getElementById('a-value').value);
+            const b = parseFloat(document.getElementById('b-value').value);
+            const c = parseFloat(document.getElementById('c-value').value);
+            
+            const canvasText = document.getElementById('canvas-text');
+            canvasText.textContent = `f(x) = ${a}x² + ${b}x + ${c}`;
+            
+            // 这里可以添加实际的Canvas绘制代码
+            // 由于是原型，暂时只更新文本
+        }
+        
+        // 卡片悬停效果
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
