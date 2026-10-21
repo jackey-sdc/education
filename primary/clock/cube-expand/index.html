@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>立方体和长方体展开教具</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>立方体和长方体展开教具</h1>
+        
+        <div class="controls">
+            <div class="shape-selector">
+                <button id="cube-btn" class="active">立方体</button>
+                <button id="cuboid-btn">长方体</button>
+            </div>
+            
+            <div class="instructions">
+                <p>选择一种展开方式，然后点击右下角的"播放动画"按钮查看折叠/展开过程</p>
+                <button id="reset-btn">重置</button>
+            </div>
+        </div>
+        
+        <!-- 3D模型容器 -->
+        <div class="cube-container">
+            <div class="scene">
+                <div class="cube" id="cube">
+                    <div class="face front" data-face="1">1</div>
+                    <div class="face back" data-face="2">2</div>
+                    <div class="face right" data-face="3">3</div>
+                    <div class="face left" data-face="4">4</div>
+                    <div class="face top" data-face="5">5</div>
+                    <div class="face bottom" data-face="6">6</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 展开图模板选择区 -->
+        <div class="templates-container">
+            <h2>选择展开方式</h2>
+            <div class="templates-grid" id="templates-grid">
+                <!-- 展开图模板将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 动画展示区 -->
+        <div class="animation-container">
+            <h2>动画展示</h2>
+            <div class="animation-stage" id="animation-stage">
+                <!-- 动画将在这里展示 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 悬浮播放动画按钮 -->
+    <div class="floating-button" id="play-animation-btn">
+        <span class="play-icon">▶</span>
+        <span class="button-text">播放动画</span>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
