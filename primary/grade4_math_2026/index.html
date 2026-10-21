@@ -85,6 +85,16 @@
   ul.klist li{margin:4px 0}
   a{color:var(--accent)}
   footer{max-width:1080px;margin:0 auto;padding:0 16px 40px;color:var(--ink2);font-size:13.5px}
+  @media print{
+    header,nav,.sidenav,.nav-handle,.nav-scrim,.nav-btn,button{display:none!important}
+    body{background:#fff}
+    .layout{padding:0;max-width:none;display:block}
+    .content{max-width:none}
+    .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+    a{color:#20304a;text-decoration:none}
+    .unit{break-inside:avoid}
+    table.plain th{background:#eef3fb}
+  }
 </style>
 </head>
 <body>
@@ -115,7 +125,8 @@
       <a href="#errors"><span class="dotm"></span>全册易错点速查</a>
       <a href="#eval"><span class="dotm"></span>评价建议</a>
     <div class="side-foot">
-      <a href="../index.html">← 回到教育实验平台</a>
+      <a href="../../index.html" id="backToPlatform">← 返回教育实验平台首页</a>
+      <a href="#" id="openStandalone" target="_blank" rel="noopener" style="display:none">↗ 在新窗口打开本课件</a>
     </div>
   </aside>
   <button class="nav-handle" id="navShow" title="显示章节栏">章 节 栏</button>
@@ -251,6 +262,13 @@
   if(handle) handle.addEventListener('click',()=>{ isMobile()?body.classList.add('nav-open'):setCollapsed(false); });
   if(scrim) scrim.addEventListener('click',()=>body.classList.remove('nav-open'));
   document.addEventListener('keydown',e=>{ if(e.key==='Escape')body.classList.remove('nav-open'); });
+  /* 嵌在平台 iframe 里时，"返回平台"没有意义（平台就在外层），改为"新窗口打开" */
+  const back=document.getElementById('backToPlatform'), open=document.getElementById('openStandalone');
+  const embedded = window.self !== window.top;
+  if(embedded){
+    if(back) back.style.display='none';
+    if(open){ open.href=location.href; open.style.display=''; }
+  }
   const links=[...document.querySelectorAll('.sidenav a[href^="#"]')];
   links.forEach(a=>a.addEventListener('click',()=>{ if(isMobile())body.classList.remove('nav-open'); }));
   const map=new Map();

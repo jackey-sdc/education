@@ -19,6 +19,12 @@ FORBIDDEN = [
 
 def structure(html: str, path: pathlib.Path):
     issues = []
+    # 相对链接必须真实存在（课件常被单独打开，路径写错就是死链）
+    for rel in sorted(set(re.findall(r'(?:src|href)\s*=\s*["\']([^"\']+)["\']', html))):
+        if rel.startswith(('#', 'data:', 'http')):
+            continue
+        if not (path.parent / rel).exists():
+            issues.append(f'相对链接失效: {rel}')
     for pat in FORBIDDEN:
         for m in pat.finditer(html):
             issues.append(f'外部资源引用: {html[max(0,m.start()-40):m.start()+60].strip()[:100]}')
@@ -254,6 +260,52 @@ def run_browser(pg, unit: str):
     if pr['answersVisible'] is False: issues.append('打印模式下答案区不可见')
     return issues
 
+def audit_overview(pg, browser):
+    """课程总览页：链接有效性 + 侧栏 + 独立/内嵌两种形态的按钮切换"""
+    issues = []
+    html = (ROOT / 'index.html').read_text(encoding='utf-8')
+    issues += [f'[结构] {x}' for x in structure(html, ROOT / 'index.html')]
+
+    # 独立打开：应显示"返回教育实验平台"，隐藏"新窗口打开"
+    pg.goto((ROOT / 'index.html').as_uri())
+    pg.wait_for_timeout(500)
+    st = pg.evaluate("""()=>{
+      const b=document.getElementById('backToPlatform'), o=document.getElementById('openStandalone');
+      return {back: b?getComputedStyle(b).display:null, open: o?getComputedStyle(o).display:null,
+              href: b?b.getAttribute('href'):null, links:document.querySelectorAll('.sidenav a').length};
+    }""")
+    if st['back'] == 'none': issues.append('[交互] 独立打开时"返回教育实验平台"应可见')
+    if st['open'] != 'none': issues.append('[交互] 独立打开时"新窗口打开"应隐藏')
+    if st['links'] < 8: issues.append(f'[内容] 总览页章节栏链接过少（{st["links"]}）')
+
+    # 内嵌形态：用真实平台页面打开课件（iframe），端到端验证
+    platform = ROOT.parent.parent / 'index.html'
+    if platform.exists():
+        pg2 = browser.new_page()
+        pg2.goto(platform.as_uri())
+        pg2.wait_for_timeout(800)
+        try:
+            pg2.click('text=四上数学·动画课件（2026秋）')
+            pg2.wait_for_timeout(1500)
+            fr = pg2.frame_locator('#content-frame')
+            vis_back = fr.locator('#backToPlatform').is_visible()
+            vis_open = fr.locator('#openStandalone').is_visible()
+            href = fr.locator('#openStandalone').get_attribute('href') or ''
+        except Exception as e:
+            vis_back, vis_open, href = True, False, ''
+            issues.append(f'[交互] 无法在平台 iframe 中定位课件: {str(e)[:80]}')
+        if vis_back:
+            issues.append('[交互] 嵌在平台里时"返回教育实验平台"应隐藏（否则会在 iframe 里套一层平台）')
+        if not vis_open:
+            issues.append('[交互] 嵌在平台里时应显示"新窗口打开"')
+        if not href.endswith('index.html'):
+            issues.append(f'[交互] "新窗口打开"的地址不对: {href}')
+        pg2.close()
+    else:
+        issues.append('[结构] 找不到平台页面 education/index.html')
+    return issues
+
+
 def main():
     total_issues = 0
     with sync_playwright() as p:
@@ -270,6 +322,13 @@ def main():
             print(f"\n{'✅' if not issues else '❌'} {unit}  ({len(issues)} 个问题)")
             for i in issues: print('   -', i)
             total_issues += len(issues)
+        # 课程总览页（单独检查：它没有练习区）
+        pg = b.new_page(viewport={'width':1280,'height':950})
+        ov = audit_overview(pg, b)
+        print(f"\n{'✅' if not ov else '❌'} index.html（课程总览）  ({len(ov)} 个问题)")
+        for i in ov: print('   -', i)
+        total_issues += len(ov)
+        pg.close()
         b.close()
     print(f'\n合计问题：{total_issues}', '✅ 全部通过' if total_issues == 0 else '❌ 需要修复')
     return 1 if total_issues else 0

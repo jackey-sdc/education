@@ -296,6 +296,17 @@ function bootCourse(groups){
     if (e.key === '[' && (e.metaKey || e.ctrlKey)) setCollapsed(!collapsed);
   });
 
+  /* 嵌在平台 iframe 里时，"返回平台"没意义 → 换成"新窗口打开" */
+  const back = document.getElementById('backToPlatform');
+  const open = document.getElementById('openStandalone');
+  const embedded = window.self !== window.top;
+  if (embedded){
+    if (back) back.style.display = 'none';
+    if (open){ open.href = location.href; open.style.display = ''; }
+  } else if (open){
+    open.style.display = 'none';
+  }
+
   /* 移动端点导航后自动收起 */
   $$('.sidenav a').forEach(a => a.addEventListener('click', () => {
     if (window.matchMedia('(max-width:940px)').matches) body.classList.remove('nav-open');

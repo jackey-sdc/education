@@ -211,6 +211,7 @@
       <a href="../index.html">← 回到课程总览</a>
       <a href="../u1_big_number/index.html">← 万以上数的认识</a>
       <a href="../u3_multiply/index.html">多位数乘两位数 →</a>
+      <a href="#" id="openStandalone" target="_blank" rel="noopener" style="display:none">↗ 在新窗口打开本课件</a>
     </div>
   </aside>
   <button class="nav-handle" id="navShow" title="显示章节栏">章 节 栏</button>
@@ -672,6 +673,17 @@ function bootCourse(groups){
     if (e.key === 'Escape') body.classList.remove('nav-open');
     if (e.key === '[' && (e.metaKey || e.ctrlKey)) setCollapsed(!collapsed);
   });
+
+  /* 嵌在平台 iframe 里时，"返回平台"没意义 → 换成"新窗口打开" */
+  const back = document.getElementById('backToPlatform');
+  const open = document.getElementById('openStandalone');
+  const embedded = window.self !== window.top;
+  if (embedded){
+    if (back) back.style.display = 'none';
+    if (open){ open.href = location.href; open.style.display = ''; }
+  } else if (open){
+    open.style.display = 'none';
+  }
 
   /* 移动端点导航后自动收起 */
   $$('.sidenav a').forEach(a => a.addEventListener('click', () => {

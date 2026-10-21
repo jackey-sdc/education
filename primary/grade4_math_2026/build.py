@@ -33,6 +33,7 @@ HEAD = """<!DOCTYPE html>
       <a href="../index.html">← 回到课程总览</a>
       {prev_side}
       {next_side}
+      <a href="#" id="openStandalone" target="_blank" rel="noopener" style="display:none">↗ 在新窗口打开本课件</a>
     </div>
   </aside>
   <button class="nav-handle" id="navShow" title="显示章节栏">章 节 栏</button>
