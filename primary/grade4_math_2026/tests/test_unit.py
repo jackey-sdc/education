@@ -66,12 +66,30 @@ ASSERTS = {
                    document.querySelector('#btnVmAll').click();
                    const res=[...document.querySelectorAll('#vmStage .res')].map(d=>d.textContent.trim()).join('');
                    return res==='8024';})()"""},
-        {'name': '竖式两次部分积 = 944 与 708（第二行左移一位）',
+        {'name': '竖式部分积按人教版写法：左移后的完整积（7080 / 6140 / 960）',
          'js': """(()=>{const sel=document.querySelector('#vmSel');
-                   sel.value='1'; sel.dispatchEvent(new Event('change'));
+                   const ok=[];
+                   [['1','7080'],['2','6140'],['3','960']].forEach(([v,exp])=>{
+                     sel.value=v; sel.dispatchEvent(new Event('change'));
+                     document.querySelector('#btnVmAll').click();
+                     const txt=document.querySelector('#vmStage').textContent.replace(/\s/g,'');
+                     ok.push(txt.includes(exp));
+                   });
+                   return ok.every(Boolean);})()"""},
+        {'name': '竖式第 0 步不得泄露答案（部分积与积都是空的）',
+         'js': """(()=>{const sel=document.querySelector('#vmSel');
+                   sel.value='0'; sel.dispatchEvent(new Event('change'));
+                   document.querySelector('#btnVmReset').click();
+                   const grid=document.querySelector('#vmStage div[style*="grid-template-columns"]');
+                   const txt=grid.textContent.replace(/\s/g,'');
+                   return !txt.includes('290')&&!txt.includes('1740')&&!txt.includes('1450');})()"""},
+        {'name': '竖式两行部分积按列相加 = 积（290 + 1450 = 1740）',
+         'js': """(()=>{const sel=document.querySelector('#vmSel');
+                   sel.value='0'; sel.dispatchEvent(new Event('change'));
                    document.querySelector('#btnVmAll').click();
-                   const txt=document.querySelector('#vmStage').textContent.replace(/\s/g,'');
-                   return txt.includes('944')&&txt.includes('708');})()"""},
+                   const res=[...document.querySelectorAll('#vmStage .res')].map(d=>d.textContent.trim()).join('');
+                   const txt=document.querySelector('#vmNote').textContent.replace(/\s/g,'');
+                   return res==='1740' && txt.includes('290+1450=1740');})()"""},
     ],
     'u4_models': [
         {'name': '加法模型：总量 = 两部分之和',

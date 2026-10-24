@@ -56,142 +56,168 @@
     {a:145, b:12}, {a:236, b:34}, {a:307, b:25}, {a:48, b:27}
   ];
   const sel = $('#vmSel'), stage = $('#vmStage'), note = $('#vmNote'), steps = $('#vmSteps');
+  const CN = ['个', '十', '百', '千'];
   let step = 0;
 
-  /* 生成竖式步骤 */
-  function mulSteps(a, b){
+  /* 竖式的两个阶段：① 逐位相乘得部分积  ② 两个部分积按列相加得积 */
+  function build(a, b){
     const A = String(a).split('').map(Number).reverse();
     const B = String(b).split('').map(Number).reverse();
-    const out = [];
+    const mul = [];
     B.forEach((bd, i) => {
-      let carry = 0; const digits = [];
+      let carry = 0;
       A.forEach((ad, j) => {
         const prod = ad * bd + carry;
         const digit = prod % 10, nc = Math.floor(prod / 10);
-        out.push({i, j, ad, bd, prod, digit, carry, nc});
+        mul.push({type:'mul', i, j, ad, bd, prod, digit, carry, nc});
         carry = nc;
-        digits.unshift(digit);
       });
-      if (carry > 0) digits.unshift(carry);
-      out.push({rowDone: i, digits: digits.slice()});
     });
-    return out;
+    /* 第 i 个部分积已经左移 i 位：a × B[i] × 10^i */
+    const rowVal = i => a * B[i] * Math.pow(10, i);
+    const add = [];
+    let carry = 0;
+    const nCols = String(a * b).length;
+    for (let c = 0; c < nCols; c++){
+      const present = [];
+      B.forEach((bd, i) => {
+        const sv = String(rowVal(i));
+        if (c < sv.length) present.push({i, d: +sv[sv.length - 1 - c]});
+      });
+      const carryIn = carry;
+      let sum = carryIn;
+      present.forEach(p => sum += p.d);
+      const digit = sum % 10; carry = Math.floor(sum / 10);
+      add.push({type:'add', col:c, present, carryIn, sum, digit, carry});
+    }
+    return {A, B, mul, add, total: mul.length + add.length, rowVal};
   }
 
   function render(){
     const it = ITEMS[+sel.value];
-    const a = it.a, b = it.b;
-    const all = mulSteps(a, b);
-    const calcSteps = all.filter(x => !('rowDone' in x));
-    const total = calcSteps.length;
-    const cur = Math.min(step, total);
+    const a = it.a, b = it.b, M = build(a, b);
+    const cur = Math.min(step, M.total);
+    const cols = Math.max(String(a).length, String(b).length, String(a * b).length) + 2;
+
     stage.innerHTML = '';
     const wrap = document.createElement('div');
     wrap.style.cssText = 'display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:center';
-
-    /* 竖式：HTML 格子 */
-    const cols = Math.max(String(a).length, String(b).length, String(a * b).length) + 2;
     const grid = document.createElement('div');
     grid.style.cssText = 'display:grid;grid-template-columns:repeat(' + cols + ',46px);gap:0;font-variant-numeric:tabular-nums';
     const cell = (txt, opt) => {
-      const o = Object.assign({color:'var(--ink)', size:26, weight:700, bg:'transparent', border:'none', cls:''}, opt||{});
+      const o = Object.assign({color:'var(--ink)', size:26, weight:700, bg:'transparent', cls:''}, opt||{});
       const d = document.createElement('div');
       if (o.cls) d.className = o.cls;
       d.textContent = txt;
       d.style.cssText = `text-align:center;font-size:${o.size}px;font-weight:${o.weight};color:${o.color};` +
-        `height:38px;line-height:38px;background:${o.bg};border:${o.border};`;
+        `height:38px;line-height:38px;background:${o.bg};`;
       return d;
     };
+    const hline = () => {
+      const l = document.createElement('div');
+      l.style.cssText = `grid-column:1 / ${cols + 1};height:0;border-top:2.5px solid var(--ink);margin:4px 0`;
+      grid.appendChild(l);
+    };
+
+    /* 行1：第二个因数（乘数）；行2：第一个因数 */
     const A = String(a).split(''), B = String(b).split('');
-    const Acols = A.length, Bcols = B.length;
-    /* 行1：第二个因数（b），右对齐 */
     for (let i = 0; i < cols; i++){
-      const idx = i - (cols - Bcols);
+      const idx = i - (cols - B.length);
       grid.appendChild(cell(idx >= 0 ? B[idx] : '', {size:26, weight:600}));
     }
-    /* 行2：第一个因数（a），右对齐 */
     for (let i = 0; i < cols; i++){
-      const idx = i - (cols - Acols);
+      const idx = i - (cols - A.length);
       grid.appendChild(cell(idx >= 0 ? A[idx] : '', {size:26, weight:600}));
     }
-    /* 横线 */
-    const line = document.createElement('div');
-    line.style.cssText = `grid-column:1 / ${cols + 1};height:0;border-top:2.5px solid var(--ink);margin:4px 0`;
-    grid.appendChild(line);
-    /* 部分积行：第 i 行是 a × (b 的第 i 位)，整体左移 i 位 */
-    const Bv = String(b).split('').map(Number).reverse();
-    const rows = [];
-    for (let i = 0; i < Bv.length; i++){
-      const str = String(a * Bv[i]);
-      const row = [];
+    hline();
+
+    /* 部分积行：按人教版写法，每个部分积都是"已经左移好的完整积" */
+    const rowCells = M.B.map(() => new Array(cols).fill(''));
+    let idx = 0;
+    M.mul.forEach(st2 => {
+      if (idx < cur) rowCells[st2.i][cols - 1 - st2.i - st2.j] = String(st2.digit);
+      idx++;
+    });
+    M.B.forEach((bd, i) => {
+      if (i === 0) return;
+      const total = M.mul.filter(x => x.i === i).length;
+      const done = M.mul.slice(0, cur).filter(x => x.i === i).length;
+      if (done === total) rowCells[i][cols - 1] = '0';   /* 左移补 0（个位占位） */
+    });
+    const mulDone = Math.min(cur, M.mul.length);
+    M.B.forEach((bd, i) => {
+      const total = M.mul.filter(x => x.i === i).length;
+      const done = M.mul.slice(0, cur).filter(x => x.i === i).length;
+      const complete = done === total;
+      const active = cur > 0 && cur <= M.mul.length && M.mul[cur - 1] && M.mul[cur - 1].i === i;
       for (let k = 0; k < cols; k++){
-        const r = (cols - 1 - k) - i;          /* r = 该位在部分积中是从右数第几位 */
-        row.push((r >= 0 && r < str.length) ? str[str.length - 1 - r] : '');
-      }
-      rows.push(row);
-    }
-    for (let i = 0; i < rows.length; i++){
-      const partial = rows[i].slice();
-      const mySteps = calcSteps.filter(x => x.i === i);
-      const complete = mySteps.length === calcSteps.filter(x => x.i === i).length;
-      mySteps.forEach(st2 => {
-        const k = cols - 1 - i - st2.j;        /* 写在哪一列 */
-        if (k >= 0) partial[k] = String(st2.digit);
-      });
-      for (let k = 0; k < cols; k++){
-        const isCur = calcSteps[cur - 1] && calcSteps[cur - 1].i === i &&
-                      calcSteps[cur - 1].j === (cols - 1 - i - k);
-        grid.appendChild(cell(partial[k], {
+        const isCur = active && M.mul[cur - 1].i === i &&
+                      M.mul[cur - 1].j === (cols - 1 - i - k);
+        grid.appendChild(cell(rowCells[i][k], {
           color: isCur ? '#fff' : (complete ? 'var(--purple)' : 'var(--ink)'),
           bg: isCur ? 'var(--accent)' : 'transparent',
           size: 24, weight: complete ? 700 : 500
         }));
       }
-    }
-    /* 结果行 */
-    const resStr = String(a * b);
-    const resRow = [];
-    for (let k = 0; k < cols; k++){
-      const idx = k - (cols - resStr.length);
-      resRow.push(idx >= 0 ? resStr[idx] : '');
-    }
-    const line2 = document.createElement('div');
-    line2.style.cssText = `grid-column:1 / ${cols + 1};height:0;border-top:2.5px solid var(--ink);margin:4px 0`;
-    grid.appendChild(line2);
-    resRow.forEach(txt => {
-      grid.appendChild(cell(txt, {color: cur >= total ? 'var(--green)' : 'var(--ink2)',
-        size: 26, weight:800, cls:'res'}));
     });
+
+    /* 积：两个部分积都完成后，按列相加逐位写出 */
+    const resCells = new Array(cols).fill('');
+    const addDone = Math.max(0, cur - M.mul.length);
+    M.add.forEach((st2, i) => { if (i < addDone) resCells[cols - 1 - st2.col] = String(st2.digit); });
+    if (addDone > 0) hline();
+    for (let k = 0; k < cols; k++){
+      const isCur = addDone > 0 && addDone <= M.add.length && M.add[addDone - 1].col === (cols - 1 - k);
+      grid.appendChild(cell(resCells[k], {
+        color: isCur ? '#fff' : (addDone > 0 ? 'var(--green)' : 'var(--ink2)'),
+        bg: isCur ? 'var(--accent)' : 'transparent',
+        size: 26, weight: 800, cls: 'res'
+      }));
+    }
     wrap.appendChild(grid);
 
     /* 右侧说明 */
     const info = document.createElement('div');
-    info.style.cssText = 'font-size:17px;line-height:2;text-align:left;min-width:260px';
+    info.style.cssText = 'font-size:17px;line-height:2;text-align:left;min-width:280px';
     if (cur === 0){
       info.innerHTML = `先写<b>竖式</b>：<br>① 上面写第二个因数 <b>${b}</b>，个位与 <b>${a}</b> 的个位对齐<br>② 下面写第一个因数 <b>${a}</b><br>③ 从<b>个位</b>算起`;
-    } else {
-      const st2 = calcSteps[cur - 1];
-      const colName = ['个', '十', '百', '千'][st2.j] || '';
-      info.innerHTML = `正在算：<b>${st2.ad} × ${st2.bd}</b>` +
+    } else if (cur <= M.mul.length){
+      const st2 = M.mul[cur - 1];
+      const colName = CN[st2.j + st2.i] || '';           /* 部分积里该位已经左移 i 位 */
+      const rowTxt = st2.i === 0
+        ? `用 <b>${st2.bd}</b> 乘 ${a} 的${CN[st2.j]}位`
+        : `用<b>十位上的 ${st2.bd}</b> 乘 ${a}（这一行是 ${a} × ${st2.bd} × 10）`;
+      info.innerHTML = `${rowTxt}：<b>${st2.ad} × ${st2.bd}</b>` +
         (st2.carry ? ` <span style="color:var(--orange)">+ 进位 ${st2.carry}</span>` : '') +
         ` = <b>${st2.prod}</b><br>` +
         `在<b>${colName}位</b>写 <b>${st2.digit}</b>` +
-        (st2.nc ? `，向<b>${['个','十','百'][st2.j] || '前'}位</b>进 <b>${st2.nc}</b>` : '，不用进位') +
-        `<br><span style="color:var(--ink2);font-size:15px">竖式里第 ${cur} / ${total} 步</span>`;
+        (st2.nc ? `，向<b>${CN[st2.j + st2.i + 1] || '前'}位</b>进 <b>${st2.nc}</b>` : '，不用进位');
+    } else {
+      const st2 = M.add[addDone - 1];
+      const colName = CN[st2.col] || '';
+      const addTxt = st2.present.map(p => p.d).join(' + ') + (st2.carryIn ? ` + ${st2.carryIn}` : '');
+      info.innerHTML = `把两个部分积<b>相加</b>：<br>` +
+        `<b>${colName}位</b>：${addTxt} = <b>${st2.sum}</b>，` +
+        `写 <b>${st2.digit}</b>` + (st2.carry ? `，向<b>${CN[st2.col + 1] || '前'}位</b>进 <b>${st2.carry}</b>` : '，不用进位') +
+        `<br><span style="color:var(--ink2);font-size:15px">竖式里第 ${cur} / ${M.total} 步</span>`;
     }
     wrap.appendChild(info);
     stage.appendChild(wrap);
 
-    steps.innerHTML = Array.from({length: total + 1}, (_, i) =>
+    steps.innerHTML = Array.from({length: M.total + 1}, (_, i) =>
       `<div class="dot ${i < cur ? 'done' : (i === cur ? 'on' : '')}" title="第${i}步">${i}</div>`).join('');
 
-    note.innerHTML = cur >= total
-      ? `所以 <b>${a} × ${b} = ${a * b}</b>。别忘了：相同数位对齐、从个位算起、满几进几。`
-      : '点"下一步"，一步一步看竖式怎么算。';
+    const p0 = M.rowVal(0), p1 = M.B.length > 1 ? M.rowVal(1) : null;
+    note.innerHTML = cur === 0
+      ? '点"下一步"，看竖式里先算什么、再算什么、满几进几。注意：相同数位要对齐，从个位算起。'
+      : cur <= M.mul.length
+        ? `先算部分积：${a} × ${B[0]} = <b>${p0}</b>` + (p1 !== null ? `，${a} × ${B[1]} × 10 = <b>${p1}</b>` : '') +
+          '（十位上的数乘得的积要<b>末尾补 0</b>，写成左移后的完整积）。'
+        : `两个部分积相加：<b>${p0}${p1 !== null ? ' + ' + p1 : ''} = ${a * b}</b>。`;
   }
   sel.addEventListener('change', () => { step = 0; render(); });
   $('#btnVmStep').addEventListener('click', () => { step++; render(); });
-  $('#btnVmAll').addEventListener('click', () => { step = 99; render(); });
+  $('#btnVmAll').addEventListener('click', () => { step = 999; render(); });
   $('#btnVmReset').addEventListener('click', () => { step = 0; render(); });
   render();
 })();
