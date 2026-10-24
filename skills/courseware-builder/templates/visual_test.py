@@ -11,6 +11,9 @@
     弧线画反、比例画错这类问题肉眼极难发现，断言能立刻抓到。
   · 交互层点遍所有控件并捕获 pageerror/console.error。
   · 结构层扫描外部资源引用，保证课件离线可用。
+  · 断言只能验证"自洽"（列与列、图与图），验不了"是否符合教材约定"——
+    竖式部分积写法、量角器内外圈、统计图 1 格代表几 这类约定，
+    必须对照教材人工核一次，并把约定写进课件顶部的口径说明。
 
 退出码：0 = 全部通过，1 = 有失败项。
 """
@@ -41,6 +44,18 @@ CONFIG = {
         {"name": "答案条目数 = 各档题数之和",
          "js": "()=>{const q=document.querySelectorAll('#basicBlock .q,#extBlock .q').length;"
                " return [document.querySelectorAll('#answerKey .ans-item').length, q];}"},
+        # 分步演示"不剧透"：第 0 步页面上不得出现最终结果的数字
+        # （把 SEL 换成竖式/推导图的容器，NUMS 换成答案里出现过的数字）
+        {"name": "逐步演示第 0 步不泄露结果",
+         "js": "()=>{const SEL='#svgDemo', NUMS=['1740','1450'];"
+               " const el=document.querySelector(SEL); if(!el) return [0,0];"
+               " const t=el.textContent.replace(/\\s/g,'');"
+               " return [NUMS.filter(n=>t.includes(n)).length, 0];}"},
+        # 数位对齐：各部分积之和 == 结果行（竖式专用）
+        # 把 readRows() 换成读你课件竖式各行数字的函数
+        {"name": "竖式：各部分积之和 = 结果",
+         "js": "()=>{const parts=[290,1450], res=1740;"
+               " return [parts.reduce((a,b)=>a+b,0), res];}"},
     ],
 }
 # ============================================================

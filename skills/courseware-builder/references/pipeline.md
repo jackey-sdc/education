@@ -63,6 +63,10 @@ primary/grade4_math_2026/
    python3 u2_angle/tests/test_unit.py    # 该单元的几何断言 + 交互巡检
    ```
 
+   ⚠️ **`test_answers.py` 只能验证"内部自洽"，验证不了"答案本身对不对"**：
+   引擎与题目数据同源，`a:` 下标写错时引擎照样判"答对"。
+   因此**必须再加一道"独立复算"验收**（见下方"四下册流水线"）。
+
    - `tests/audit.py` 是**流水线版的四层验收**：外部资源扫描、导航锚点、
      "显示题数 == 标称题数"、题目数 == 答案数 == 解析数、计分与重做、
      **答错不泄露答案**、填空答案归一化、打印模式、**SVG 出框**（`getBBox()` vs `viewBox`）。
@@ -109,3 +113,58 @@ primary/grade4_math_2026/
 
 不适合流水线时，用 `templates/lesson-template.html` 做**单文件零依赖课件**：
 结构、工具层、练习引擎都已内置，直接复制改写即可（区别：没有构建步骤，改完即生效）。
+
+
+---
+
+## 四下册流水线（`primary/grade4_math_2027/`）
+
+与人教版（2024 年审定）**四年级数学下册**配套，目录结构、共享引擎、验收脚本与四上册完全同构，
+可整套照搬。新增的差异只有一处——**多了一道"独立复算"验收**。
+
+```bash
+cd primary/grade4_math_2027
+python3 build.py                          # 构建全部单元
+python3 tests/audit.py                   # 四层验收
+python3 tests/test_answers.py            # 题答自洽
+python3 tests/check_answers.py           # ★ 选择题答案独立复算（防答案下标写错）
+python3 u5_decimal_add/tests/test_unit.py # 单元几何断言 + 交互巡检 + 结论可达性
+```
+
+### ① 为什么要"独立复算"
+
+`test_answers.py` 把标准答案回填进引擎，看引擎是否判"答对"。
+它验证的是**引擎与题目数据自洽**——如果 `a:2` 本该是 `a:1`，
+两者一起错，测试**照样全绿**。
+
+`check_answers.py` 换一条路走：**从题干里解析出算式，用 Python 独立算出答案**，
+再和 `a:` 指向的**选项文本**比对。两个数据源相互独立，才能互相证伪。
+
+```python
+extract_expr(q)  # 从题干取"要算的算式"，并判断是不是问"商"（商要取整数商）
+eval_arith(expr, int_div)  # 用 Decimal 精确计算（支持括号、优先级）
+```
+
+要点：
+- **用 `Decimal` 不用 float**：`5 − 3.68` 用 float 得 `1.3199999999999998`，会误判。
+- **区分"结果"和"商"**：`892 ÷ 22` 问的是**商**（整数商 40），不是精确商 40.5454。
+- **题干的问法要能识别**（"结果""得数""商""积""和""差"），否则不该复算。
+
+### ② 共享 helper 的两条纪律
+
+1. **不得覆盖宿主 svg 的 `viewBox`**：`numberLine()` 曾擅自 `setAttribute('viewBox', ...)`，
+   把同一张 svg 里画的其他元素全部挤出画布。正确做法是
+   `if (!svg.getAttribute('viewBox')) { … }`——**画布尺寸归调用方所有**。
+2. **分步演示的"结论态"要可达**：`step` 统一约定可取到 `steps.length`（结论态），
+   渲染时用 `steps[steps.length-1]` 兜底。若按钮夹在 `length-1` 而渲染判断 `>= length`，
+   **每个模块的"教学口径"总结都永远看不到**——而且测试不一定能发现。
+
+### ③ 新增回归断言：`CONCLUSION_ASSERTS`
+
+```python
+CONCLUSION_ASSERTS = {
+    'u1_divide': [('#btnDivAll', '#divNote', '竖式三句话')],
+    'u5_decimal_add': [('#btnLawAll', '#lawNote', '整数加法、乘法的运算律')],
+}
+# 点"完整演示"后，断言结论文本确实出现在提示区
+```
