@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>讲解语音自然度 · 试听对比</title>
+<style>
+  :root{
+    --ink:#1c2430; --ink2:#4a5a70; --mute:#8d9bab; --line:#e3e9f2;
+    --accent:#2f6fd0; --orange:#f08a24; --green:#1f9d6b; --bg:#f7f9fc;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.7 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+  .wrap{max-width:880px;margin:0 auto;padding:44px 22px 90px}
+  header{margin-bottom:34px}
+  .kicker{font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--orange);margin-bottom:10px}
+  h1{font-size:30px;line-height:1.34;margin:0 0 14px;letter-spacing:-.01em}
+  .sub{font-size:15.5px;color:var(--ink2);margin:0}
+  .diag{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:26px 0 0}
+  .diag div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+  .diag b{display:block;font-size:13px;color:var(--orange);margin-bottom:3px}
+  .diag span{font-size:13.5px;color:var(--ink2);line-height:1.6}
+  section{margin:40px 0 0}
+  .shead{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+  .shead h2{font-size:19px;margin:0;letter-spacing:-.01em}
+  .ab{margin-left:auto;font:inherit;font-size:13px;font-weight:700;cursor:pointer;
+    padding:7px 14px;border-radius:999px;border:1.5px solid var(--accent);
+    background:#fff;color:var(--accent)}
+  .ab + .ab{margin-left:0}
+  .ab:hover{background:var(--accent);color:#fff}
+  .clip{display:flex;gap:14px;background:#fff;border:1px solid var(--line);
+    border-radius:14px;padding:15px 17px;margin-bottom:11px;transition:.18s}
+  .clip:hover{border-color:#c3d3e8}
+  .clip.on{border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,208,.12)}
+  .play{flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:0;cursor:pointer;
+    background:var(--accent);display:grid;place-items:center;margin-top:2px}
+  .play svg{width:19px;height:19px;fill:#fff;margin-left:2px}
+  .clip.on .play{background:var(--orange)}
+  .body{flex:1;min-width:0}
+  .row{display:flex;align-items:baseline;gap:10px}
+  .row h3{font-size:15.5px;margin:0;font-weight:800}
+  .dur{font-size:12.5px;color:var(--mute);font-variant-numeric:tabular-nums}
+  .wave{display:flex;align-items:center;gap:1.5px;height:30px;margin:7px 0 8px}
+  .wave i{flex:1;background:#cfe0f5;border-radius:1.5px;transition:.15s}
+  .clip.on .wave i{background:var(--orange)}
+  .txt{font-size:14px;color:var(--ink);margin:0 0 5px;line-height:1.65}
+  .txt em{font-style:normal;background:#fff3e0;color:#b35c00;border-radius:4px;padding:0 3px;font-weight:700}
+  .note{font-size:13px;color:var(--ink2);margin:0;line-height:1.68}
+  footer{margin-top:46px;padding-top:24px;border-top:1px solid var(--line);
+    font-size:13.5px;color:var(--ink2)}
+  footer b{color:var(--ink)}
+  @media(max-width:640px){
+    .diag{grid-template-columns:1fr}
+    h1{font-size:23px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">课件讲解 · 语音自然度</div>
+    <h1>同样的数学内容，为什么有的像念稿，有的像讲课</h1>
+    <p class="sub">全部用第三、六单元的真实讲解文案生成。响度已统一，可以直接盲听对比。</p>
+    <div class="diag">
+      <div><b>病根 ① 引擎</b><span>浏览器调的是系统规则合成语音，逐字拼接，没有句调曲线。</span></div>
+      <div><b>病根 ② 断句</b><span>全靠标点让引擎自己猜停顿，句间没有呼吸位置。</span></div>
+      <div><b>病根 ③ 文案</b><span>脚本是书面语，没有对象感、没有设问，谁念都像稿子。</span></div>
+    </div>
+  </header>
+  
+    <section>
+      <div class="shead"><h2>① 先看引擎：这一档差距最大</h2><button class="ab" data-pair="a2_yushu,a1_xiaoxiao">▶ 连播：现状 → 神经语音</button><button class="ab" data-pair="a0_system,b1_teach">▶ 连播：现状 → 最终推荐</button></div>
+      
+      <article class="clip" data-id="a0_system">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>婷婷 · 系统语音（现状）</h3>
+            <span class="dur">6.3s</span>
+          </div>
+          <div class="wave"><i style="height:18%"></i><i style="height:44%"></i><i style="height:74%"></i><i style="height:74%"></i><i style="height:38%"></i><i style="height:47%"></i><i style="height:41%"></i><i style="height:48%"></i><i style="height:74%"></i><i style="height:56%"></i><i style="height:72%"></i><i style="height:76%"></i><i style="height:48%"></i><i style="height:86%"></i><i style="height:86%"></i><i style="height:71%"></i><i style="height:45%"></i><i style="height:48%"></i><i style="height:48%"></i><i style="height:88%"></i><i style="height:88%"></i><i style="height:43%"></i><i style="height:37%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:56%"></i><i style="height:54%"></i><i style="height:44%"></i><i style="height:80%"></i><i style="height:78%"></i><i style="height:46%"></i><i style="height:62%"></i><i style="height:81%"></i><i style="height:81%"></i><i style="height:100%"></i><i style="height:86%"></i><i style="height:78%"></i><i style="height:14%"></i><i style="height:58%"></i><i style="height:60%"></i><i style="height:43%"></i><i style="height:33%"></i><i style="height:55%"></i><i style="height:55%"></i><i style="height:13%"></i><i style="height:60%"></i><i style="height:65%"></i><i style="height:11%"></i><i style="height:74%"></i><i style="height:66%"></i><i style="height:83%"></i><i style="height:84%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:74%"></i><i style="height:82%"></i><i style="height:28%"></i><i style="height:38%"></i><i style="height:52%"></i><i style="height:37%"></i><i style="height:90%"></i><i style="height:82%"></i><i style="height:50%"></i><i style="height:86%"></i><i style="height:65%"></i><i style="height:44%"></i><i style="height:68%"></i><i style="height:72%"></i><i style="height:50%"></i><i style="height:48%"></i><i style="height:52%"></i><i style="height:39%"></i><i style="height:50%"></i><i style="height:72%"></i><i style="height:40%"></i><i style="height:71%"></i><i style="height:70%"></i><i style="height:36%"></i><i style="height:51%"></i><i style="height:42%"></i><i style="height:60%"></i><i style="height:68%"></i><i style="height:57%"></i><i style="height:9%"></i></div>
+          <p class="txt">选一格代表 5 人，纵轴画到 30 就够了。28 人占 5 格多一点。</p>
+          <p class="note">系统语音（浏览器 speechSynthesis 用的就是这一档）。逐字拼接、无句调起伏，数字念得像报数——这就是现在听起来生硬的原因。</p>
+        </div>
+      </article>
+      <article class="clip" data-id="a2_yushu">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>语舒 · 换名字还是同一个声音</h3>
+            <span class="dur">6.3s</span>
+          </div>
+          <div class="wave"><i style="height:18%"></i><i style="height:44%"></i><i style="height:74%"></i><i style="height:74%"></i><i style="height:38%"></i><i style="height:47%"></i><i style="height:41%"></i><i style="height:48%"></i><i style="height:74%"></i><i style="height:56%"></i><i style="height:72%"></i><i style="height:76%"></i><i style="height:48%"></i><i style="height:86%"></i><i style="height:86%"></i><i style="height:71%"></i><i style="height:45%"></i><i style="height:48%"></i><i style="height:48%"></i><i style="height:88%"></i><i style="height:88%"></i><i style="height:43%"></i><i style="height:37%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:56%"></i><i style="height:54%"></i><i style="height:44%"></i><i style="height:80%"></i><i style="height:78%"></i><i style="height:46%"></i><i style="height:62%"></i><i style="height:81%"></i><i style="height:81%"></i><i style="height:100%"></i><i style="height:86%"></i><i style="height:78%"></i><i style="height:14%"></i><i style="height:58%"></i><i style="height:60%"></i><i style="height:43%"></i><i style="height:33%"></i><i style="height:55%"></i><i style="height:55%"></i><i style="height:13%"></i><i style="height:60%"></i><i style="height:65%"></i><i style="height:11%"></i><i style="height:74%"></i><i style="height:66%"></i><i style="height:83%"></i><i style="height:84%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:74%"></i><i style="height:82%"></i><i style="height:28%"></i><i style="height:38%"></i><i style="height:52%"></i><i style="height:37%"></i><i style="height:90%"></i><i style="height:82%"></i><i style="height:50%"></i><i style="height:86%"></i><i style="height:65%"></i><i style="height:44%"></i><i style="height:68%"></i><i style="height:72%"></i><i style="height:50%"></i><i style="height:48%"></i><i style="height:52%"></i><i style="height:39%"></i><i style="height:50%"></i><i style="height:72%"></i><i style="height:40%"></i><i style="height:71%"></i><i style="height:70%"></i><i style="height:36%"></i><i style="height:51%"></i><i style="height:42%"></i><i style="height:60%"></i><i style="height:68%"></i><i style="height:57%"></i><i style="height:9%"></i></div>
+          <p class="txt">选一格代表 5 人，纵轴画到 30 就够了。28 人占 5 格多一点。</p>
+          <p class="note">陷阱样本：这是系统里的另一个中文语音名，实测与婷婷的原始音频逐字节相同（md5 一致）。系统那 21 个中文语音名，实际指向同一档合成引擎——换名字不换声音。</p>
+        </div>
+      </article>
+      <article class="clip" data-id="a1_xiaoxiao">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>晓晓 · 默认参数</h3>
+            <span class="dur">7.4s</span>
+          </div>
+          <div class="wave"><i style="height:6%"></i><i style="height:6%"></i><i style="height:7%"></i><i style="height:63%"></i><i style="height:100%"></i><i style="height:60%"></i><i style="height:28%"></i><i style="height:22%"></i><i style="height:91%"></i><i style="height:71%"></i><i style="height:77%"></i><i style="height:41%"></i><i style="height:57%"></i><i style="height:41%"></i><i style="height:32%"></i><i style="height:40%"></i><i style="height:32%"></i><i style="height:49%"></i><i style="height:43%"></i><i style="height:24%"></i><i style="height:12%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:56%"></i><i style="height:47%"></i><i style="height:44%"></i><i style="height:72%"></i><i style="height:41%"></i><i style="height:61%"></i><i style="height:69%"></i><i style="height:65%"></i><i style="height:59%"></i><i style="height:6%"></i><i style="height:61%"></i><i style="height:42%"></i><i style="height:44%"></i><i style="height:40%"></i><i style="height:31%"></i><i style="height:58%"></i><i style="height:53%"></i><i style="height:59%"></i><i style="height:59%"></i><i style="height:42%"></i><i style="height:48%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:82%"></i><i style="height:74%"></i><i style="height:57%"></i><i style="height:47%"></i><i style="height:56%"></i><i style="height:79%"></i><i style="height:51%"></i><i style="height:80%"></i><i style="height:83%"></i><i style="height:51%"></i><i style="height:26%"></i><i style="height:6%"></i><i style="height:37%"></i><i style="height:87%"></i><i style="height:78%"></i><i style="height:41%"></i><i style="height:30%"></i><i style="height:19%"></i><i style="height:58%"></i><i style="height:58%"></i><i style="height:39%"></i><i style="height:49%"></i><i style="height:24%"></i><i style="height:28%"></i><i style="height:45%"></i><i style="height:47%"></i><i style="height:26%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">选一格代表 5 人，纵轴画到 30 就够了。28 人占 5 格多一点。</p>
+          <p class="note">换成神经语音，同一句没做任何调参。断句、语气词、句尾下滑都有了，但句子之间还是“一口气读完”。</p>
+        </div>
+      </article>
+    </section>
+    <section>
+      <div class="shead"><h2>② 同一个声音，靠断句和重读救回来</h2><button class="ab" data-pair="b2_teach_noPau,b1_teach">▶ 连播：只用标点 → 加留白</button><button class="ab" data-pair="b3_emp_off,b4_emp_on">▶ 连播：无重读 → 加重读</button></div>
+      
+      <article class="clip" data-id="b1_teach">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>晓晓 · 加留白</h3>
+            <span class="dur">9.4s</span>
+          </div>
+          <div class="wave"><i style="height:6%"></i><i style="height:6%"></i><i style="height:25%"></i><i style="height:98%"></i><i style="height:55%"></i><i style="height:29%"></i><i style="height:100%"></i><i style="height:84%"></i><i style="height:72%"></i><i style="height:68%"></i><i style="height:80%"></i><i style="height:39%"></i><i style="height:36%"></i><i style="height:32%"></i><i style="height:47%"></i><i style="height:41%"></i><i style="height:15%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:62%"></i><i style="height:34%"></i><i style="height:85%"></i><i style="height:49%"></i><i style="height:62%"></i><i style="height:60%"></i><i style="height:60%"></i><i style="height:56%"></i><i style="height:44%"></i><i style="height:40%"></i><i style="height:54%"></i><i style="height:36%"></i><i style="height:40%"></i><i style="height:6%"></i><i style="height:30%"></i><i style="height:71%"></i><i style="height:70%"></i><i style="height:76%"></i><i style="height:55%"></i><i style="height:52%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:18%"></i><i style="height:81%"></i><i style="height:56%"></i><i style="height:44%"></i><i style="height:74%"></i><i style="height:60%"></i><i style="height:83%"></i><i style="height:60%"></i><i style="height:32%"></i><i style="height:6%"></i><i style="height:67%"></i><i style="height:84%"></i><i style="height:48%"></i><i style="height:30%"></i><i style="height:41%"></i><i style="height:58%"></i><i style="height:40%"></i><i style="height:46%"></i><i style="height:28%"></i><i style="height:36%"></i><i style="height:46%"></i><i style="height:25%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">选一格代表 5 人，纵轴画到 30 就够了。28 人占 5 格多一点。</p>
+          <p class="note">同一音色，只在逗号后留 300ms、句号后留 620ms。听感上多了“喘气”的位置，这是最便宜的改法。</p>
+        </div>
+      </article>
+      <article class="clip" data-id="b2_teach_noPau">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>晓晓 · 只用标点（对照）</h3>
+            <span class="dur">7.4s</span>
+          </div>
+          <div class="wave"><i style="height:6%"></i><i style="height:6%"></i><i style="height:7%"></i><i style="height:63%"></i><i style="height:100%"></i><i style="height:60%"></i><i style="height:28%"></i><i style="height:22%"></i><i style="height:91%"></i><i style="height:72%"></i><i style="height:76%"></i><i style="height:41%"></i><i style="height:57%"></i><i style="height:42%"></i><i style="height:32%"></i><i style="height:40%"></i><i style="height:32%"></i><i style="height:47%"></i><i style="height:43%"></i><i style="height:24%"></i><i style="height:12%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:56%"></i><i style="height:47%"></i><i style="height:43%"></i><i style="height:72%"></i><i style="height:41%"></i><i style="height:61%"></i><i style="height:69%"></i><i style="height:66%"></i><i style="height:59%"></i><i style="height:6%"></i><i style="height:60%"></i><i style="height:42%"></i><i style="height:44%"></i><i style="height:40%"></i><i style="height:30%"></i><i style="height:57%"></i><i style="height:53%"></i><i style="height:59%"></i><i style="height:58%"></i><i style="height:42%"></i><i style="height:48%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:82%"></i><i style="height:74%"></i><i style="height:58%"></i><i style="height:47%"></i><i style="height:60%"></i><i style="height:78%"></i><i style="height:52%"></i><i style="height:81%"></i><i style="height:81%"></i><i style="height:50%"></i><i style="height:26%"></i><i style="height:6%"></i><i style="height:36%"></i><i style="height:86%"></i><i style="height:78%"></i><i style="height:42%"></i><i style="height:31%"></i><i style="height:20%"></i><i style="height:58%"></i><i style="height:58%"></i><i style="height:39%"></i><i style="height:49%"></i><i style="height:24%"></i><i style="height:28%"></i><i style="height:45%"></i><i style="height:46%"></i><i style="height:26%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">选一格代表 5 人，纵轴画到 30 就够了。28 人占 5 格多一点。</p>
+          <p class="note">对照组：同样音色、同样语速，只让引擎按标点自己断。和上一条连着听，差别全在留白。</p>
+        </div>
+      </article>
+      <article class="clip" data-id="b3_emp_off">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>口语＋留白（无重读）</h3>
+            <span class="dur">21.7s</span>
+          </div>
+          <div class="wave"><i style="height:62%"></i><i style="height:97%"></i><i style="height:55%"></i><i style="height:65%"></i><i style="height:65%"></i><i style="height:55%"></i><i style="height:44%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:50%"></i><i style="height:68%"></i><i style="height:58%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:90%"></i><i style="height:70%"></i><i style="height:76%"></i><i style="height:92%"></i><i style="height:39%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:57%"></i><i style="height:49%"></i><i style="height:100%"></i><i style="height:39%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:70%"></i><i style="height:80%"></i><i style="height:77%"></i><i style="height:73%"></i><i style="height:60%"></i><i style="height:62%"></i><i style="height:38%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:70%"></i><i style="height:95%"></i><i style="height:58%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:57%"></i><i style="height:64%"></i><i style="height:22%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:32%"></i><i style="height:66%"></i><i style="height:81%"></i><i style="height:80%"></i><i style="height:61%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:81%"></i><i style="height:96%"></i><i style="height:69%"></i><i style="height:49%"></i><i style="height:61%"></i><i style="height:58%"></i><i style="height:55%"></i><i style="height:32%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">咱们先定一件事：一格，代表几个人？定 5 个吧。纵轴画到 30，就够了。你看，28 人，正好是 5 格多一点。</p>
+          <p class="note">口语文案，只加留白，不做任何重读。它是下一条的基准。</p>
+        </div>
+      </article>
+      <article class="clip" data-id="b4_emp_on">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>口语＋留白＋数字重读</h3>
+            <span class="dur">22.7s</span>
+          </div>
+          <div class="wave"><i style="height:85%"></i><i style="height:96%"></i><i style="height:57%"></i><i style="height:63%"></i><i style="height:66%"></i><i style="height:52%"></i><i style="height:25%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:36%"></i><i style="height:58%"></i><i style="height:66%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:88%"></i><i style="height:68%"></i><i style="height:75%"></i><i style="height:87%"></i><i style="height:38%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:56%"></i><i style="height:49%"></i><i style="height:100%"></i><i style="height:53%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:68%"></i><i style="height:79%"></i><i style="height:74%"></i><i style="height:76%"></i><i style="height:58%"></i><i style="height:71%"></i><i style="height:37%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:13%"></i><i style="height:92%"></i><i style="height:93%"></i><i style="height:50%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:56%"></i><i style="height:62%"></i><i style="height:62%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:65%"></i><i style="height:81%"></i><i style="height:74%"></i><i style="height:49%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:92%"></i><i style="height:74%"></i><i style="height:73%"></i><i style="height:49%"></i><i style="height:62%"></i><i style="height:57%"></i><i style="height:39%"></i><i style="height:53%"></i><i style="height:10%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">咱们先定一件事：一格，代表几个人？定 5 个吧。纵轴画到 30，就够了。你看，28 人，正好是 5 格多一点。</p>
+          <p class="note">文案、留白与上一条完全相同，只把“5 个吧”“5 格多一点”降速 26%、并后移 200ms（整段因此长了 1 秒）。重音是人工标出来的——引擎不会自己知道哪句是重点。</p>
+        </div>
+      </article>
+    </section>
+    <section>
+      <div class="shead"><h2>③ 换音色：选一个和学段匹配的</h2></div>
+      
+      <article class="clip" data-id="c1_yunxi">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>云希 · 男声活泼</h3>
+            <span class="dur">10.0s</span>
+          </div>
+          <div class="wave"><i style="height:6%"></i><i style="height:6%"></i><i style="height:16%"></i><i style="height:53%"></i><i style="height:38%"></i><i style="height:36%"></i><i style="height:42%"></i><i style="height:52%"></i><i style="height:34%"></i><i style="height:30%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:8%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:100%"></i><i style="height:34%"></i><i style="height:39%"></i><i style="height:38%"></i><i style="height:56%"></i><i style="height:33%"></i><i style="height:16%"></i><i style="height:34%"></i><i style="height:24%"></i><i style="height:19%"></i><i style="height:12%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:12%"></i><i style="height:17%"></i><i style="height:41%"></i><i style="height:14%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:84%"></i><i style="height:28%"></i><i style="height:81%"></i><i style="height:79%"></i><i style="height:36%"></i><i style="height:29%"></i><i style="height:8%"></i><i style="height:6%"></i><i style="height:20%"></i><i style="height:55%"></i><i style="height:19%"></i><i style="height:8%"></i><i style="height:22%"></i><i style="height:39%"></i><i style="height:21%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">选一格代表 5 人，纵轴画到 30 就够了。28 人占 5 格多一点。</p>
+          <p class="note">男声、偏活泼。低年级注意力容易跑，男声+起伏大的音色更抓人。</p>
+        </div>
+      </article>
+      <article class="clip" data-id="c2_yunyang">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>云扬 · 男声稳重</h3>
+            <span class="dur">8.8s</span>
+          </div>
+          <div class="wave"><i style="height:6%"></i><i style="height:6%"></i><i style="height:50%"></i><i style="height:82%"></i><i style="height:35%"></i><i style="height:26%"></i><i style="height:31%"></i><i style="height:32%"></i><i style="height:77%"></i><i style="height:41%"></i><i style="height:52%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:13%"></i><i style="height:8%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:29%"></i><i style="height:22%"></i><i style="height:30%"></i><i style="height:28%"></i><i style="height:55%"></i><i style="height:74%"></i><i style="height:40%"></i><i style="height:12%"></i><i style="height:51%"></i><i style="height:28%"></i><i style="height:12%"></i><i style="height:6%"></i><i style="height:7%"></i><i style="height:6%"></i><i style="height:8%"></i><i style="height:15%"></i><i style="height:35%"></i><i style="height:29%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:100%"></i><i style="height:99%"></i><i style="height:37%"></i><i style="height:67%"></i><i style="height:62%"></i><i style="height:17%"></i><i style="height:8%"></i><i style="height:6%"></i><i style="height:10%"></i><i style="height:79%"></i><i style="height:35%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:12%"></i><i style="height:26%"></i><i style="height:22%"></i><i style="height:19%"></i><i style="height:16%"></i><i style="height:11%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">选一格代表 5 人，纵轴画到 30 就够了。28 人占 5 格多一点。</p>
+          <p class="note">男声、偏稳重。同一句听下来更“像老师”，但活泼度低，适合高年级或复习课。</p>
+        </div>
+      </article>
+      <article class="clip" data-id="c3_xiaoyi">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>晓伊 · 女声轻快</h3>
+            <span class="dur">9.9s</span>
+          </div>
+          <div class="wave"><i style="height:6%"></i><i style="height:10%"></i><i style="height:23%"></i><i style="height:69%"></i><i style="height:59%"></i><i style="height:54%"></i><i style="height:68%"></i><i style="height:85%"></i><i style="height:89%"></i><i style="height:85%"></i><i style="height:100%"></i><i style="height:44%"></i><i style="height:27%"></i><i style="height:41%"></i><i style="height:35%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:60%"></i><i style="height:68%"></i><i style="height:62%"></i><i style="height:59%"></i><i style="height:46%"></i><i style="height:56%"></i><i style="height:46%"></i><i style="height:86%"></i><i style="height:77%"></i><i style="height:55%"></i><i style="height:32%"></i><i style="height:32%"></i><i style="height:6%"></i><i style="height:40%"></i><i style="height:46%"></i><i style="height:100%"></i><i style="height:82%"></i><i style="height:27%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:94%"></i><i style="height:37%"></i><i style="height:37%"></i><i style="height:71%"></i><i style="height:71%"></i><i style="height:66%"></i><i style="height:54%"></i><i style="height:10%"></i><i style="height:38%"></i><i style="height:88%"></i><i style="height:52%"></i><i style="height:24%"></i><i style="height:55%"></i><i style="height:58%"></i><i style="height:75%"></i><i style="height:65%"></i><i style="height:40%"></i><i style="height:43%"></i><i style="height:8%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">选一格代表 5 人，纵轴画到 30 就够了。28 人占 5 格多一点。</p>
+          <p class="note">女声、轻快。语速本就偏快，调完后节奏最紧，适合短平快的口诀类内容。</p>
+        </div>
+      </article>
+    </section>
+    <section>
+      <div class="shead"><h2>④ 最有效的一招：把文案改成说人话</h2><button class="ab" data-pair="d1_book,d2_spoken">▶ 连播：书面 → 口语</button></div>
+      
+      <article class="clip" data-id="d1_book">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>书面文案（原句）</h3>
+            <span class="dur">9.4s</span>
+          </div>
+          <div class="wave"><i style="height:6%"></i><i style="height:6%"></i><i style="height:25%"></i><i style="height:97%"></i><i style="height:55%"></i><i style="height:29%"></i><i style="height:100%"></i><i style="height:83%"></i><i style="height:72%"></i><i style="height:68%"></i><i style="height:78%"></i><i style="height:39%"></i><i style="height:36%"></i><i style="height:32%"></i><i style="height:46%"></i><i style="height:42%"></i><i style="height:15%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:62%"></i><i style="height:34%"></i><i style="height:85%"></i><i style="height:48%"></i><i style="height:62%"></i><i style="height:59%"></i><i style="height:58%"></i><i style="height:57%"></i><i style="height:44%"></i><i style="height:41%"></i><i style="height:52%"></i><i style="height:36%"></i><i style="height:40%"></i><i style="height:6%"></i><i style="height:29%"></i><i style="height:72%"></i><i style="height:69%"></i><i style="height:75%"></i><i style="height:55%"></i><i style="height:51%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:18%"></i><i style="height:81%"></i><i style="height:56%"></i><i style="height:44%"></i><i style="height:74%"></i><i style="height:60%"></i><i style="height:80%"></i><i style="height:60%"></i><i style="height:33%"></i><i style="height:6%"></i><i style="height:66%"></i><i style="height:84%"></i><i style="height:49%"></i><i style="height:30%"></i><i style="height:42%"></i><i style="height:59%"></i><i style="height:40%"></i><i style="height:46%"></i><i style="height:28%"></i><i style="height:36%"></i><i style="height:46%"></i><i style="height:26%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">选一格代表 5 人，纵轴画到 30 就够了。28 人占 5 格多一点。</p>
+          <p class="note">原脚本：“选一格代表 5 人，纵轴画到 30 就够了。”是书面语，没有对象感。</p>
+        </div>
+      </article>
+      <article class="clip" data-id="d2_spoken">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>口语文案（改写）</h3>
+            <span class="dur">21.7s</span>
+          </div>
+          <div class="wave"><i style="height:62%"></i><i style="height:97%"></i><i style="height:55%"></i><i style="height:64%"></i><i style="height:65%"></i><i style="height:54%"></i><i style="height:44%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:50%"></i><i style="height:68%"></i><i style="height:58%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:90%"></i><i style="height:70%"></i><i style="height:76%"></i><i style="height:87%"></i><i style="height:40%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:57%"></i><i style="height:49%"></i><i style="height:100%"></i><i style="height:39%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:69%"></i><i style="height:80%"></i><i style="height:77%"></i><i style="height:71%"></i><i style="height:59%"></i><i style="height:67%"></i><i style="height:38%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:70%"></i><i style="height:95%"></i><i style="height:58%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:57%"></i><i style="height:64%"></i><i style="height:22%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:32%"></i><i style="height:66%"></i><i style="height:81%"></i><i style="height:78%"></i><i style="height:62%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:81%"></i><i style="height:96%"></i><i style="height:69%"></i><i style="height:49%"></i><i style="height:62%"></i><i style="height:58%"></i><i style="height:54%"></i><i style="height:33%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">咱们先定一件事：一格，代表几个人？定 5 个吧。纵轴画到 30，就够了。你看，28 人，正好是 5 格多一点。</p>
+          <p class="note">只改文案，引擎和音色完全不动：“咱们先定一件事：一格，代表几个人？”多了提问、多了“你看”，句子也短了。</p>
+        </div>
+      </article>
+    </section>
+    <section>
+      <div class="shead"><h2>⑤ 连起来听：长段落才听得出口语化的价值</h2><button class="ab" data-pair="e1_flow_book,e2_flow_spoken">▶ 连播两段</button></div>
+      
+      <article class="clip" data-id="e1_flow_book">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>长段 · 书面</h3>
+            <span class="dur">18.5s</span>
+          </div>
+          <div class="wave"><i style="height:20%"></i><i style="height:63%"></i><i style="height:61%"></i><i style="height:51%"></i><i style="height:75%"></i><i style="height:78%"></i><i style="height:57%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:40%"></i><i style="height:65%"></i><i style="height:100%"></i><i style="height:62%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:67%"></i><i style="height:68%"></i><i style="height:57%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:63%"></i><i style="height:62%"></i><i style="height:62%"></i><i style="height:53%"></i><i style="height:57%"></i><i style="height:25%"></i><i style="height:78%"></i><i style="height:67%"></i><i style="height:42%"></i><i style="height:69%"></i><i style="height:38%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:7%"></i><i style="height:78%"></i><i style="height:39%"></i><i style="height:36%"></i><i style="height:60%"></i><i style="height:54%"></i><i style="height:56%"></i><i style="height:40%"></i><i style="height:50%"></i><i style="height:65%"></i><i style="height:36%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:38%"></i><i style="height:65%"></i><i style="height:68%"></i><i style="height:34%"></i><i style="height:60%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:41%"></i><i style="height:58%"></i><i style="height:62%"></i><i style="height:53%"></i><i style="height:62%"></i><i style="height:45%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">那一格 10 人呢？只有 2.8 格，零点几格根本读不准。所以单位要选得合适。数量没变，是格子变了。</p>
+          <p class="note">连续三句书面语。听的时候注意：句子之间是“接上去”的，没有停顿的意图。</p>
+        </div>
+      </article>
+      <article class="clip" data-id="e2_flow_spoken">
+        <button class="play" aria-label="播放">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="body">
+          <div class="row">
+            <h3>长段 · 口语</h3>
+            <span class="dur">29.2s</span>
+          </div>
+          <div class="wave"><i style="height:55%"></i><i style="height:63%"></i><i style="height:86%"></i><i style="height:76%"></i><i style="height:56%"></i><i style="height:67%"></i><i style="height:82%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:68%"></i><i style="height:85%"></i><i style="height:77%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:68%"></i><i style="height:58%"></i><i style="height:81%"></i><i style="height:47%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:80%"></i><i style="height:76%"></i><i style="height:53%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:79%"></i><i style="height:62%"></i><i style="height:52%"></i><i style="height:60%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:100%"></i><i style="height:71%"></i><i style="height:96%"></i><i style="height:66%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:80%"></i><i style="height:66%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:53%"></i><i style="height:93%"></i><i style="height:75%"></i><i style="height:66%"></i><i style="height:74%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:66%"></i><i style="height:80%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:70%"></i><i style="height:70%"></i><i style="height:66%"></i><i style="height:42%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:96%"></i><i style="height:82%"></i><i style="height:79%"></i><i style="height:62%"></i><i style="height:61%"></i><i style="height:6%"></i><i style="height:6%"></i><i style="height:53%"></i><i style="height:88%"></i><i style="height:58%"></i><i style="height:56%"></i><i style="height:6%"></i><i style="height:6%"></i></div>
+          <p class="txt">那要是一格代表 10 个人呢？28 人，就只剩 2.8 格了。零点几格，谁读得准啊。所以啊，一格代表几个人，得挑。你注意看：人数一个没变，变的是格子。</p>
+          <p class="note">同样的数学内容，改成口语后多了设问和指代（“谁读得准啊”“你注意看”）。这是“像人讲课”最关键的一步，比换引擎有效得多。</p>
+        </div>
+      </article>
+    </section>
+  <footer>
+    <b>怎么做的：</b>神经语音免费接口（Edge TTS，8 个中文音色）+ 句读处插入留白 + 关键数字单独降速。
+    音频在生成阶段就落成文件，播放时不再依赖浏览器语音引擎——这是后面工程化落地的前提。<br>
+    <b>注意：</b>本页的 12 段是同一套参数批量生成的，没有人工修音；实际投产时按课时批量生成一次即可。
+  </footer>
+</div>
+<script>
+const AUDIO = {};
+document.querySelectorAll('.clip').forEach(el => {
+  const id = el.dataset.id;
+  const a = new Audio('clips/' + id + '.m4a');
+  AUDIO[id] = {el, a, bars: [...el.querySelectorAll('.wave i')]};
+  el.querySelector('.play').addEventListener('click', () => toggle(id));
+  a.addEventListener('timeupdate', () => {
+    const p = a.currentTime / (a.duration || 1);
+    const k = Math.round(p * AUDIO[id].bars.length);
+    AUDIO[id].bars.forEach((b, i) => b.style.opacity = i < k ? 1 : .38);
+  });
+  a.addEventListener('ended', () => { el.classList.remove('on'); reset(id); });
+});
+
+function reset(id){
+  AUDIO[id].bars.forEach(b => b.style.opacity = 1);
+}
+function pauseAll(except){
+  Object.keys(AUDIO).forEach(k => {
+    if (k === except) return;
+    AUDIO[k].a.pause(); AUDIO[k].a.currentTime = 0;
+    AUDIO[k].el.classList.remove('on'); reset(k);
+  });
+}
+function toggle(id){
+  const o = AUDIO[id];
+  if (!o.a.paused) { o.a.pause(); o.el.classList.remove('on'); return; }
+  pauseAll(id);
+  o.a.currentTime = 0;
+  o.a.play();
+  o.el.classList.add('on');
+}
+
+document.querySelectorAll('.ab').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const ids = btn.dataset.pair.split(',');
+    const old = btn.textContent;
+    for (const id of ids){
+      if (!AUDIO[id]) continue;
+      pauseAll(id);
+      btn.textContent = '▶ 播放中：' + AUDIO[id].el.querySelector('h3').textContent;
+      AUDIO[id].a.currentTime = 0;
+      AUDIO[id].el.classList.add('on');
+      await AUDIO[id].a.play();
+      await new Promise(r => AUDIO[id].a.addEventListener('ended', r, {once:true}));
+      AUDIO[id].el.classList.remove('on');
+    }
+    btn.textContent = old;
+  });
+});
+</script>
+</body>
+</html>

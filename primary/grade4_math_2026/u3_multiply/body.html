@@ -65,6 +65,7 @@
         <option value="2">160 × 30</option>
         <option value="3">30 × 40</option>
         <option value="4">240 × 50</option>
+        <option value="5">307 × 25（中间有 0）</option>
       </select>
       <button id="btnZeroStep">▶ 算一算</button>
       <button class="ghost" id="btnZeroReset">重置</button>
@@ -99,11 +100,12 @@
     <p class="lead">拖动滑块选择"看成多少"，同时看<b>估算值</b>和<b>精确值</b>的差别，并判断"够不够"。</p>
     <div class="controls">
       <select id="estSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
-        <option value="0">302 × 21 ≈ ? （判断 400 元够不够）</option>
+        <option value="0">302 × 21 ≈ ? （判断 7000 元够不够）</option>
         <option value="1">48 × 29 ≈ ? （判断 1500 个够不够）</option>
         <option value="2">198 × 52 ≈ ? （判断 10000 元够不够）</option>
       </select>
       <input type="range" id="estRange" min="0" max="2" value="0">
+      <span class="note" style="margin:0">← 看成整百整十　|　只看成整十　|　精确算 →</span>
       <button class="ghost" id="btnEstReset">重置</button>
     </div>
     <div class="stage" id="estStage" style="flex-direction:column"></div>

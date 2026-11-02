@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>人教版四年级数学下册 · 动画课件总览（2027春）</title>
+<style>
+
+  :root{--ink:#20304a;--ink2:#4b5f7d;--accent:#2f6fd0;--accent-l:#e8f1ff;--line:#e3e9f2;--bg:#f4f7fc;
+        --card:#fff;--shadow:0 6px 18px rgba(31,52,90,.08);--orange:#f08a24;--green:#1f9d6b;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;line-height:1.8}
+  header{position:relative;background:linear-gradient(135deg,#1f5bb0,#2f6fd0 45%,#7a4fd6);color:#fff;padding:38px 20px 34px;text-align:center}
+  .nav-btn{position:absolute;right:16px;top:14px;z-index:5;display:inline-flex;align-items:center;gap:6px;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;
+    font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px;cursor:pointer}
+  .nav-btn:hover{background:rgba(255,255,255,.28)}
+  header h1{margin:0 0 8px;font-size:32px;letter-spacing:1px}
+  header p{margin:4px 0;opacity:.94;font-size:15px}
+  .badges{margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .badges span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:4px 13px;border-radius:999px;font-size:13px}
+  main{max-width:1080px;margin:0 auto;padding:26px 16px 70px}
+  h2.section{font-size:22px;margin:30px 0 16px;display:flex;align-items:center;gap:10px;padding-left:12px;border-left:6px solid var(--accent)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:18px}
+  .lead{color:var(--ink2);font-size:15px;margin:0 0 14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:880px){.grid2,.grid3{grid-template-columns:1fr}}
+  .unit{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-left-width:6px;
+    border-radius:14px;padding:16px 18px;background:#fff;box-shadow:var(--shadow);transition:.16s}
+  .unit:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(31,52,90,.14)}
+  .unit h3{margin:0 0 6px;font-size:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .unit h3 .tag{font-size:12px;background:var(--accent-l);color:var(--accent);padding:2px 10px;border-radius:999px;font-weight:700}
+  .unit p{margin:4px 0;font-size:14px;color:var(--ink2)}
+  .unit ul{margin:8px 0 0;padding-left:19px;font-size:13.5px;color:var(--ink2)}
+  .unit .meta{margin-top:9px;font-size:12.5px;color:#8a97a8}
+  table.plain{border-collapse:collapse;width:100%;font-size:14.5px}
+  table.plain th,table.plain td{border:1px solid var(--line);padding:9px 10px;text-align:center}
+  table.plain th{background:var(--accent-l);color:var(--accent)}
+  table.plain td.l,table.plain th.l{text-align:left}
+  .tip{background:var(--accent-l);border-left:4px solid var(--accent);border-radius:8px;padding:10px 14px;margin-top:12px;font-size:14.5px;color:#26456f}
+  .tip.warn{background:#fff2e2;border-color:var(--orange);color:#8a4a00}
+  .tip.ok{background:#e6f7ef;border-color:var(--green);color:#126b47}
+  .chip{display:inline-block;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+  /* ===== 布局：左侧章节栏 + 右侧内容 ===== */
+  .layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;padding:18px 16px 80px;gap:22px}
+  .sidenav{position:sticky;top:14px;flex:0 0 232px;width:232px;align-self:flex-start;
+    max-height:calc(100vh - 40px);overflow-y:auto;padding-right:6px;transition:opacity .2s}
+  .sidenav .side-title{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:1px;
+    padding:0 8px 8px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .sidenav .side-group{font-size:12px;color:#8a97a8;padding:12px 8px 4px;font-weight:700}
+  .sidenav a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink2);
+    font-size:14px;font-weight:600;padding:8px 10px;border-radius:9px;margin-bottom:2px;
+    border-left:3px solid transparent;transition:.15s}
+  .sidenav a:hover{background:var(--accent-l);color:var(--accent)}
+  .sidenav a.active{background:var(--accent-l);color:var(--accent);border-left-color:var(--accent)}
+  .sidenav a .dotm{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.45;flex:0 0 6px}
+  .sidenav a.active .dotm{opacity:1}
+  .sidenav .side-foot{margin-top:14px;padding-top:10px;border-top:1px solid var(--line);
+    display:flex;flex-direction:column;gap:6px}
+  .sidenav .side-foot a{font-size:13px;padding:6px 10px}
+  .content{flex:1;min-width:0;max-width:1080px}
+  /* 隐藏后的"目录"把手 */
+  .nav-handle{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:70;
+    writing-mode:vertical-rl;padding:14px 7px;border-radius:0 10px 10px 0;cursor:pointer;
+    background:var(--accent);color:#fff;font-size:13px;font-weight:700;border:none;
+    box-shadow:0 4px 14px rgba(31,52,90,.22);letter-spacing:2px}
+  .nav-handle:hover{filter:brightness(1.08)}
+  body.nav-collapsed .sidenav{display:none}
+  body.nav-collapsed .nav-handle{display:block}
+  body:not(.nav-collapsed) .nav-handle{display:none}
+  @media(max-width:940px){
+    .layout{padding:14px 12px 60px;gap:0}
+    .sidenav{position:fixed;left:0;top:0;bottom:0;width:80vw;max-width:300px;max-height:none;z-index:80;
+      background:#fff;border-right:1px solid var(--line);padding:16px 14px;box-shadow:0 8px 30px rgba(31,52,90,.18);
+      transform:translateX(-100%);transition:transform .25s}
+    body.nav-collapsed .sidenav{transform:translateX(-100%)}
+    body.nav-open .sidenav{transform:none}
+    .nav-handle{display:none !important}
+    body.nav-open .nav-handle{display:none !important}
+    .nav-scrim{position:fixed;inset:0;background:rgba(20,30,50,.35);z-index:75;display:none}
+    body.nav-open .nav-scrim{display:block}
+  }
+  ul.klist{margin:8px 0 0;padding-left:20px;color:var(--ink2);font-size:15px}
+  ul.klist li{margin:4px 0}
+  a{color:var(--accent)}
+  footer{max-width:1080px;margin:0 auto;padding:0 16px 40px;color:var(--ink2);font-size:13.5px}
+  @media print{
+    header,nav,.sidenav,.nav-handle,.nav-scrim,.nav-btn,button{display:none!important}
+    body{background:#fff}
+    .layout{padding:0;max-width:none;display:block}
+    .content{max-width:none}
+    .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid}
+    a{color:#20304a;text-decoration:none}
+    .unit{break-inside:avoid}
+    table.plain th{background:#eef3fb}
+  }
+
+</style>
+</head>
+<body>
+<header>
+  <h1>人教版四年级数学下册 · 动画课件总览</h1>
+  <p>2027 年春季学期使用（依据 2024 年审定教材）· 7 个单元课件 + 1 个综合实践</p>
+  <button class="nav-btn" id="navToggle" aria-expanded="true" title="隐藏章节栏">☰ 章节栏</button>
+  <div class="badges">
+    <span>7 个单元课件</span><span>35 个交互动画</span><span>分层练习 335 题</span>
+    <span>★★★ 基础 · ★★★★ 拓展 · ★★★★★ 浅奥</span><span>答对四/五星有庆祝动画</span>
+  </div>
+</header>
+<div class="layout">
+  <aside class="sidenav">
+    <div class="side-title">四年级数学下册</div>
+    <div class="side-group">七个单元课件</div>
+      <a href="u1_divide/index.html"><span class="dotm"></span>① 除数是两位数的除法</a>
+      <a href="u2_laws/index.html"><span class="dotm"></span>② 混合运算和运算律</a>
+      <a href="u3_triangle/index.html"><span class="dotm"></span>③ 三角形</a>
+      <a href="u4_decimal/index.html"><span class="dotm"></span>④ 小数的认识</a>
+      <a href="u5_decimal_add/index.html"><span class="dotm"></span>⑤ 小数的加法和减法</a>
+      <a href="u6_average/index.html"><span class="dotm"></span>⑥ 平均数</a>
+      <a href="u7_review/index.html"><span class="dotm"></span>⑦ 复习与关联</a>
+    <div class="side-group">讲解与试听</div>
+      <a href="audition.html"><span class="dotm"></span>讲解语音试听（210 拍 · 27.9 分钟）</a>
+    <div class="side-group">本页导览</div>
+      <a href="#structure"><span class="dotm"></span>课程结构（教材单元表）</a>
+      <a href="#units"><span class="dotm"></span>单元课件入口</a>
+      <a href="#flow"><span class="dotm"></span>通用教学流程</a>
+      <a href="#errors"><span class="dotm"></span>全册易错点速查</a>
+      <a href="#eval"><span class="dotm"></span>评价建议</a>
+    <div class="side-foot">
+      <a href="../../index.html" id="backToPlatform">← 返回教育实验平台首页</a>
+      <a href="#" id="openStandalone" target="_blank" rel="noopener" style="display:none">↗ 在新窗口打开本课件</a>
+    </div>
+  </aside>
+  <button class="nav-handle" id="navShow" title="显示章节栏">章 节 栏</button>
+  <div class="nav-scrim" id="navScrim"></div>
+  <main class="content">
+
+<h2 class="section" id="structure">① 课程结构（2027 春 · 人教版四下）</h2>
+<div class="card">
+  <p class="lead">本册共 7 个单元（含 1 个综合实践）。下表是教材的<b>官方单元顺序</b>，与本仓库的课件一一对应。</p>
+  <table class="plain">
+    <tr><th>单元</th><th class="l">内容</th><th>课时</th><th class="l">本册地位</th></tr>
+    <tr><td>一</td><td class="l">除数是两位数的除法</td><td>7</td><td class="l">数与代数：整数除法的算理与算法</td></tr>
+    <tr><td>二</td><td class="l">混合运算和运算律</td><td>7</td><td class="l">数与代数：运算顺序与运算律（算得巧）</td></tr>
+    <tr><td>三</td><td class="l">三角形</td><td>6</td><td class="l">图形与几何：三角形家族的建立</td></tr>
+    <tr><td>四</td><td class="l">小数的认识</td><td>8</td><td class="l">数与代数：小数的意义与数位</td></tr>
+    <tr><td>五</td><td class="l">小数的加法和减法</td><td>5</td><td class="l">数与代数：小数的算法（核心：对齐）</td></tr>
+    <tr><td>六</td><td class="l">平均数</td><td>5</td><td class="l">统计与概率：用平均数代表总体水平</td></tr>
+    <tr><td>七</td><td class="l">复习与关联（含综合实践）</td><td>5</td><td class="l">整理复习 · 知识关联 · 制定旅游计划</td></tr>
+  </table>
+  <div class="tip"><b>教学建议</b>：本册的<b>知识主线</b>是"<b>整数除法 → 运算律 → 小数 → 平均数</b>"，
+    图形主线是"<b>三角形</b>"。单元内部按"概念 → 算理/图理 → 应用"推进；
+    每个单元结束后用本课件的<b>第三档（扩展思维）</b>作为单元检测的后半段。</div>
+</div>
+
+<h2 class="section" id="units">② 单元课件（点击进入）</h2>
+<div class="grid2">
+  <a class="unit" href="u1_divide/index.html" style="border-left-color:#2f6fd0">
+    <h3>① 除数是两位数的除法 <span class="tag">7 课时</span></h3>
+    <p>口算除法 · 笔算除法 · 试商与调商 · 商的变化规律 · 解决问题</p>
+    <ul><li>想乘法算除法（小棒分组图）</li><li>笔算除法竖式逐步演示（商写在各位正上方）</li><li>试商与调商（把除数看作接近的整十数）</li><li>商的变化规律（同时乘除同数，商不变）</li><li>进一法与去尾法（租船 / 裁布 / 订餐）</li></ul>
+    <div class="meta">5 个动画模块 · 47 题分四档</div>
+  </a>
+  <a class="unit" href="u2_laws/index.html" style="border-left-color:#7a4fd6">
+    <h3>② 混合运算和运算律 <span class="tag">7 课时</span></h3>
+    <p>运算顺序 · 加法运算律 · 乘法运算律 · 乘法分配律 · 简便计算</p>
+    <ul><li>运算顺序三步演示（先乘除后加减、同级从左往右）</li><li>加法交换律与结合律、减法的性质</li><li>乘法交换律与结合律（点子图）</li><li>乘法分配律（面积模型 + 正用逆用）</li><li>简便计算（拆数凑整）</li></ul>
+    <div class="meta">5 个动画模块 · 47 题分四档</div>
+  </a>
+  <a class="unit" href="u3_triangle/index.html" style="border-left-color:#1f9d6b">
+    <h3>③ 三角形 <span class="tag">6 课时</span></h3>
+    <p>三角形的特性 · 三边关系 · 分类 · 内角和 · 画高</p>
+    <ul><li>三角形 vs 四边形框架的稳定性对比</li><li>三边关系（拖动三边判断能否围成）</li><li>按角分与按边分（拖动滑块看分类）</li><li>内角和（三个角撕下来拼成平角）</li><li>画高（从顶点向对边作垂线）</li></ul>
+    <div class="meta">5 个动画模块 · 48 题分四档</div>
+  </a>
+  <a class="unit" href="u4_decimal/index.html" style="border-left-color:#e0761f">
+    <h3>④ 小数的认识 <span class="tag">8 课时</span></h3>
+    <p>小数的意义 · 数位顺序表 · 读法和写法 · 性质 · 大小比较与单位换算</p>
+    <ul><li>十格图（小数的意义与计数单位 0.1/0.01/0.001）</li><li>数位顺序表（数位与计数单位一一对应）</li><li>读法演示（中间 0 必读、末尾 0 可不读）</li><li>小数的性质（数轴上点重合 / 0.305≠0.35）</li><li>大小比较与小数点移动</li></ul>
+    <div class="meta">5 个动画模块 · 47 题分四档</div>
+  </a>
+  <a class="unit" href="u5_decimal_add/index.html" style="border-left-color:#0e8fa8">
+    <h3>⑤ 小数的加法和减法 <span class="tag">5 课时</span></h3>
+    <p>小数加法 · 小数减法 · 小数点对齐 · 混合运算 · 运算律推广到小数</p>
+    <ul><li>小数加法竖式（红色虚线标出小数点）</li><li>小数减法（补 0 与退位）</li><li>小数点对齐 vs 末位对齐（错误列法对比）</li><li>小数加减混合运算</li><li>整数运算律在小数上的应用</li></ul>
+    <div class="meta">5 个动画模块 · 48 题分四档</div>
+  </a>
+  <a class="unit" href="u6_average/index.html" style="border-left-color:#d94a4a">
+    <h3>⑥ 平均数 <span class="tag">5 课时</span></h3>
+    <p>平均数的意义 · 求平均数 · 平均数的应用 · 复式条形统计图 · 制定旅游计划</p>
+    <ul><li>移多补少（理解平均数的意义）</li><li>求平均数（总数÷份数两步走）</li><li>比总数 vs 比平均数（人数相同/不同）</li><li>从复式条形统计图求两组平均数</li><li>综合实践：制定旅游计划（搜集→设计→估算→评估）</li></ul>
+    <div class="meta">5 个动画模块 · 47 题分四档</div>
+  </a>
+  <a class="unit" href="u7_review/index.html" style="border-left-color:#6366f1">
+    <h3>⑦ 复习与关联 <span class="tag">5 课时</span></h3>
+    <p>全册知识地图 · 数与代数 · 图形与几何 · 统计整理 · 综合应用</p>
+    <ul><li>全册知识地图（7 大板块可点开）</li><li>数与代数三条主线（算理→数位→算巧）</li><li>三角形知识链（四块知识互相支撑）</li><li>统计流程（收集→整理→求平均数→决策）</li><li>综合应用（一个问题串起全册）</li></ul>
+    <div class="meta">5 个动画模块 · 51 题分四档</div>
+  </a>
+</div>
+
+<h2 class="section" id="flow">③ 通用教学流程（每课时通用）</h2>
+<div class="card">
+  <table class="plain">
+    <tr><th>环节</th><th>时间</th><th class="l">操作</th></tr>
+    <tr><td>情境导入</td><td>3~5 分钟</td><td class="l">打开课件对应模块，用动画制造认知冲突（如"0.5 和 0.48 谁大""405÷15 试商几次"）</td></tr>
+    <tr><td>探究新知</td><td>12~15 分钟</td><td class="l">逐步点"下一步"，让学生<b>先猜后看</b>；关键处暂停，让学生说出道理</td></tr>
+    <tr><td>巩固练习</td><td>8~10 分钟</td><td class="l">第一档（巩固）当堂完成，答错只给提示、不给答案</td></tr>
+    <tr><td>动手操作</td><td>5 分钟</td><td class="l">第二档（动手）投屏或学生机操作，验证操作过程</td></tr>
+    <tr><td>拓展提升</td><td>作业</td><td class="l">第三档（扩展）作单元作业；答案在页面末尾，可自评</td></tr>
+  </table>
+  <div class="tip ok"><b>练习设计说明</b>：每档题量固定、单独计分、可单独重做；答错给<b>提示</b>并指向对应的动画模块，答对才给<b>解析</b>；答案集中折叠在页面末尾，便于讲评与打印。</div>
+</div>
+
+<h2 class="section" id="errors">④ 全册易错点速查（讲评时可直接投屏）</h2>
+<div class="card">
+  <table class="plain">
+    <tr><th class="l">单元</th><th class="l">高频错误</th><th class="l">纠正办法</th></tr>
+    <tr><td class="l">一</td><td class="l">试商偏大/偏小后不会调；余数比除数大；商中间的 0 漏写；进一法与去尾法混用</td><td class="l">课件第 ③ 模块专练调商；第 ⑤ 模块两种情境对比，明确"剩下也要占一份"还是"不够一份不算"</td></tr>
+    <tr><td class="l">二</td><td class="l">同级运算从左往右记不清；简便计算说不出用了哪条规律；分配律只会正用不会逆用</td><td class="l">课件第 ① 模块分步演示运算顺序；第 ④ 模块面积模型理解分配律</td></tr>
+    <tr><td class="l">三</td><td class="l">认为"等边三角形不是等腰三角形"；钝角三角形"每个角都大于 90°"；把直角三角形的锐角都说成 45°</td><td class="l">课件第 ③ 模块末明确"等边是特殊的等腰"；锐角必须限定"等腰直角三角形"</td></tr>
+    <tr><td class="l">四</td><td class="l">小数中间的 0 也去掉；整数部分的 0 也去掉；0.5 与 0.48 比错；小数点移动方向记反</td><td class="l">课件第 ④ 模块用数轴演示"点重合"与"点分开"；第 ⑤ 模块"右移扩大、左移缩小"</td></tr>
+    <tr><td class="l">五</td><td class="l">列竖式末位对齐；得数小数点没对齐；减法退位忘了；混合运算先算加法</td><td class="l">课件第 ③ 模块专门对比"末位对齐"的错误列法，红色虚线标出小数点位置</td></tr>
+    <tr><td class="l">六</td><td class="l">人数不同却只比总数；认为平均数一定是其中某个数；求平均数忘记先求总数</td><td class="l">课件第 ③ 模块两种情境并排对比；第 ② 模块"两步走"固定顺序</td></tr>
+    <tr><td class="l">七</td><td class="l">综合题不先分清"每一问用什么方法"；平均数那一问忘了除以人数</td><td class="l">课件第 ⑤ 模块分步演示"先找问题 → 再选方法 → 最后算"</td></tr>
+  </table>
+</div>
+
+<h2 class="section" id="eval">⑤ 评价建议</h2>
+<div class="card">
+  <ul class="klist">
+    <li><b>过程性评价</b>（60%）：动画课堂的观察记录 + 第一/二档练习的正确率与订正质量。</li>
+    <li><b>单元检测</b>（30%）：第三档"扩展思维"变身为 4~5 道的口头/书面答辩题。</li>
+    <li><b>综合与实践</b>（10%）："制定旅游计划"的方案与评估记录单。</li>
+    <li>评价语言要指向<b>思维过程</b>（"你是怎么判断该用进一法还是去尾法的"），而不仅是"对/错"。</li>
+  </ul>
+</div>
+
+  </main>
+</div>
+<footer>
+  人教版（2024 年审定）四年级数学下册动画课件 · 本仓库 <code>primary/grade4_math_2027/</code> ·
+  课件由 <code>build.py</code> 从 <code>assets/</code> + 各单元 <code>body.html</code>/<code>app.js</code> 构建
+</footer>
+<script>
+/* 左侧章节栏：折叠/抽屉 + 滚动高亮 */
+(function(){
+  const KEY='g4m_nav_collapsed', body=document.body;
+  const isMobile=()=>window.matchMedia('(max-width:940px)').matches;
+  let collapsed=false; try{collapsed=localStorage.getItem(KEY)==='1';}catch(e){}
+  const toggle=document.getElementById('navToggle'), handle=document.getElementById('navShow'), scrim=document.getElementById('navScrim');
+  function setCollapsed(v){collapsed=v;body.classList.toggle('nav-collapsed',v);body.classList.remove('nav-open');
+    try{localStorage.setItem(KEY,v?'1':'0');}catch(e){}}
+  body.classList.toggle('nav-collapsed',collapsed);
+  if(toggle) toggle.addEventListener('click',()=>{ isMobile()?body.classList.toggle('nav-open'):setCollapsed(!collapsed); });
+  if(handle) handle.addEventListener('click',()=>{ isMobile()?body.classList.add('nav-open'):setCollapsed(false); });
+  if(scrim) scrim.addEventListener('click',()=>body.classList.remove('nav-open'));
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape')body.classList.remove('nav-open'); });
+  /* 嵌在平台 iframe 里时，"返回平台"没有意义（平台就在外层），改为"新窗口打开" */
+  const back=document.getElementById('backToPlatform'), open=document.getElementById('openStandalone');
+  const embedded = window.self !== window.top;
+  if(embedded){
+    if(back) back.style.display='none';
+    if(open){ open.href=location.href; open.style.display=''; }
+  }
+  const links=[...document.querySelectorAll('.sidenav a[href^="#"]')];
+  links.forEach(a=>a.addEventListener('click',()=>{ if(isMobile())body.classList.remove('nav-open'); }));
+  const map=new Map();
+  links.forEach(a=>{const el=document.getElementById(a.getAttribute('href').slice(1)); if(el)map.set(el,a);});
+  if(map.size&&'IntersectionObserver'in window){
+    const io=new IntersectionObserver(es=>{es.forEach(en=>{if(!en.isIntersecting)return;
+      links.forEach(l=>l.classList.remove('active'));const a=map.get(en.target);if(a)a.classList.add('active');});
+    },{rootMargin:'-8% 0px -78% 0px',threshold:0});
+    map.forEach((a,el)=>io.observe(el));
+  }
+})();
+
+</script>
+</body>
+</html>

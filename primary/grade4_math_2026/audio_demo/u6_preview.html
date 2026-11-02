@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<title>u6 讲解音频试听</title>
+<style>
+  :root{--ink:#1a1c1f;--ink2:#5b6169;--line:#e3e6ea;--bg:#f6f7f9;--hi:#fff3c4;--acc:#2563eb}
+  *{box-sizing:border-box}
+  body{margin:0;padding:28px 20px 60px;background:var(--bg);color:var(--ink);
+    font:15px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:820px;margin:0 auto}
+  h1{font-size:21px;margin:0 0 4px}
+  .sub{color:var(--ink2);font-size:13px;margin-bottom:22px}
+  h2{font-size:15px;margin:30px 0 12px;color:var(--ink2);font-weight:600;
+    border-bottom:1px solid var(--line);padding-bottom:8px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .card.on{border-color:var(--acc);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .meta{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2)}
+  .meta b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .beat{background:var(--bg);border-radius:4px;padding:1px 7px}
+  .dur{margin-left:auto;font-variant-numeric:tabular-nums}
+  .mini{border:1px solid var(--line);background:#fff;border-radius:6px;
+    width:30px;height:26px;cursor:pointer;font-size:12px}
+  .mini:hover{border-color:var(--acc);color:var(--acc)}
+  .say{margin:8px 0 0;font-size:14px;line-height:1.8}
+  .say mark{background:var(--hi);padding:0 2px;border-radius:3px}
+  .hidden{display:none}
+  .reveal{font-size:12px;border:1px dashed var(--line);background:#fff;border-radius:6px;
+    padding:2px 8px;cursor:pointer;color:var(--ink2)}
+  .ans{display:none;margin:6px 0 0;font-size:12px;color:var(--acc)}
+  .blind.open .ans{display:block}
+  .blind.open .say{display:block}
+  .bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 14px;
+    cursor:pointer;font-size:13px}
+  .btn:hover{border-color:var(--acc);color:var(--acc)}
+  .note{background:#fff;border-left:3px solid var(--acc);padding:10px 14px;border-radius:0 8px 8px 0;
+    font-size:13px;color:var(--ink2);margin-bottom:22px}
+</style></head><body><div class="wrap">
+<h1>u6 讲解音频试听</h1>
+<p class="sub">24 拍 / 207 秒 / 晓晓 · 口语＋留白＋数字重读（<mark>黄色</mark>为重读片段）</p>
+<div class="note">先听「盲听区」——不看文字、不看拍名，只判断一句：<b>像不像老师在讲</b>。
+这 6 条是随机抽的，听完再点「揭晓」看是哪一拍。</div>
+
+<div class="bar">
+  <button class="btn" id="playAll">▶ 连续播放全部</button>
+  <button class="btn" id="stopAll">⏹ 停止</button>
+</div>
+
+<h2>盲听区（6 条，顺序已打乱）</h2>
+
+    <div class="card blind" data-src="../assets/audio/u6/s-read-4.m4a">
+      <div class="meta"><b>1</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">比如周四：30 减 24 等于 6。四一班<mark>多 6 分钟</mark>。</p>
+        <p class="ans">算一算</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u6/s-double-5.m4a">
+      <div class="meta"><b>2</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">画完了，回头检查三件事：<mark>图例</mark>写了没有？纵轴到 30 够不够？直条有没有冒出顶？</p>
+        <p class="ans">检验</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u6/s-double-1.m4a">
+      <div class="meta"><b>3</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">两个班、五天的阅读时间都量好了。现在，要把它们放进同一张图里。</p>
+        <p class="ans">读信息</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u6/s-single-2.m4a">
+      <div class="meta"><b>4</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">纵轴上的一格，画几个人？随便定一个数，行不行？</p>
+        <p class="ans">提问</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u6/s-collect-5.m4a">
+      <div class="meta"><b>5</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">回头核对一下：表里香蕉 18、草莓 6，跟图上直条的高低，对得上吗？</p>
+        <p class="ans">检验</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u6/s-read-5.m4a">
+      <div class="meta"><b>6</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">只看一天可不够。五天都算一遍：5、7、2、6、2。<mark>最大的是 7</mark>，在周二。</p>
+        <p class="ans">检验</p>
+    </div>
+
+<h2>逐条试听（六拍骨架）</h2>
+
+    <div class="card" data-src="../assets/audio/u6/s-single-1.m4a">
+      <div class="meta"><b>01</b><span class="beat">读信息</span>
+        <span class="dur">10.8s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">你看，五个运动项目，人数分别是 28、22、18、12、6。现在要把它们画成直条。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-single-2.m4a">
+      <div class="meta"><b>02</b><span class="beat">提问</span>
+        <span class="dur">5.8s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">纵轴上的一格，画几个人？随便定一个数，行不行？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-single-3.m4a">
+      <div class="meta"><b>03</b><span class="beat">找关系</span>
+        <span class="dur">7.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">你注意看：一格代表的人越多，同一个数占的格子就越少，直条也就<mark>越矮</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-single-4.m4a">
+      <div class="meta"><b>04</b><span class="beat">算一算</span>
+        <span class="dur">10.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">那咱们就定：一格代表 5 人，纵轴画到 30，就够了。你看，28 人，正好 <mark>5 格多一点</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-single-5.m4a">
+      <div class="meta"><b>05</b><span class="beat">检验</span>
+        <span class="dur">10.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">要是换回一格 1 人呢？还是这 28 人，直条一下就顶到 28 格。人数一个没变，<mark>变的是格子</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-single-6.m4a">
+      <div class="meta"><b>06</b><span class="beat">迁移</span>
+        <span class="dur">12.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">那要是一格 10 个人呢？28 人只剩 <mark>2.8 格</mark>。零点几格，谁读得准啊。所以一格画几个人，得挑。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-double-1.m4a">
+      <div class="meta"><b>07</b><span class="beat">读信息</span>
+        <span class="dur">7.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">两个班、五天的阅读时间都量好了。现在，要把它们放进同一张图里。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-double-2.m4a">
+      <div class="meta"><b>08</b><span class="beat">提问</span>
+        <span class="dur">4.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">先只画四一班，能比出两个班谁多谁少吗？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-double-3.m4a">
+      <div class="meta"><b>09</b><span class="beat">找关系</span>
+        <span class="dur">11.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">要想比，就得把同一个项目的两根直条<mark>并排</mark>放。谁高，谁就多。<mark>并排</mark>站着，才比得出来。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-double-4.m4a">
+      <div class="meta"><b>10</b><span class="beat">算一算</span>
+        <span class="dur">8.9s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">比如周四这一天：四一班 30 分钟，四二班 24 分钟。并排一看，<mark>多了 6 分钟</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-double-5.m4a">
+      <div class="meta"><b>11</b><span class="beat">检验</span>
+        <span class="dur">9.8s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">画完了，回头检查三件事：<mark>图例</mark>写了没有？纵轴到 30 够不够？直条有没有冒出顶？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-double-6.m4a">
+      <div class="meta"><b>12</b><span class="beat">迁移</span>
+        <span class="dur">10.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">那要是想知道，这五天是在变多，还是变少呢？这张图就看不出来了，得换成<mark>折线统计图</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-collect-1.m4a">
+      <div class="meta"><b>13</b><span class="beat">读信息</span>
+        <span class="dur">8.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">咱们想知道，全班最喜欢吃哪种水果。一个人一个人问一圈，答案就乱成一团了。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-collect-2.m4a">
+      <div class="meta"><b>14</b><span class="beat">提问</span>
+        <span class="dur">5.9s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">大家一个一个报过来，你怎么记，才能既不漏掉、也不重复？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-collect-3.m4a">
+      <div class="meta"><b>15</b><span class="beat">找关系</span>
+        <span class="dur">8.2s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">可记下来，还是散的。得整理成<mark>统计表</mark>，一眼就能看出谁多、谁少。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-collect-4.m4a">
+      <div class="meta"><b>16</b><span class="beat">算一算</span>
+        <span class="dur">9.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">要比高低，就把表画成<mark>条形图</mark>。你看，香蕉 18，最高；草莓 6，最矮。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-collect-5.m4a">
+      <div class="meta"><b>17</b><span class="beat">检验</span>
+        <span class="dur">7.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">回头核对一下：表里香蕉 18、草莓 6，跟图上直条的高低，对得上吗？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-collect-6.m4a">
+      <div class="meta"><b>18</b><span class="beat">迁移</span>
+        <span class="dur">9.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">换成调查最喜欢的运动，或者最喜欢的一本书，还是这<mark>四步</mark>：记、整理、画、读。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-read-1.m4a">
+      <div class="meta"><b>19</b><span class="beat">读信息</span>
+        <span class="dur">7.7s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">还是这张复式图。蓝色是四一班，橙色是四二班，横轴是周一到周五。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-read-2.m4a">
+      <div class="meta"><b>20</b><span class="beat">提问</span>
+        <span class="dur">6.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">为什么非要把两个班画在一张图里？分成两张图，不是更清楚吗？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-read-3.m4a">
+      <div class="meta"><b>21</b><span class="beat">找关系</span>
+        <span class="dur">8.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">因为同一个项目的两根直条，是<mark>并排</mark>站着的。凑在一块儿，才比得出谁多谁少。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-read-4.m4a">
+      <div class="meta"><b>22</b><span class="beat">算一算</span>
+        <span class="dur">6.0s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">比如周四：30 减 24 等于 6。四一班<mark>多 6 分钟</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-read-5.m4a">
+      <div class="meta"><b>23</b><span class="beat">检验</span>
+        <span class="dur">10.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">只看一天可不够。五天都算一遍：5、7、2、6、2。<mark>最大的是 7</mark>，在周二。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u6/s-read-6.m4a">
+      <div class="meta"><b>24</b><span class="beat">迁移</span>
+        <span class="dur">10.7s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">同一张图还能问别的。五天一共多少？加起来，<mark>103 分钟</mark>。问题不同，读法就不同。</p>
+    </div>
+
+<audio id="player" preload="none"></audio>
+<script>
+const player = document.getElementById('player');
+let cur = null, queue = [], qi = 0;
+
+function playCard(card){
+  document.querySelectorAll('.card.on').forEach(c=>c.classList.remove('on'));
+  card.classList.add('on');
+  player.src = card.dataset.src;
+  player.play();
+  cur = card;
+}
+document.querySelectorAll('.card').forEach(card=>{
+  card.querySelector('.mini').addEventListener('click', ()=>{
+    queue = []; playCard(card);
+  });
+  const rv = card.querySelector('.reveal');
+  if(rv) rv.addEventListener('click', ()=>{ card.classList.toggle('open'); });
+});
+document.getElementById('playAll').addEventListener('click', ()=>{
+  queue = [...document.querySelectorAll('.card:not(.blind)')];
+  qi = 0;
+  if(queue.length) playCard(queue[0]);
+});
+document.getElementById('stopAll').addEventListener('click', ()=>{
+  queue = []; player.pause(); player.removeAttribute('src');
+  document.querySelectorAll('.card.on').forEach(c=>c.classList.remove('on'));
+});
+player.addEventListener('ended', ()=>{
+  if(queue.length && qi < queue.length - 1){ qi++; playCard(queue[qi]); }
+});
+</script>
+</div></body></html>

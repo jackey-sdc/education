@@ -1,0 +1,80 @@
+<section id="s-map">
+  <h2 class="section"><span class="num">1</span>全册知识地图</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>下册学了什么？点开看</h3>
+    <p class="lead">这张图把本册 7 个板块的知识串起来。点每个板块，看它包含哪些知识点。
+      <b>学会把知识连成线，比记住一百个知识点更有用。</b></p>
+    <div class="stage" id="mapStage" style="flex-direction:column"></div>
+    <div id="mapNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-num">
+  <h2 class="section"><span class="num">2</span>数与代数整理</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>除法 · 小数 · 运算律，一条线</h3>
+    <p class="lead">点"下一步"，看本册数与代数的三条主线怎么串起来：
+      <b>除法（算理）→ 小数（数位）→ 运算律（算得巧）</b>。</p>
+    <div class="controls">
+      <button id="btnRvStep">▶ 下一步</button>
+      <button class="ghost" id="btnRvAll">完整演示</button>
+      <button class="ghost" id="btnRvReset">重置</button>
+    </div>
+    <div class="stepper" id="rvSteps"></div>
+    <div class="stage" id="rvStage" style="flex-direction:column"></div>
+    <div id="rvNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-geo">
+  <h2 class="section"><span class="num">3</span>图形与几何整理</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>三角形的知识链</h3>
+    <p class="lead">点下面的按钮切换，看三角形知识的脉络：
+      <b>三边关系 → 分类 → 内角和 → 画高</b>，它们是<b>互相支撑</b>的。</p>
+    <div class="controls">
+      <button data-g="0">三边关系</button>
+      <button data-g="1">分类</button>
+      <button data-g="2">内角和</button>
+      <button data-g="3">画高</button>
+      <button data-g="4">稳定性</button>
+      <button data-g="5">知识链</button>
+    </div>
+    <div class="stage" id="geoStage"></div>
+    <div id="geoNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-stat">
+  <h2 class="section"><span class="num">4</span>统计整理</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>数据 → 平均数 → 决策</h3>
+    <p class="lead">本册统计的重点是<b>平均数</b>：从数据出发，用平均数代表总体水平，最后做决策。</p>
+    <div class="stage" id="statStage" style="flex-direction:column"></div>
+    <div id="statNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-apply">
+  <h2 class="section"><span class="num">5</span>综合应用</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>一个综合问题串起全册</h3>
+    <p class="lead">拖动滑块改变人数，看这个问题怎么一步步解出来。
+      <br><b>教学口径</b>：综合题要<b>先找准"求的是什么"</b>，再决定用哪条知识。</p>
+    <div class="controls">
+      <input type="range" id="apN" min="10" max="50" value="30">
+      <span class="pill" id="apLabel">—</span>
+      <button id="btnApStep">▶ 下一步</button>
+      <button class="ghost" id="btnApReset">重置</button>
+    </div>
+    <div class="stepper" id="apSteps"></div>
+    <div class="stage" id="apStage" style="flex-direction:column"></div>
+    <div id="apNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

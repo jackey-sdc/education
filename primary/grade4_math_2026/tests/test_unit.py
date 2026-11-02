@@ -184,13 +184,41 @@ def main(unit=None):
             errors.append('style: ' + x)
 
         # ② 交互巡检
+        # ⚠️ 跳过"讲解"类按钮（🔊 听思路 / 讲解控制条）：
+        #    点它们会启动**语音朗读**，几十段同时播会把页面撑长、
+        #    后续按钮坐标持续变化 → 巡检大面积超时。
+        #    讲解功能改为**单独断言**（见 ②b）。
         for i, btn in enumerate(pg.locator('button').all()):
             try:
+                cls = (btn.get_attribute('class') or '')
+                if 'q-narr-btn' in cls or 'narr-' in cls:
+                    continue
                 btn.scroll_into_view_if_needed(timeout=1500)
                 btn.click(timeout=2500)
                 pg.wait_for_timeout(80)
             except Exception as e:
                 fails.append(f'按钮#{i}: {str(e)[:80]}')
+        # ②b 讲解功能单独断言：难题有听思路按钮，点一下能出字幕
+        narr_ok = pg.evaluate("""()=>{
+            const b = document.querySelector('.q-narr-btn');
+            if(!b) return {ok:false, why:'没有听思路按钮'};
+            b.click();
+            return {ok:true};
+        }""")
+        if not narr_ok.get('ok'):
+            fails.append('讲解功能：' + narr_ok.get('why','未知'))
+        else:
+            pg.wait_for_timeout(400)
+            sub = pg.evaluate("""()=>{
+                const s=document.querySelector('.q-narr-sub .narr-sub');
+                return s ? s.textContent : '';
+            }""")
+            if not sub.strip():
+                fails.append('讲解功能：点击听思路按钮后没有出现字幕')
+            else:
+                pg.evaluate("""()=>{const b=document.querySelector('.q-narr-sub .narr-stop');
+                  if(b) b.click();}""")
+                pg.wait_for_timeout(150)
         for i in range(pg.locator('input[type=range]').count()):
             el = pg.locator('input[type=range]').nth(i)
             try:

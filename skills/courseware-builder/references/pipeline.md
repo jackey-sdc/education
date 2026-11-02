@@ -53,11 +53,11 @@ primary/grade4_math_2026/
    python3 build.py u2_angle   # 只构建指定单元
    ```
    产物 `uN_xxx/index.html` 是**零依赖单文件**，双击即用。
-6. **验收**（见 SKILL.md 的四层自检，指向构建产物 `index.html`）：
+6. **验收**（见 SKILL.md 的六层自检，指向构建产物 `index.html`）：
 
    ```bash
    cd primary/grade4_math_2026
-   python3 tests/audit.py                 # 四层验收（结构/内容/交互/视觉），对全部单元
+   python3 tests/audit.py                 # 结构/内容/交互/视觉巡检，对全部单元
    python3 tests/audit.py u2_angle        # 只查一个单元
    python3 tests/test_answers.py          # 回填标准答案，验证题答自洽
    python3 u2_angle/tests/test_unit.py    # 该单元的几何断言 + 交互巡检
@@ -65,9 +65,9 @@ primary/grade4_math_2026/
 
    ⚠️ **`test_answers.py` 只能验证"内部自洽"，验证不了"答案本身对不对"**：
    引擎与题目数据同源，`a:` 下标写错时引擎照样判"答对"。
-   因此**必须再加一道"独立复算"验收**（见下方"四下册流水线"）。
+   因此**必须再加"独立复算 + 语义检查"验收**（`check_answers.py`）。
 
-   - `tests/audit.py` 是**流水线版的四层验收**：外部资源扫描、导航锚点、
+   - `tests/audit.py` 负责**结构/内容/交互/视觉**：外部资源扫描、导航锚点、
      "显示题数 == 标称题数"、题目数 == 答案数 == 解析数、计分与重做、
      **答错不泄露答案**、填空答案归一化、打印模式、**SVG 出框**（`getBBox()` vs `viewBox`）。
    - 各单元 `tests/test_unit.py` 的 `ASSERTS` 写**本单元特有**的几何断言
@@ -119,15 +119,15 @@ primary/grade4_math_2026/
 
 ## 四下册流水线（`primary/grade4_math_2027/`）
 
-与人教版（2024 年审定）**四年级数学下册**配套，目录结构、共享引擎、验收脚本与四上册完全同构，
-可整套照搬。新增的差异只有一处——**多了一道"独立复算"验收**。
+与人教版（2024 年审定）**四年级数学下册**配套，目录结构、共享引擎、验收脚本与四上册完全同构。
+两册都已接入 **L2 独立复算 + L3 答案×解析交叉 + L4 语义/建模检查**。
 
 ```bash
 cd primary/grade4_math_2027
 python3 build.py                          # 构建全部单元
-python3 tests/audit.py                   # 四层验收
+python3 tests/audit.py                   # 结构/内容/交互/视觉巡检
 python3 tests/test_answers.py            # 题答自洽
-python3 tests/check_answers.py           # ★ 选择题答案独立复算（防答案下标写错）
+python3 tests/check_answers.py           # ★ 答案复算 + 解析交叉 + 语义/建模检查
 python3 u5_decimal_add/tests/test_unit.py # 单元几何断言 + 交互巡检 + 结论可达性
 ```
 
@@ -168,3 +168,77 @@ CONCLUSION_ASSERTS = {
 }
 # 点"完整演示"后，断言结论文本确实出现在提示区
 ```
+
+
+### ④ 四档星级 + 正反馈机制（grade4_math_2027 的做法）
+
+练习分**四档**，用星级标注难度：
+
+| 档位 | 星级 | 定位 |
+|---|---|---|
+| 巩固基础 | ★★★ | 随堂练，课堂当堂完成 |
+| 动手操作 | ★★★ | 读图 / 操作 |
+| 扩展思维 | ★★★★ | 拓展题，作业主力 |
+| 五星挑战 | ★★★★★ | 浅奥思维，两步以上思考（选做） |
+
+**实现要点**（引擎已内置，模板 `templates/lesson-template.html` 同步）：
+
+```js
+// 1) 档位带 star 字段，题目可单独覆盖
+bootCourse([
+  {key:'basic', star:3, title:'第一档 · 巩固基础', ...},
+  {key:'ext',   star:4, title:'第三档 · 扩展思维', ...},
+  {key:'star5', star:5, title:'第四档 · 五星挑战', ...},
+]);
+// 2) 引擎在 mountQuizInto 里打星级标签、答对时触发庆祝
+celebrateCorrect(q, box, {grand: hardAllDone(items, state)});
+```
+
+**关键约束**：
+- **音效必须 Web Audio 实时合成**（`OscillatorNode` + `GainNode` 包络），
+  **动画必须 DOM + CSS `@keyframes`** —— 否则破坏"零外部依赖、离线可用"。
+- **同屏点赞要有上限**（否则连续答对时刷出几百个）；
+- **横幅同时只保留一条**（否则叠成一摞）；
+- **通关庆祝用页面级标志位**只触发一次。
+- 五星题要有**两步以上的思考**：先"倒推"中间量再用本单元规律求解，
+  或需要在两种结论之间**辨析**（如"等腰三角形一个角是 40°，顶角是多少"要分两种情况讨论）。
+
+---
+
+## 八、答案与语义校验（check_answers.py）
+
+`tests/check_answers.py` 做三件事，都是**独立于引擎**的：
+
+| 检查 | 抓什么 | 怎么抓 |
+|---|---|---|
+| **独立复算** | 答案下标写错、选项集合写错 | 从题干抽算式 → Python 重算 → 比对 `a:` 指向的选项 |
+| **答案×解析交叉** | 答案与解析打架、答案值在解析里根本没出现 | 语义分路：结论措辞 / 答案必现 / `→` 箭头结论 / 末句命中选项 |
+| **语义/建模** | 前提不成立、条件不够、单位/数位/图形关系错、多解、steps 残留 | 追及方向、进率、近似边界、选项等价、信息充分性、方向结论一致性 |
+
+**规则、误报陷阱、植入测试规范全部写在 `references/answers.md`，动手前先读那份。**
+
+新增校验层后**务必回灌旧课件**：
+
+```bash
+cp ~/.codex/skills/courseware-builder/templates/check_answers.py <旧课件>/tests/
+cd <旧课件> && python3 tests/check_answers.py
+```
+
+### 星级分层与庆祝系统
+
+档位星级写在 `meta.json` 的 `tiers[]` 里（`star` 字段），引擎 `bootCourse` 读取后自动打标签：
+
+| 档位 key | 星级 | 题库数组 |
+|---|---|---|
+| `basic` | 3 | `BASIC_CHOICE` / `BASIC_FILL` |
+| `hand` | 3 | `HAND_CHOICE` / `HAND_FILL` |
+| `ext` | 4 | `EXT_CHOICE` / `EXT_FILL` |
+| `star5` | 5 | `STAR5_CHOICE` / `STAR5_FILL` |
+
+庆祝由引擎在**答对时**触发（`celebrateCorrect`）：
+
+- ★★★★ → 「答对啦！」+ 局部点赞 + 单音"叮"
+- ★★★★★ → 「**你好棒！**」+ **满屏点赞** + 喜悦琶音（Web Audio 合成）
+- 该档全对 → 「**太棒了！**」全屏庆祝（页面级标志位，只触发一次）
+
+⚠️ 三条硬约束：同屏点赞有上限、横幅同时只保留一条、音效不引外部音频文件。

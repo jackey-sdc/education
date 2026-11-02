@@ -1,0 +1,129 @@
+<section id="s-order">
+  <h2 class="section"><span class="num">1</span>混合运算的顺序</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>先算乘除，后算加减</h3>
+    <p class="lead">点"下一步"，看一个算式<b>按什么顺序</b>算：
+      <b>① 有括号，先算括号里面的</b> → <b>② 先算乘除，后算加减</b> → <b>③ 同一级运算，从左往右依次算</b>。
+      <br><b>教学口径</b>：<b>同级运算从左往右</b>；<b>有乘除又有加减，先算乘除</b>。</p>
+    <div class="controls">
+      <select id="ordSel">
+        <option value="0">24 + 6 × 5</option>
+        <option value="1">120 ÷ 3 + 18</option>
+        <option value="2">(36 + 54) ÷ 6</option>
+        <option value="3">25 × 4 ÷ 5 + 18</option>
+        <option value="4">(125 - 25) × 8</option>
+      </select>
+      <button id="btnOrdStep">▶ 下一步</button>
+      <button class="ghost" id="btnOrdAll">完整演示</button>
+      <button class="ghost" id="btnOrdReset">重置</button>
+    </div>
+    <div class="stepper" id="ordSteps"></div>
+    <div class="stage" id="ordStage" style="flex-direction:column"></div>
+    <div id="ordNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-addlaw">
+  <h2 class="section"><span class="num">2</span>加法的运算律</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>交换律与结合律：数字换个位置，和不变</h3>
+    <p class="lead">点"下一步"看等式变形：
+      <b>加法交换律 a + b = b + a</b>（两个数交换位置，和不变）；
+      <b>加法结合律 (a + b) + c = a + (b + c)</b>（三个数先算前两个或先算后两个，和不变）。
+      <br><b>教学口径</b>：<b>运算律只改变运算顺序，不改变运算数和结果</b>。</p>
+    <div class="controls">
+      <select id="addSel">
+        <option value="0">38 + 62 = 62 + 38（交换律）</option>
+        <option value="1">(88 + 125) + 12 = 88 + (125 + 12)（结合律）</option>
+        <option value="2">a - 36 - 64 = a - (36 + 64)（减法的性质）</option>
+      </select>
+      <button id="btnAddStep">▶ 下一步</button>
+      <button class="ghost" id="btnAddAll">完整演示</button>
+      <button class="ghost" id="btnAddReset">重置</button>
+    </div>
+    <div class="stepper" id="addSteps"></div>
+    <div class="stage" id="addStage" style="flex-direction:column"></div>
+    <div id="addNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-mullaw">
+  <h2 class="section"><span class="num">3</span>乘法的运算律</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>点子图看懂交换律和结合律</h3>
+    <p class="lead">拖动滑块改变每组个数，看总数不变：
+      <b>乘法交换律 a × b = b × a</b>（两个因数交换位置，积不变）；
+      <b>乘法结合律 (a × b) × c = a × (b × c)</b>（三个数先算前两个或先算后两个，积不变）。
+      <br><b>教学口径</b>：<b>乘法交换律和结合律可以连用</b>。</p>
+    <div class="controls">
+      <span class="pill" id="mulLabel">—</span>
+      <input type="range" id="mulA" min="2" max="6" value="3">
+      <input type="range" id="mulB" min="2" max="6" value="4">
+      <button class="ghost" id="btnMulReset">重置</button>
+    </div>
+    <div class="stage" id="mulStage"></div>
+    <div id="mulNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-distrib">
+  <h2 class="section"><span class="num">4</span>乘法分配律</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>用面积模型理解 (a + b) × c = a × c + b × c</h3>
+    <p class="lead">拖动滑块改变 a、b 的比例，看长方形怎样被切成两块：
+      <b>整块面积 = (a + b) × c</b>，<b>两块面积之和 = a × c + b × c</b>，两者相等。
+      <br><b>教学口径</b>：<b>两个数的和与一个数相乘，可以分别用这个数去乘两个数，再把积相加</b>。</p>
+    <div class="controls">
+      <span class="pill" id="distLabel">—</span>
+      <input type="range" id="distA" min="10" max="80" value="60">
+      <button class="ghost" id="btnDistReset">重置</button>
+    </div>
+    <div class="stage" id="distStage"></div>
+    <div id="distNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">动画</span>分配律的逆用与变形</h3>
+    <p class="lead">点"下一步"，看分配律怎么"拆"和"合"：
+      <b>拆</b>：<b>102 × 45 = (100 + 2) × 45 = 4500 + 90</b>；
+      <b>合</b>：<b>25 × 37 + 25 × 63 = 25 × (37 + 63) = 25 × 100</b>。
+      <br><b>教学口径</b>：<b>乘法分配律可以正用，也可以逆用</b>。</p>
+    <div class="controls">
+      <button id="btnDistStep">▶ 下一步</button>
+      <button class="ghost" id="btnDistAll">完整演示</button>
+      <button class="ghost" id="btnDistReset">重置</button>
+    </div>
+    <div class="stepper" id="distSteps"></div>
+    <div class="stage" id="dist2Stage" style="flex-direction:column"></div>
+    <div id="dist2Note" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-simple">
+  <h2 class="section"><span class="num">5</span>简便计算</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>凑整：把数凑成整十整百</h3>
+    <p class="lead">点"下一步"，看怎样把难算的式子变简单：
+      <b>先交换，再结合</b>，把能凑成整数的两个数放在一起算。
+      <br><b>教学口径</b>：<b>简便计算的依据是运算律，不是"新算法"</b>——每一步变形都要写清用了哪条规律。</p>
+    <div class="controls">
+      <select id="simSel">
+        <option value="0">125 × 32 × 25</option>
+        <option value="1">99 × 25 + 25</option>
+        <option value="2">101 × 36 - 36</option>
+        <option value="3">25 × 32 × 125</option>
+      </select>
+      <button id="btnSimStep">▶ 下一步</button>
+      <button class="ghost" id="btnSimAll">完整演示</button>
+      <button class="ghost" id="btnSimReset">重置</button>
+    </div>
+    <div class="stepper" id="simSteps"></div>
+    <div class="stage" id="simStage" style="flex-direction:column"></div>
+    <div id="simNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

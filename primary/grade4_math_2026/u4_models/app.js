@@ -1,15 +1,21 @@
 /* ==========================================================================
    第四单元 加法模型和乘法模型 —— 交互模块
+
+   每个模块在末尾暴露 MOD.xxx 控制器，给讲解脚本一个「绝对状态」入口。
    ========================================================================== */
+
+window.MOD = window.MOD || {};
 
 /* ==========================================================================
    ① 加法模型
    ========================================================================== */
 (function initAdd(){
   const a = $('#addA'), b = $('#addB'), lab = $('#addLabel'), stage = $('#addStage'), note = $('#addNote');
+  /* 讲解第 1~3 拍不能先报答案：合计可以先遮成问号，讲到第 4 拍再揭 */
+  let hideTotal = false;
   function render(){
     const A = +a.value, B = +b.value, T = A + B;
-    lab.textContent = `${A} + ${B} = ${T}`;
+    lab.textContent = hideTotal ? `${A} + ${B} = ？` : `${A} + ${B} = ${T}`;
     stage.innerHTML = '';
     const box = document.createElement('div');
     box.style.cssText = 'text-align:center;width:100%;max-width:620px';
@@ -38,15 +44,26 @@
     row.append(p1, plus, p2);
     const eq = document.createElement('div');
     eq.textContent = '='; eq.style.cssText = 'font-size:26px;font-weight:800;color:var(--ink2);margin:6px 0';
-    const tot = mk(T, '#1f9d6b', '#e6f7ef', '合计');
+    const tot = mk(hideTotal ? 0 : T, '#1f9d6b', '#e6f7ef', '合计');
+    if (hideTotal){
+      tot.style.borderStyle = 'dashed';
+      tot.lastChild.textContent = '合计 ？';
+    }
     box.append(row, eq, tot);
     stage.appendChild(box);
-    note.innerHTML = `加法模型：<b>甲班 ${A} 人 + 乙班 ${B} 人 = 合计 ${T} 人</b>。<br>` +
-      `求"一共"用加法；知道<b>总数</b>和其中一部分，求另一部分用<b>减法</b>：${T} − ${A} = ${B}。`;
+    note.innerHTML = hideTotal
+      ? `两个班的人数都知道了，<b>一共多少人</b>还不知道。你自己先算一算。`
+      : `加法模型：<b>甲班 ${A} 人 + 乙班 ${B} 人 = 合计 ${T} 人</b>。<br>` +
+        `求"一共"用加法；知道<b>总数</b>和其中一部分，求另一部分用<b>减法</b>：${T} − ${A} = ${B}。`;
   }
   a.addEventListener('input', render); b.addEventListener('input', render);
-  $('#btnAddReset').addEventListener('click', () => { a.value = 28; b.value = 26; render(); });
+  $('#btnAddReset').addEventListener('click', () => { hideTotal = false; a.value = 28; b.value = 26; render(); });
   render();
+
+  /* 讲解入口：set(甲班, 乙班, 是否遮住合计) */
+  MOD.add = {
+    set(x, y, hide){ a.value = x; b.value = y; hideTotal = !!hide; render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -73,7 +90,10 @@
       lines.push(`商品：${it.name}`);
       lines.push(`单价：${it.price} 元 / ${it.unit}`);
       lines.push(`数量：${it.qty} ${it.unit}`);
-      lines.push(it.step === 2 ? `总价：${it.price * it.qty} 元` : `总价：？ 元`);
+      /* ⚠️ 原写法 `it.step === 2` 是 bug：it 是商品数据，没有 step 属性（恒 undefined），
+         导致小票上的总价**永远**是问号 —— 文字已给答案、小票却还是问号（声画不一致）。
+         应取闭包里的 step，且第 4 步（写答）也要保留答案。 */
+      lines.push(step >= 2 ? `总价：${it.price * it.qty} 元` : `总价：？ 元`);
     } else if (it.mode === 'unit'){
       lines.push(`商品：${it.name}`);
       lines.push(`总价：${it.total} 元`);
@@ -88,6 +108,10 @@
     lines.forEach(l => {
       const d = document.createElement('div');
       d.textContent = l;
+      /* 讲解高亮用：给"单价/数量/总价"三行加上可定位的 class */
+      if(l.startsWith('单价') || l.startsWith('原价') || l.startsWith('现价')) d.className = 'rec-price';
+      else if(l.startsWith('数量')) d.className = 'rec-qty';
+      else if(l.startsWith('总价')) d.className = 'rec-total';
       rec.appendChild(d);
     });
     const wrap = document.createElement('div');
@@ -124,7 +148,13 @@
   $('#btnPriceStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
   $('#btnPriceReset').addEventListener('click', () => { step = 0; render(); });
   render();
+
+  /* 讲解入口：set(第几张票, 第几步) —— 0 读信息 / 1 想关系 / 2 列式 / 3 写答 */
+  MOD.price = {
+    set(i, s){ if (i != null) sel.value = i; step = s || 0; render(); }
+  };
 })();
+
 
 /* ==========================================================================
    ③ 速度 · 时间 · 路程
@@ -163,6 +193,11 @@
   v.addEventListener('input', render); t.addEventListener('input', render);
   $('#btnSpdReset').addEventListener('click', () => { v.value = 60; t.value = 3; render(); });
   render();
+
+  /* 讲解入口：set(速度, 时间) */
+  MOD.spd = {
+    set(x, y){ v.value = x; t.value = y; render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -213,12 +248,23 @@
                                  (c.q.includes('千米') ? '路程 = 速度 × 时间。' : '')),
       '第 ④ 步 <b>列式计算</b>并<b>写答</b>：' + c.why
     ];
+    /* 四步法的那一步写进画面：颜色变化投屏看不清，文字不会骗人 */
+    const trace = document.createElement('div');
+    trace.style.cssText = 'margin-top:12px;font-size:15.5px;line-height:1.8;text-align:center;' +
+      'max-width:660px;padding:10px 16px;border-radius:10px;background:#f7faff;color:var(--ink2)';
+    trace.innerHTML = msgs[Math.min(step, msgs.length - 1)];
+    stage.appendChild(trace);
     note.innerHTML = msgs[Math.min(step, msgs.length - 1)];
   }
   $('#btnJudgeNext').addEventListener('click', () => { step = (step + 1) % 4; render(); });
   $('#btnJudgeShow').addEventListener('click', () => { step = 4; render(); });
   $('#btnJudgeReset').addEventListener('click', () => { step = 0; idx = 0; render(); });
   render();
+
+  /* 讲解入口：set(第几道题, 第几步) */
+  MOD.judge = {
+    set(i, s){ if (i != null) idx = i; step = s || 0; render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -242,7 +288,7 @@
      s3:'答：应找回 60 元',
      a:'60'}
   ];
-  const sel = $('#applySel'), note = $('#applyNote'), steps = $('#applySteps');
+  const sel = $('#applySel'), note = $('#applyNote'), steps = $('#applySteps'), stage = $('#applyStage');
   let step = 0;
   function render(){
     const it = ITEMS[+sel.value];
@@ -254,6 +300,13 @@
       it.s2,
       it.s3
     ];
+    /* 分步写在画面里：讲到第几步，屏幕上就只有第几步，不在 note 里堆着 */
+    if (stage){
+      stage.innerHTML = msgs.slice(0, Math.min(step, 3) + 1)
+        .map((m, i) => `<div style="font-size:18px;line-height:1.9;text-align:center;max-width:660px;` +
+          `padding:8px 14px;border-radius:10px;background:${i === Math.min(step, 3) ? 'var(--accent-l)' : 'transparent'}">${m}</div>`)
+        .join('');
+    }
     note.innerHTML = msgs[Math.min(step, msgs.length - 1)];
     if (step === 0) note.className = 'tip';
   }
@@ -261,6 +314,11 @@
   $('#btnApplyStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
   $('#btnApplyReset').addEventListener('click', () => { step = 0; render(); });
   render();
+
+  /* 讲解入口：set(第几题, 第几步) —— 0 读题 / 1 第一步 / 2 第二步 / 3 第三步 */
+  MOD.apply = {
+    set(i, s){ if (i != null) sel.value = i; step = s || 0; render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -332,46 +390,94 @@ const HAND_FILL = [
 
 const EXT_CHOICE = [
   {q:'小刚 3 小时走了 21 千米，照这样计算，他走 8 小时要走（　）千米。',
-   opts:['56','49','63','42'], a:0, why:'先求速度 21 ÷ 3 = 7，7 × 8 = 56。'},
+   opts:['56','49','63','42'], a:0, why:'先求速度 21 ÷ 3 = 7，7 × 8 = 56。', point:'归一问题：先求**速度**（1 小时走多少），再求路程', care:'21 ÷ 3 = 7（千米/时），7 × 8 = 56；别直接 21 × 8'},
   {q:'一个数的 3 倍是 240，这个数的 5 倍是（　）。',
-   opts:['400','240','480','800'], a:0, why:'这个数 = 240 ÷ 3 = 80，80 × 5 = 400。'},
+   opts:['400','240','480','800'], a:0, why:'这个数 = 240 ÷ 3 = 80，80 × 5 = 400。', point:'**倒推**原数，再求新的倍数', care:'先 240 ÷ 3 = 80，再 80 × 5 = 400；别直接 240 × 5', steps:['先求这个数：240 ÷ 3 = 80', '再求它的 5 倍：80 × 5 = 400', '也可看成：3 倍变 5 倍，240 × 5 ÷ 3 = 400']},
   {q:'甲乙两地相距 450 千米，两车同时从两地相对开出，甲车每小时行 40 千米，乙车每小时行 50 千米，几小时相遇？',
    opts:['4','4.5','5','6'], a:2,
-   why:'两车同时相对开出，每小时一共行 40 + 50 = 90 千米，450 ÷ 90 = 5（小时）。'},
+   why:'两车同时相对开出，每小时一共行 40 + 50 = 90 千米，450 ÷ 90 = 5（小时）。', point:'相遇问题：速度和 × 相遇时间 = 总路程', care:'速度和时间要**对应单位**：40 + 50 = 90（千米/时），450 ÷ 90 = 5（小时）', steps:['两车每小时一共走：40 + 50 = 90（千米）', '总共要合起来走 450 千米', '相遇时间：450 ÷ 90 = 5（小时）']},
   {q:'下面说法正确的是（　）。',
    opts:['单价越贵，总价一定越贵','数量越多，总价一定越多（单价不变时）',
          '速度越快，路程一定越远','时间越长，路程一定越长'], a:1,
-   why:'总价 = 单价 × 数量，单价不变时数量越多总价越大；其他说法都缺少条件。'},
+   why:'总价 = 单价 × 数量，单价不变时数量越多总价越大；其他说法都缺少条件。', point:'单价、数量、总价三者的关系要**说完整条件**', care:'“单价越贵总价一定越贵”要数量相同；“速度越快路程越远”要时间相同'},
   {q:'一支钢笔 15 元，一个笔记本 6 元，买 3 支钢笔的钱最多可以买（　）个笔记本。',
    opts:['6','7','8','9'], a:1,
-   why:'15 × 3 = 45（元），45 ÷ 6 = 7……7；买 8 个要 48 元，不够，所以最多买 7 个。'},
+   why:'15 × 3 = 45（元），45 ÷ 6 = 7……7；买 8 个要 48 元，不够，所以最多买 7 个。', point:'**除法应用**：先算总钱数，再看能买几个', care:'3 × 15 = 45，45 ÷ 6 = 7 个还剩 3 元，所以是 7 个（最多）'},
   {q:'一本书 28 页，小明每天看 6 页，几天能看完？',
-   opts:['4','5','6','7'], a:0, why:'28 ÷ 6 = 4 余 4，要 5 天才能看完。'}
+   opts:['4','5','6','7'], a:1, why:'28 ÷ 6 = 4……4，剩下的 4 页还要 1 天，所以 4 + 1 = 5（天）。最后一天看不满也算一天。', point:'**进一法**：最后一天看不满也要算一天', care:'28 ÷ 6 = 4……4，剩下 4 页还要 1 天 → 5 天；这里最容易答 4', steps:['28 ÷ 6 = 4……4', '剩下的 4 页还要 1 天', '4 + 1 = 5（天）']}
 ];
 
 const EXT_FILL = [
   {q:'商店运来 5 箱饮料，每箱 48 瓶，卖出 138 瓶后还剩（　）瓶。',
-   a:'102', why:'48 × 5 = 240，240 − 138 = 102。'},
+   a:'102', why:'48 × 5 = 240，240 − 138 = 102。', point:'两步：先求**总数**，再减去卖出的', care:'5 × 48 = 240，240 − 138 = 102；别用 48 − 138'},
   {q:'一辆车 5 小时行 250 千米，照这样计算，8 小时行（　）千米。',
-   a:'400', why:'250 ÷ 5 = 50，50 × 8 = 400。'},
+   a:'400', why:'250 ÷ 5 = 50，50 × 8 = 400。', point:'归一：先求 1 小时行多少', care:'250 ÷ 5 = 50，50 × 8 = 400'},
   {q:'每套 168 元的演出票，买 8 张，付 1500 元，应找回（　）元。',
-   a:'156', why:'168 × 8 = 1344，1500 − 1344 = 156。'},
+   a:'156', why:'168 × 8 = 1344，1500 − 1344 = 156。', point:'两步：先求**总价**，再用付出的钱减', care:'168 × 8 = 1344，1500 − 1344 = 156'},
   {q:'妈妈买了 2 千克排骨和 1 千克鱼，排骨每千克 38 元，鱼每千克 56 元，一共花了（　）元。',
-   a:'132', why:'38 × 2 = 76，76 + 56 = 132。'},
+   a:'132', why:'38 × 2 = 76，76 + 56 = 132。', point:'先分别算每种商品的钱，再相加', care:'2 × 38 = 76，1 × 56 = 56，76 + 56 = 132'},
   {q:'某校四年级有 3 个班，每班 42 人，五年级人数比四年级多 26 人，五年级有（　）人。',
-   a:'152', why:'42 × 3 = 126，126 + 26 = 152。'},
+   a:'152', why:'42 × 3 = 126，126 + 26 = 152。', point:'先算四年级总人数，再加相差数', care:'3 × 42 = 126，126 + 26 = 152；别算成 42 + 26'},
   {q:'一个数的 4 倍比它的 3 倍多 25，这个数是（　）。',
-   a:'25', why:'多出来的是 1 倍：25 ÷ (4 − 3) = 25。'}
+   a:'25', why:'多出来的是 1 倍：25 ÷ (4 − 3) = 25。', point:'**差倍关系**：4 倍与 3 倍相差 1 倍，这个 1 倍就是 25', care:'4 − 3 = 1（倍），1 倍 = 25，所以这个数 = 25；别除以 25 或乘 4', steps:['同一个数的 4 倍比 3 倍多 4 − 3 = 1 倍', '这 1 倍正好是 25', '所以这个数就是 25', '检验：25 × 4 = 100，25 × 3 = 75，100 − 75 = 25 ✓']}
+];
+
+const STAR5_CHOICE = [
+  {q:'两车同时同向行驶，甲车每小时行 45 千米，乙车每小时行 60 千米。甲车在乙车前面 90 千米，几小时后乙车追上甲车？', opts:['5 小时', '6 小时', '7.5 小时', '9 小时'], a:1,
+   why:'先看<b>谁追谁</b>：追的是<b>乙车</b>，被追的是甲车。' +
+       '乙车每小时行 60 千米，甲车每小时行 45 千米，<b>乙车每小时比甲车多行 15 千米</b>。' +
+       '也就是说，乙车每小时追近 15 千米。两车相距 90 千米，' +
+       '90 ÷ 15 = <b>6</b>（小时）。', point:'追及问题：追的人必须更快；追及时间 = **路程差 ÷ 速度差**', care:'先求速度差：60 − 45 = 15（千米/时），再算 90 ÷ 15 = 6（小时）；别用速度和 60 + 45', steps:['看清谁追谁：乙车追甲车，乙车更快，能追上', '速度差：60 − 45 = 15（千米/时），即每小时追近 15 千米', '追及时间：90 ÷ 15 = 6（小时）', '检验：6 小时后甲车行 45 × 6 = 270 千米，乙车行 60 × 6 = 360 千米，乙车比甲车多行 90 千米 ✓']},
+  {q:'一个数除以 12 的商是 15，这个数乘 4 是（　）。', opts:['720', '60', '180', '480'], a:0,
+   why:'先<b>倒推</b>回这个数：15 × 12 = 180。' +
+       '再算 180 × 4 = <b>720</b>。', point:'**倒推**：商 × 除数 = 被除数，再求新的积', care:'先把原数求出来（15 × 12 = 180），再乘 4；别直接 15 × 4', steps:['这个数 = 15 × 12 = 180', '再算 180 × 4 = 720']},
+  {q:'甲、乙两地相距 450 千米，两车同时从两地相对开出，甲车每小时行 40 千米，乙车每小时行 50 千米。相遇时甲车比乙车少行（　）千米。', opts:['50 千米', '100 千米', '150 千米', '200 千米'], a:0,
+   why:'速度和：40 + 50 = 90（千米/时）。' +
+       '相遇时间：450 ÷ 90 = <b>5</b>（小时）。' +
+       '甲车行 40 × 5 = 200 千米，乙车行 50 × 5 = 250 千米。' +
+       '甲比乙少行 250 − 200 = <b>50</b> 千米。', point:'相遇问题：先求**相遇时间**，再分别求两车走的路程', care:'速度要用**速度和** 40 + 50 = 90；别用单车的速度去除总路程', steps:['相遇时间：450 ÷ (40 + 50) = 450 ÷ 90 = 5（小时）', '甲车行 40 × 5 = 200 千米', '乙车行 50 × 5 = 250 千米', '甲比乙少行 250 − 200 = 50 千米']},
+  {q:'一个数先乘 3 再乘 4，与这个数直接乘 12 的结果（　）。', opts:['相等', '前者大', '后者大', '无法确定'], a:0,
+   why:'3 × 4 = 12，这是<b>乘法结合律</b>。' +
+       '所以"先乘 3 再乘 4"和"直接乘 12"结果<b>相等</b>。', point:'乘法**结合律**：3 × 4 = 12', care:'连乘时改变的是**顺序**，结果不变', steps:['3 × 4 = 12', '所以 a × 3 × 4 = a × 12，结果相等']},
+  {q:'下面说法<b>错误</b>的是（　）。', opts:['速度 × 时间 = 路程', '总价 ÷ 数量 = 单价', '路程 ÷ 时间 = 速度', '单价 × 数量 = 速度'], a:3,
+   why:'D 错：单价 × 数量 = <b>总价</b>，不是速度。' +
+       'A、B、C 都是本单元的基本关系式。', point:'辨析本单元的三个基本关系式', care:'单价 × 数量 = **总价**，与速度无关', steps:['D 错：单价 × 数量 = 总价', 'A、B、C 都是正确关系式']},
+  {q:'每箱苹果 24 千克，每辆卡车装 6 箱，8 辆卡车一共能运（　）千克。', opts:['1152', '144', '192', '138'], a:0,
+   why:'先算一辆车装多少：24 × 6 = 144（千克）。' +
+       '再算 8 辆：144 × 8 = <b>1152</b>（千克）。' +
+       '也可以一步算：24 × 6 × 8 = <b>1152</b>。', point:'**连乘**：先算一辆车装多少，再乘车辆数', care:'24 × 6 × 8 是连乘，一步算也行，但别把 6 箱和 8 辆搞混', steps:['一辆车：24 × 6 = 144（千克）', '8 辆：144 × 8 = 1152（千克）']},
+];
+
+const STAR5_FILL = [
+  {q:'甲、乙两地相距 450 千米，两车同时从两地相对开出，甲车每小时行 40 千米，乙车每小时行 50 千米。相遇时甲车行了（　）千米。', a:'200',
+   why:'相遇时间：450 ÷ (40 + 50) = 5（小时）。' +
+       '甲车行 40 × 5 = <b>200</b> 千米。', point:'相遇问题：时间和 → 各自行程', care:'时间要用速度和求', steps:['相遇时间：450 ÷ 90 = 5（小时）', '甲车行 40 × 5 = 200 千米']},
+  {q:'一本书有 235 页，小明每天看 25 页，几天能看完（　）？', a:'10',
+   why:'235 ÷ 25 = 9……10，剩下的 10 页还要 <b>1 天</b>。' +
+       '最后一天看不满也算一天，所以要 9 + 1 = <b>10</b> 天（进一法）。', point:'**进一法**：最后一天看不满也要算一天', care:'235 ÷ 25 = 9……10，剩下的 10 页还要 1 天 → 10 天；这里最容易答 9', steps:['235 ÷ 25 = 9……10', '剩下的 10 页还要 1 天', '9 + 1 = 10（天）']},
+  {q:'一个数除以 12 的商是 15，这个数是（　）。', a:'180',
+   why:'这个数 = 商 × 除数 = 15 × 12 = <b>180</b>。', point:'被除数 = 商 × 除数', care:'别把 15 和 12 加起来', steps:['被除数 = <b>商 × 除数</b>。', '15 × 12 = <b>180</b>。']},
+  {q:'每千克排骨 38 元，买 3 千克要（　）元。', a:'114',
+   why:'38 × 3 = <b>114</b>（元）。', point:'单价 × 数量 = 总价', care:'别写成 38 + 3', steps:['总价 = <b>单价 × 数量</b>。', '38 × 3 = <b>114</b>（元）。']},
+  {q:'小明 4 分钟走 220 米，照这样计算，7 分钟走（　）米。', a:'385',
+   why:'先求速度：220 ÷ 4 = 55（米/分）。' +
+       '再求路程：55 × 7 = <b>385</b>（米）。', point:'归一问题：先求**速度**，再求路程', care:'先 220 ÷ 4 求速度，别直接 220 × 7', steps:['速度：220 ÷ 4 = 55（米/分）', '路程：55 × 7 = 385（米）']},
+  {q:'甲、乙两数的和是 60，甲数是乙数的 2 倍，甲数是（　）。', a:'40',
+   why:'把乙数看作 1 份，甲数就是 2 份，一共 3 份。' +
+       '乙数 = 60 ÷ 3 = 20，甲数 = 20 × 2 = <b>40</b>。', point:'**倍数关系**：把 1 倍量看作 1 份', care:'乙数 1 份、甲数 2 份，共 3 份 = 60；甲数是 2 份不是 3 份', steps:['乙 1 份 + 甲 2 份 = 3 份 = 60', '乙 = 60 ÷ 3 = 20', '甲 = 20 × 2 = 40']},
 ];
 
 bootCourse([
-  {key:'basic', title:'第一档 · 巩固基础（两个模型、三组关系式）', prefix:'基',
+  {key:'basic', star:3, title:'第一档 · 巩固基础（两个模型、三组关系式）', prefix:'基',
    choice:BASIC_CHOICE, fill:BASIC_FILL,
    host:'#basicBlock', score:'#scoreBasic', total:'#totalBasic', reset:'#btnResetBasic'},
-  {key:'hand', title:'第二档 · 动手操作（表格填充、选关系式、实际购物）', prefix:'动',
+  {key:'hand', star:3, title:'第二档 · 动手操作（表格填充、选关系式、实际购物）', prefix:'动',
    choice:HAND_CHOICE, fill:HAND_FILL,
    host:'#handBlock', score:'#scoreHand', total:'#totalHand', reset:'#btnResetHand'},
-  {key:'ext', title:'第三档 · 扩展思维（两步以上、逆推、变式与陷阱）', prefix:'拓',
+  {key:'ext', star:4, title:'第三档 · 扩展思维（两步以上、逆推、变式与陷阱）', prefix:'拓',
    choice:EXT_CHOICE, fill:EXT_FILL,
-   host:'#extBlock', score:'#scoreExt', total:'#totalExt', reset:'#btnResetExt'}
+   host:'#extBlock', score:'#scoreExt', total:'#totalExt', reset:'#btnResetExt'},
+  {key:'star5', title:'第四档 · 五星挑战 · 浅奥思维（归一问题 · 相遇问题 · 假设法）', prefix:'奥', star:5,
+   choice:STAR5_CHOICE, fill:STAR5_FILL,
+   host:'#star5Block', score:'#scoreStar5', total:'#totalStar5', reset:'#btnResetStar5'}
 ]);

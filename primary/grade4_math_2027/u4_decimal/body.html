@@ -1,0 +1,111 @@
+<section id="s-meaning">
+  <h2 class="section"><span class="num">1</span>小数的意义</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>十格图：小数就是"平均分"的一部分</h3>
+    <p class="lead">拖动滑块改变涂色格数，看十格图表示的小数。
+      <br><b>教学口径</b>：把"1"平均分成 <b>10 份</b>，其中<b>1 份</b>是 <b>0.1</b>，<b>3 份</b>是 <b>0.3</b>；
+      平均分成 <b>100 份</b>，其中 1 份是 <b>0.01</b>。
+      <br><b>计数单位</b>：<b>0.1、0.01、0.001</b>；<b>相邻两个计数单位之间的进率是 10</b>。</p>
+    <div class="controls">
+      <input type="range" id="decFill" min="0" max="10" value="3">
+      <span class="pill" id="decLabel">—</span>
+      <button class="ghost" id="btnDecReset">重置</button>
+    </div>
+    <div class="stage" id="decStage"></div>
+    <div id="decNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-place">
+  <h2 class="section"><span class="num">2</span>小数的数位顺序表</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>数位顺序表里小数部分怎么排</h3>
+    <p class="lead">输入一个小数，看它在<b>数位顺序表</b>中的位置。
+      <br><b>教学口径</b>：小数点<b>左边是整数部分</b>，<b>右边是小数部分</b>；
+      小数部分从<b>十分位</b>起，依次是<b>百分位、千分位</b>；
+      <b>计数单位与数位一一对应</b>（十分位对应 0.1）。</p>
+    <div class="controls">
+      <input type="text" id="placeNum" value="3.205" style="width:150px;font-weight:700;font-size:17px;text-align:center">
+      <button id="btnPlaceStep">▶ 下一步</button>
+      <button class="ghost" id="btnPlaceReset">重置</button>
+    </div>
+    <div class="stepper" id="placeSteps"></div>
+    <div class="stage" id="placeStage" style="flex-direction:column"></div>
+    <div id="placeNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-read">
+  <h2 class="section"><span class="num">3</span>小数的读法和写法</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>整数部分按整数读，小数部分依次读</h3>
+    <p class="lead">点"下一个"，看一个小数是怎么读出来、又怎么写下来的。
+      <br><b>教学口径</b>：<b>整数部分按整数的读法读</b>；<b>小数点读作"点"</b>；
+      <b>按原数逐位读时，小数部分要依次读出每一个数字</b>，末尾的 0 也要读（<b>0.50 读作零点五零</b>）；
+      若先把它化简成 0.5，则读作“零点五”。
+      <br><b>注意</b>：<b>小数部分中间有 0 一定要读出来</b>（如 2.405 读作二点四零五）。</p>
+    <div class="controls">
+      <button id="btnReadStep">▶ 下一个</button>
+      <button class="ghost" id="btnReadAll">全部</button>
+      <button class="ghost" id="btnReadReset">重置</button>
+    </div>
+    <div class="stepper" id="readSteps"></div>
+    <div class="stage" id="readStage" style="flex-direction:column"></div>
+    <div id="readNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-property">
+  <h2 class="section"><span class="num">4</span>小数的性质</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>小数末尾添上 0，大小不变</h3>
+    <p class="lead">点"添 0"或"去 0"，看数轴上的点动没动。
+      <br><b>教学口径</b>：<b>小数的末尾添上 0 或去掉 0，小数的大小不变</b>；
+      所以小数可以<b>化简</b>（去 0）和<b>改写</b>（添 0）。
+      <br><b>关键区别</b>：<b>小数中间的 0 不能去掉</b>（0.305 ≠ 0.35）；<b>小数末尾的 0 可以去掉</b>（0.50 = 0.5，100.50 = 100.5），但<b>整数部分的 0 不能乱去</b>（100.05 ≠ 1.5）。</p>
+    <div class="controls">
+      <button id="btnPropStep">▶ 下一步</button>
+      <button class="ghost" id="btnPropAll">完整演示</button>
+      <button class="ghost" id="btnPropReset">重置</button>
+    </div>
+    <div class="stepper" id="propSteps"></div>
+    <div class="stage" id="propStage"></div>
+    <div id="propNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-compare">
+  <h2 class="section"><span class="num">5</span>大小比较与单位换算</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>小数的大小比较</h3>
+    <p class="lead">点"比一比"，看两个小数在数轴上的位置。
+      <br><b>教学口径</b>：<b>先比整数部分</b>，整数部分相同就<b>依次比十分位、百分位……</b>，
+      <b>位数多的小数不一定大</b>（0.5 &lt; 0.48）。</p>
+    <div class="controls">
+      <button id="btnCmpStep">▶ 比一比</button>
+      <button class="ghost" id="btnCmpAll">全部</button>
+      <button class="ghost" id="btnCmpReset">重置</button>
+    </div>
+    <div class="stepper" id="cmpSteps"></div>
+    <div class="stage" id="cmpStage" style="flex-direction:column"></div>
+    <div id="cmpNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">动画</span>小数点移动引起大小变化</h3>
+    <p class="lead">点"移动小数点"，看数的大小怎么变。
+      <br><b>教学口径</b>：<b>小数点向右移一位（多位），扩大到原数的 10 倍（100 倍……）；
+      向左移一位（多位），缩小到原数的 1/10（1/100……）</b>。</p>
+    <div class="controls">
+      <button id="btnMoveStep">▶ 移动</button>
+      <button class="ghost" id="btnMoveReset">重置</button>
+    </div>
+    <div class="stage" id="moveStage" style="flex-direction:column"></div>
+    <div id="moveNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

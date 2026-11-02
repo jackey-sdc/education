@@ -34,6 +34,7 @@
 |---|---|---|
 | 第一档 · 巩固基础 | 16 | 选择 8 + 填空 8 |
 | 第二档 · 动手操作 | 12 | 选择 4 + 填空 8 |
+| 第四档 · 五星挑战 · 浅奥思维 | 12 | 选择 6 + 填空 6 |
 | 第三档 · 扩展思维 | 12 | 选择 6 + 填空 6 |
 
 ### 三、知识点覆盖
@@ -51,3 +52,36 @@ python3 tests/test_unit.py
 ## 源码与重建
 
 源码在 `../`；本单元内容在 `body.html` 与 `app.js`。重建：`python3 ../build.py u5_parallelogram`。
+
+## 课程讲解（语音 + 动画）
+
+6 节课程讲解（平行与垂直 / 画垂线 / 点到直线的距离 / 平行四边形 / 梯形 / 四边形家族图）各配一份六拍脚本：读信息 → 提问 → 找关系 → 算一算（几何课为"指认"）→ 检验 → 迁移。
+点每节的「🔊 开始讲解」播放；支持暂停/继续/停止/重播/语速，**点任意一拍可单独重讲**。
+
+- 脚本：`narr.js`（每节一个对象），动画由 `app.js` 的 `MOD.*` 控制器驱动。
+- **设计记录：`iterations.md`**（写代码前的三轮方案评审：需求是否清晰 / 场景设计是否合理 / 通俗易懂且体现数学思维；每轮至少一条"被推翻"）。
+- 改脚本后必须重建并自检：
+
+```bash
+python3 ../build.py u5_parallelogram
+# 在仓库根目录执行
+python3 .workbuddy/skills/math-courseware-explainer/scripts/check_explain.py u5_parallelogram
+```
+
+### 语音：预生成音频（晓晓音色，内联进单文件）
+
+36 拍全部预生成音频并以 base64 内联，**音质与学生电脑装没装中文语音无关，也不需要联网**。
+音频按「section id + 拍序」命名（如 `s-oral-1`），存放在 `assets/audio/u5/`，
+`build.py` 注入 `window.NARR_AUDIO` 查表，`Narrator` 按同一规则查；查不到自动回退系统语音。
+
+- 文案：`say` 为口语稿（平均 30 字/拍），`emp` 标重读（每拍 1 处）
+- 音频：36 条 / 5.2 分钟 / 2568 KB / 64kbps 单声道 AAC
+- 改文案后**必须**重新合成再构建，否则页面里还是旧音频：
+
+```bash
+python3 tools/tts_build.py u5_parallelogram     # 增量；改了切分规则用 --force
+python3 build.py u5_parallelogram
+python3 tools/check_audio_play.py u5_parallelogram   # 闸②：音频真在播
+python3 tools/check_pron.py u5_parallelogram        # 闸③：数字读法
+python3 tools/make_preview.py u5_parallelogram      # 试听页
+```

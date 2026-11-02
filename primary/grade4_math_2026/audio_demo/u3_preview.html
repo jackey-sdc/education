@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<title>u3 讲解音频试听</title>
+<style>
+  :root{--ink:#1a1c1f;--ink2:#5b6169;--line:#e3e6ea;--bg:#f6f7f9;--hi:#fff3c4;--acc:#2563eb}
+  *{box-sizing:border-box}
+  body{margin:0;padding:28px 20px 60px;background:var(--bg);color:var(--ink);
+    font:15px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:820px;margin:0 auto}
+  h1{font-size:21px;margin:0 0 4px}
+  .sub{color:var(--ink2);font-size:13px;margin-bottom:22px}
+  h2{font-size:15px;margin:30px 0 12px;color:var(--ink2);font-weight:600;
+    border-bottom:1px solid var(--line);padding-bottom:8px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .card.on{border-color:var(--acc);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .meta{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2)}
+  .meta b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .beat{background:var(--bg);border-radius:4px;padding:1px 7px}
+  .dur{margin-left:auto;font-variant-numeric:tabular-nums}
+  .mini{border:1px solid var(--line);background:#fff;border-radius:6px;
+    width:30px;height:26px;cursor:pointer;font-size:12px}
+  .mini:hover{border-color:var(--acc);color:var(--acc)}
+  .say{margin:8px 0 0;font-size:14px;line-height:1.8}
+  .say mark{background:var(--hi);padding:0 2px;border-radius:3px}
+  .hidden{display:none}
+  .reveal{font-size:12px;border:1px dashed var(--line);background:#fff;border-radius:6px;
+    padding:2px 8px;cursor:pointer;color:var(--ink2)}
+  .ans{display:none;margin:6px 0 0;font-size:12px;color:var(--acc)}
+  .blind.open .ans{display:block}
+  .blind.open .say{display:block}
+  .bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 14px;
+    cursor:pointer;font-size:13px}
+  .btn:hover{border-color:var(--acc);color:var(--acc)}
+  .note{background:#fff;border-left:3px solid var(--acc);padding:10px 14px;border-radius:0 8px 8px 0;
+    font-size:13px;color:var(--ink2);margin-bottom:22px}
+</style></head><body><div class="wrap">
+<h1>u3 讲解音频试听</h1>
+<p class="sub">30 拍 / 254 秒 / 晓晓 · 口语＋留白＋数字重读（<mark>黄色</mark>为重读片段）</p>
+<div class="note">先听「盲听区」——不看文字、不看拍名，只判断一句：<b>像不像老师在讲</b>。
+这 6 条是随机抽的，听完再点「揭晓」看是哪一拍。</div>
+
+<div class="bar">
+  <button class="btn" id="playAll">▶ 连续播放全部</button>
+  <button class="btn" id="stopAll">⏹ 停止</button>
+</div>
+
+<h2>盲听区（6 条，顺序已打乱）</h2>
+
+    <div class="card blind" data-src="../assets/audio/u3/s-vertical-2.m4a">
+      <div class="meta"><b>1</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">你有没有想过，这道题为什么要写两行？一行不行吗？</p>
+        <p class="ans">提问</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u3/s-zero-5.m4a">
+      <div class="meta"><b>2</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">再把放一边的 10 乘回去，100 乘 10 得 <mark>1000</mark>。验一下，<mark>1000</mark> 除以 40 正好 25。</p>
+        <p class="ans">检验</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u3/s-law-2.m4a">
+      <div class="meta"><b>3</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">那要是第二个因数从 5 变成 10，积会变成多少？你先猜一猜。</p>
+        <p class="ans">提问</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u3/s-oral-5.m4a">
+      <div class="meta"><b>4</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">两个因数末尾一共两个 0，就在 6 后面添两个 0，得 <mark>600</mark>。回头验一下，<mark>600</mark> 除以 30 正好 20。</p>
+        <p class="ans">检验</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u3/s-law-3.m4a">
+      <div class="meta"><b>5</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">5 变成 10，是乘 2。也就是份数<mark>翻了一倍</mark>。</p>
+        <p class="ans">找关系</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u3/s-estimate-6.m4a">
+      <div class="meta"><b>6</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">再看 198 乘 52。200 乘 50 正好一万，估出来卡在线上。精确算 <mark>10296</mark>，比一万还多，所以不够。</p>
+        <p class="ans">迁移</p>
+    </div>
+
+<h2>逐条试听（六拍骨架）</h2>
+
+    <div class="card" data-src="../assets/audio/u3/s-oral-1.m4a">
+      <div class="meta"><b>01</b><span class="beat">读信息</span>
+        <span class="dur">6.7s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">你看这道题，20 乘 30。两个都是整十数，末尾都带着 0。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-oral-2.m4a">
+      <div class="meta"><b>02</b><span class="beat">提问</span>
+        <span class="dur">4.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">那问题来了：末尾这个 0，一定要先算进去吗？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-oral-3.m4a">
+      <div class="meta"><b>03</b><span class="beat">找关系</span>
+        <span class="dur">8.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">不用。20 就是 2 个十，30 就是 3 个十。把十放一边，<mark>先算 2 乘 3</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-oral-4.m4a">
+      <div class="meta"><b>04</b><span class="beat">算一算</span>
+        <span class="dur">7.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">2 乘 3 得 6。可这个 6 不是 6 个一，是 6 个十乘十，也就是 <mark>6 个百</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-oral-5.m4a">
+      <div class="meta"><b>05</b><span class="beat">检验</span>
+        <span class="dur">11.6s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">两个因数末尾一共两个 0，就在 6 后面添两个 0，得 <mark>600</mark>。回头验一下，<mark>600</mark> 除以 30 正好 20。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-oral-6.m4a">
+      <div class="meta"><b>06</b><span class="beat">迁移</span>
+        <span class="dur">11.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">换一道也一样。300 乘 40，先算 3 乘 4 得 12，末尾三个 0，添上三个 0，就是 <mark>12000</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-vertical-1.m4a">
+      <div class="meta"><b>07</b><span class="beat">读信息</span>
+        <span class="dur">7.9s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">竖式计算，145 乘 12。写竖式的时候，两个数的<mark>个位要对齐</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-vertical-2.m4a">
+      <div class="meta"><b>08</b><span class="beat">提问</span>
+        <span class="dur">5.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">你有没有想过，这道题为什么要写两行？一行不行吗？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-vertical-3.m4a">
+      <div class="meta"><b>09</b><span class="beat">找关系</span>
+        <span class="dur">10.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">因为 12 拆开就是 10 加 2。2 要乘 145，10 也要乘 145，<mark>算两次</mark>，所以才两行。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-vertical-4.m4a">
+      <div class="meta"><b>10</b><span class="beat">列式算①</span>
+        <span class="dur">13.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">先用个位上的 2 乘 145。五二得十，写 0 进 1；四二得八，加进位得 9；一二得二。第一行 <mark>290</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-vertical-5.m4a">
+      <div class="meta"><b>11</b><span class="beat">列式算②</span>
+        <span class="dur">11.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">再用十位上的 1 乘 145。得到的是 145 个十，所以末尾要<mark>补一个 0</mark>，写出来 1450。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-vertical-6.m4a">
+      <div class="meta"><b>12</b><span class="beat">检验</span>
+        <span class="dur">14.7s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">两行加起来，290 加 1450 得 1740。回代 1740 除以 12 正好 145。最常错的，是第二行<mark>忘了补 0</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-zero-1.m4a">
+      <div class="meta"><b>13</b><span class="beat">读信息</span>
+        <span class="dur">5.2s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">25 乘 40。你注意看 40 的末尾，有一个 0。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-zero-2.m4a">
+      <div class="meta"><b>14</b><span class="beat">提问</span>
+        <span class="dur">4.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">这个 0 要不要参加计算？能不能先把它藏起来？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-zero-3.m4a">
+      <div class="meta"><b>15</b><span class="beat">找关系</span>
+        <span class="dur">7.2s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">可以。40 就是 4 乘 10。把 10 放一边，<mark>只算 25 乘 4</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-zero-4.m4a">
+      <div class="meta"><b>16</b><span class="beat">算一算</span>
+        <span class="dur">4.8s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">25 乘 4 得 <mark>100</mark>。这一步口算就能出来。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-zero-5.m4a">
+      <div class="meta"><b>17</b><span class="beat">检验</span>
+        <span class="dur">9.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">再把放一边的 10 乘回去，100 乘 10 得 <mark>1000</mark>。验一下，<mark>1000</mark> 除以 40 正好 25。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-zero-6.m4a">
+      <div class="meta"><b>18</b><span class="beat">易错点</span>
+        <span class="dur">10.7s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">不过要小心，能藏起来的只有末尾的 0。看 307 乘 25，中间那个 0 占着数位，<mark>一个都不能丢</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-law-1.m4a">
+      <div class="meta"><b>19</b><span class="beat">读信息</span>
+        <span class="dur">6.0s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">起点是 12 乘 5 得 <mark>60</mark>。先把这个 <mark>60</mark> 记住。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-law-2.m4a">
+      <div class="meta"><b>20</b><span class="beat">提问</span>
+        <span class="dur">6.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">那要是第二个因数从 5 变成 10，积会变成多少？你先猜一猜。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-law-3.m4a">
+      <div class="meta"><b>21</b><span class="beat">找关系</span>
+        <span class="dur">5.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">5 变成 10，是乘 2。也就是份数<mark>翻了一倍</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-law-4.m4a">
+      <div class="meta"><b>22</b><span class="beat">算一算</span>
+        <span class="dur">7.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">12 乘 10 得 120。你看，积<mark>也翻了一倍</mark>，60 变成 120。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-law-5.m4a">
+      <div class="meta"><b>23</b><span class="beat">检验</span>
+        <span class="dur">10.6s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">再来一次。10 变成 20，又乘 2，积从 120 变成 240。因数乘几，<mark>积就乘几</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-law-6.m4a">
+      <div class="meta"><b>24</b><span class="beat">迁移</span>
+        <span class="dur">12.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">反过来也成立。15 是 5 的三倍，积就是 60 的三倍，<mark>180</mark>。以后算面积、算总价，用的都是这一条。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-estimate-1.m4a">
+      <div class="meta"><b>25</b><span class="beat">读信息</span>
+        <span class="dur">5.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">每套 302 元，要买 21 套。7000 元够不够？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-estimate-2.m4a">
+      <div class="meta"><b>26</b><span class="beat">提问</span>
+        <span class="dur">5.6s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">一定要先把 302 乘 21 精确算出来，才知道够不够吗？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-estimate-3.m4a">
+      <div class="meta"><b>27</b><span class="beat">找关系</span>
+        <span class="dur">9.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">不一定。302 很接近 300，21 很接近 20。看成整百整十，就好算多了。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-estimate-4.m4a">
+      <div class="meta"><b>28</b><span class="beat">算一算</span>
+        <span class="dur">6.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">300 乘 20 得 <mark>6000</mark>。估一估，大约要 <mark>6000</mark> 元。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-estimate-5.m4a">
+      <div class="meta"><b>29</b><span class="beat">检验</span>
+        <span class="dur">12.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">可 300 和 20 都估小了，光看 6000 不好下结论。精确算得 6342，多 342，还是不到 7000，<mark>所以够</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u3/s-estimate-6.m4a">
+      <div class="meta"><b>30</b><span class="beat">迁移</span>
+        <span class="dur">13.7s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">再看 198 乘 52。200 乘 50 正好一万，估出来卡在线上。精确算 <mark>10296</mark>，比一万还多，所以不够。</p>
+    </div>
+
+<audio id="player" preload="none"></audio>
+<script>
+const player = document.getElementById('player');
+let cur = null, queue = [], qi = 0;
+
+function playCard(card){
+  document.querySelectorAll('.card.on').forEach(c=>c.classList.remove('on'));
+  card.classList.add('on');
+  player.src = card.dataset.src;
+  player.play();
+  cur = card;
+}
+document.querySelectorAll('.card').forEach(card=>{
+  card.querySelector('.mini').addEventListener('click', ()=>{
+    queue = []; playCard(card);
+  });
+  const rv = card.querySelector('.reveal');
+  if(rv) rv.addEventListener('click', ()=>{ card.classList.toggle('open'); });
+});
+document.getElementById('playAll').addEventListener('click', ()=>{
+  queue = [...document.querySelectorAll('.card:not(.blind)')];
+  qi = 0;
+  if(queue.length) playCard(queue[0]);
+});
+document.getElementById('stopAll').addEventListener('click', ()=>{
+  queue = []; player.pause(); player.removeAttribute('src');
+  document.querySelectorAll('.card.on').forEach(c=>c.classList.remove('on'));
+});
+player.addEventListener('ended', ()=>{
+  if(queue.length && qi < queue.length - 1){ qi++; playCard(queue[qi]); }
+});
+</script>
+</div></body></html>

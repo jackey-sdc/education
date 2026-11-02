@@ -104,7 +104,73 @@
     button{display:none}
     details.answers{display:block} details.answers>summary{display:none}
     main{padding-top:8px}
+    .cheer-layer{display:none!important}   /* 庆祝层不打印 */
+    .q .qstars{color:#666}
   }
+  /* ---- 星级标记 ---- */
+  .q .qstars{font-size:12px;letter-spacing:1px;margin-right:6px;vertical-align:1px;opacity:.85}
+  .q .qstars.s3{color:#f0a020}
+  .q .qstars.s4{color:#e0761f}
+  .q .qstars.s5{color:#b0359e}
+  .q.q-star4{border-left:4px solid #e0761f;background:linear-gradient(90deg,#fffaf3 0%,#fff 40%)}
+  .q.q-star5{border-left:4px solid #b0359e;background:linear-gradient(90deg,#fdf6fd 0%,#fff 45%)}
+  .tierstars{font-size:14px;letter-spacing:2px;margin-right:8px;vertical-align:1px}
+  .tierstars.s3{color:#f0a020}.tierstars.s4{color:#e0761f}.tierstars.s5{color:#b0359e}
+  /* ---- 庆祝效果：满屏点赞 + 中央横幅（纯 DOM+CSS，不引外部文件）---- */
+  .cheer-layer{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+  .like-fly{position:absolute;bottom:-60px;animation:likeFly linear forwards;will-change:transform,opacity}
+  @keyframes likeFly{
+    0%{transform:translateY(0) rotate(0deg) scale(.6);opacity:0}
+    12%{opacity:1;transform:translateY(-12vh) rotate(12deg) scale(1.1)}
+    100%{transform:translateY(-118vh) rotate(320deg) scale(.85);opacity:0}
+  }
+  .cheer-banner{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.6);
+    background:linear-gradient(135deg,#fff3d6,#ffe0ec);border:3px solid #ffb347;
+    border-radius:22px;padding:20px 44px;text-align:center;
+    box-shadow:0 18px 48px rgba(255,140,60,.45);
+    animation:cheerIn .5s cubic-bezier(.2,1.4,.4,1) forwards}
+  .cheer-banner .cheer-main{font-size:38px;font-weight:900;color:#e8542f;letter-spacing:3px;
+    text-shadow:0 2px 0 #fff,0 4px 12px rgba(232,84,47,.35)}
+  .cheer-banner .cheer-sub{margin-top:6px;font-size:16px;font-weight:700;color:#a3521c}
+  .cheer-banner.big{border-color:#ff7ab8}
+  .cheer-banner.big .cheer-main{font-size:46px;color:#e02f7d}
+  .cheer-banner.grand{border-color:#7a4fd6;background:linear-gradient(135deg,#eae4ff,#ffe0ec);
+    box-shadow:0 22px 64px rgba(109,63,214,.5)}
+  .cheer-banner.grand .cheer-main{font-size:50px;color:#6d3fd6}
+  .cheer-banner.out{animation:cheerOut .7s ease forwards}
+  @keyframes cheerIn{to{transform:translate(-50%,-50%) scale(1)}}
+  @keyframes cheerOut{to{transform:translate(-50%,-60%) scale(.85);opacity:0}}
+  @media (prefers-reduced-motion:reduce){
+    .like-fly{display:none}
+    .cheer-banner{animation:none;transform:translate(-50%,-50%)}
+  }
+
+/* ---- 题目右侧：数学思维提示面板 ---- */
+.q{display:grid;grid-template-columns:minmax(0,1fr);column-gap:14px}
+.q.q-has-aside{grid-template-columns:minmax(0,1fr) 252px}
+.qmain{min-width:0}
+.q-aside{align-self:start;background:#fffdf5;border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.7;color:var(--ink2)}
+.q-star4 .q-aside{background:#fff8f1;border-color:#f0c9a6}
+.q-star5 .q-aside{background:#fdf6fd;border-color:#d9aede}
+.qa-h{font-weight:800;font-size:13px;color:var(--ink);margin-bottom:6px}
+.qa-row{display:flex;gap:6px;margin-top:6px;align-items:flex-start}
+.qa-k{flex:0 0 auto;font-size:11px;font-weight:800;color:#fff;background:var(--accent);border-radius:5px;padding:1px 6px;line-height:1.7;margin-top:1px}
+.q-star4 .qa-k{background:#e0761f}
+.q-star5 .qa-k{background:#b0359e}
+.qa-v{flex:1 1 auto;min-width:0}
+
+/* ---- 详细解题过程（答错时展开）---- */
+.fb.bad .steps,.fb.bad .step,.fb.bad .step-final summary{color:var(--ink)}
+.steps{margin-top:8px;background:#f7fbff;border:1px solid #dceaf7;border-radius:10px;padding:10px 12px}
+.steps-h{font-weight:800;font-size:13px;color:#1f5d8f;margin-bottom:6px}
+.step{display:flex;gap:8px;padding:3px 0;line-height:1.7;align-items:flex-start}
+.step .sn{flex:0 0 auto;width:19px;height:19px;border-radius:50%;background:#1f5d8f;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.step-final{display:block;padding:0}
+.step-final summary{cursor:pointer;font-weight:700;color:#1f5d8f;padding:5px 0;font-size:13px;list-style:none;display:flex;gap:8px;align-items:center}
+.step-final summary::-webkit-details-marker{display:none}
+.step-final[open] summary{color:var(--ink)}
+.step-body{display:flex;gap:8px;padding:4px 0 2px;line-height:1.7;align-items:flex-start}
+@media (max-width:900px){ .q.q-has-aside{grid-template-columns:minmax(0,1fr)} .q-aside{order:2} }
 </style>
 </head>
 <body>
@@ -364,6 +430,143 @@ const fillItems = [
   {q:'（示例填空题题干：（　））', a:['标准答案'], why:'（解析）', hint:'（提示）'}
 ];
 
+/* ===== 难度题的两个可选字段（写进题目数据即可自动渲染）=====
+   point —— 考点：从**数学思维**角度说清"为什么这么做"（不是知识点名称）
+   care  —— 易错：写**具体的错法**（不是"要细心"）
+   steps —— 五星题答错时的分步过程（最后一步默认折叠，点开揭晓）
+   例：*/
+const hardChoiceItems = [
+  {q:'（示例：难度较大的选择题）', opts:['选项A','选项B','选项C'], a:1,
+   why:'（解析）', hint:'（提示）',
+   point:'（考点：从思维方法写，如"倒推法：先算目标总量，再减去已有总量"）',
+   care:'（易错：写具体错法，如"总份数从 4 变成 5 了，别还用旧份数"）',
+   steps:['（第一步：写清楚这一步在干什么）',
+          '（第二步：写出这一步的计算）',
+          '（最后一步：写出结论——引擎会自动折叠这一步）']}
+];
+
+/* ==========================================================================
+   3.5 星级体系 + 正反馈（答对四星/五星题时给鼓励）
+        ★ 音效用 Web Audio 实时合成、动画用 DOM+CSS —— 不引任何外部文件，
+          课件保持"单文件、零依赖、离线可用"。
+   ========================================================================== */
+const STAR_ICON = {3:'★★★', 4:'★★★★', 5:'★★★★★'};
+const STAR_NAME = {3:'三星 · 基础', 4:'四星 · 拓展', 5:'五星 · 浅奥'};
+const MAX_LIKES = 90;                 /* 同屏点赞上限 */
+
+let _audioCtx = null;
+function audioCtx(){
+  if(!_audioCtx){
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return null;
+    try{ _audioCtx = new AC(); }catch(e){ return null; }
+  }
+  if(_audioCtx.state === 'suspended'){ try{ _audioCtx.resume(); }catch(e){} }
+  return _audioCtx;
+}
+/* 四星：单音"叮" */
+function playChime(freq){
+  const ctx = audioCtx(); if(!ctx) return;
+  const t0 = ctx.currentTime;
+  const o = ctx.createOscillator(), g = ctx.createGain();
+  o.type='sine'; o.frequency.setValueAtTime(freq||880, t0);
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(0.18, t0+0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0+0.42);
+  o.connect(g); g.connect(ctx.destination);
+  o.start(t0); o.stop(t0+0.45);
+}
+/* 五星：喜悦琶音 C5-E5-G5-C6 */
+function playFanfare(){
+  const ctx = audioCtx(); if(!ctx) return;
+  [[523.25,0],[659.25,0.11],[783.99,0.22],[1046.50,0.34]].forEach(([f,dt])=>{
+    const t0 = ctx.currentTime + dt;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type='triangle'; o.frequency.setValueAtTime(f, t0);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(0.22, t0+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0+0.55);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t0); o.stop(t0+0.6);
+  });
+}
+function likeLayer(){
+  let l = document.getElementById('cheerLayer');
+  if(!l){
+    l = document.createElement('div');
+    l.id='cheerLayer'; l.className='cheer-layer'; l.setAttribute('aria-hidden','true');
+    document.body.appendChild(l);
+  }
+  return l;
+}
+const LIKE_ICONS = ['👍','⭐','🎉','❤️','🌟','👏','💯'];
+function spawnLikes(count, origin){
+  const layer = likeLayer();
+  let alive = [...layer.querySelectorAll('.like-fly')];
+  while(alive.length >= MAX_LIKES){          /* 超出上限：先移除最早的 */
+    const old = alive.shift();
+    if(old.parentNode) old.parentNode.removeChild(old);
+  }
+  const n = Math.max(0, Math.min(count, MAX_LIKES - alive.length));
+  for(let i=0;i<n;i++){
+    const el = document.createElement('span');
+    el.className='like-fly';
+    el.textContent = LIKE_ICONS[(Math.random()*LIKE_ICONS.length)|0];
+    el.style.left = (origin ? origin.x + (Math.random()*240-120) : Math.random()*window.innerWidth) + 'px';
+    el.style.fontSize = (18 + Math.random()*30) + 'px';
+    el.style.animationDuration = (1.5 + Math.random()*1.5) + 's';
+    el.style.animationDelay = (Math.random()*0.6) + 's';
+    layer.appendChild(el);
+    setTimeout(()=>{ if(el.parentNode) el.parentNode.removeChild(el); }, 4200);
+  }
+}
+function showBanner(main, sub, cls){
+  const layer = likeLayer();
+  /* 同时只保留一条横幅：旧的立刻淡出移除，避免叠成一摞 */
+  [...layer.querySelectorAll('.cheer-banner')].forEach(old=>{
+    if(old.classList.contains('out')) return;
+    old.classList.add('out');
+    setTimeout(()=>{ if(old.parentNode) old.parentNode.removeChild(old); }, 700);
+  });
+  const el = document.createElement('div');
+  el.className = 'cheer-banner' + (cls ? ' ' + cls : '');
+  el.innerHTML = '<div class="cheer-main">'+main+'</div>' + (sub?'<div class="cheer-sub">'+sub+'</div>':'');
+  layer.appendChild(el);
+  setTimeout(()=>{ el.classList.add('out'); }, 2000);
+  setTimeout(()=>{ if(el.parentNode) el.parentNode.removeChild(el); }, 2800);
+}
+/* 四星/五星题是否全部答对（用于触发"通关"级庆祝） */
+function hardAllDone(items, state){
+  const hard = [];
+  items.forEach((q,i)=>{ if((q.star||3) >= 4) hard.push(state[i]); });
+  return hard.length > 0 && hard.every(x => x.ok);
+}
+function celebrateCorrect(q, anchorEl, opts){
+  const o = opts || {};
+  const star = q && q.star ? q.star : 3;
+  if(star < 4) return;
+  const r = anchorEl && anchorEl.getBoundingClientRect ? anchorEl.getBoundingClientRect()
+    : {left:window.innerWidth/2, top:window.innerHeight/2, width:0};
+  const origin = {x: r.left + (r.width||0)/2, y: r.top};
+  if(star === 5){
+    showBanner('你好棒！','五星浅奥挑战题被你攻克啦','big');
+    spawnLikes(46, origin);
+    playFanfare();
+  } else {
+    showBanner('答对啦！','四星拓展题 +1 ⭐','normal');
+    spawnLikes(14, origin);
+    playChime(880);
+  }
+  if(o.grand && !celebrateCorrect._grandDone){   /* 全页只庆祝一次 */
+    celebrateCorrect._grandDone = true;
+    setTimeout(()=>{
+      showBanner('太棒了！','所有挑战题全部答对 ⭐⭐⭐⭐⭐','grand');
+      spawnLikes(60);
+      playFanfare();
+    }, 900);
+  }
+}
+
 /* ==========================================================================
    4. 练习引擎（与本仓库 assets/engine.js 同名同义，便于两种交付模式互换）
       · mountQuizInto(host, items, c, prefix, offset)  渲染一组题，返回重做函数
@@ -382,6 +585,61 @@ function updateCounter(c){
   if (c.totalEl) c.totalEl.textContent = c.total;
 }
 
+
+/* ================= 题目右侧：数学思维提示 + 详细解题过程 =================
+   point —— 考察什么知识点（从数学思维角度说清"为什么这么做"）
+   care  —— 易错提醒（学生最容易栽在哪一步）
+   steps —— 答错时给出的分步解题过程（最后一步默认折叠，点开揭晓）
+   题库里用 **粗体** 标记重点，渲染前转成 <b>。 */
+function mdBold(s){ return String(s==null?'':s).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>'); }
+function answerTexts(q){
+  const a = Array.isArray(q.a)?q.a:[q.a];
+  if(Array.isArray(q.opts)){
+    const os = q.opts.map(o=>typeof o==='string'?o:(o.t||''));
+    return a.map(i=>os[i]).filter(x=>typeof x==='string'&&x);
+  }
+  return a.map(x=>String(x));
+}
+function stepHasAnswer(s, ansList){
+  return ansList.some(a=>{
+    if(!a) return false;
+    const esc=a.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    return new RegExp('(^|[^0-9A-Za-z.])'+esc+'($|[^0-9A-Za-z.])').test(s);
+  });
+}
+function buildAside(q){
+  if(!(q.point||q.care)) return null;
+  const el=document.createElement('div'); el.className='q-aside';
+  let h='<div class="qa-h">🧭 数学思维提示</div>';
+  if(q.point) h+=`<div class="qa-row"><span class="qa-k">考点</span><span class="qa-v">${mdBold(q.point)}</span></div>`;
+  if(q.care)  h+=`<div class="qa-row"><span class="qa-k">易错</span><span class="qa-v">${mdBold(q.care)}</span></div>`;
+  el.innerHTML=h; return el;
+}
+function buildSteps(q){
+  const st=q.steps; if(!st||!st.length) return '';
+  const arr=Array.isArray(st)?st:[st];
+  const ansList=answerTexts(q);
+  const publicAns=ansList.some(a=>q.q&&q.q.indexOf(a)>=0);
+  let h='<div class="steps"><div class="steps-h">🧩 详细解题过程（跟着一步一步走）</div>';
+  arr.forEach((s,k)=>{
+    const isLast=k===arr.length-1;
+    const hide=!publicAns&&(isLast||stepHasAnswer(s,ansList));
+    if(hide){
+      const label=isLast?'最后一步 —— 点开揭晓':'这一步藏着答案 —— 点开揭晓';
+      h+=`<details class="step step-final"><summary><span class="sn">${k+1}</span>${label}</summary>`+
+         `<div class="step-body"><span class="sn">${k+1}</span><span>${mdBold(s)}</span></div></details>`;
+    } else {
+      h+=`<div class="step"><span class="sn">${k+1}</span><span>${mdBold(s)}</span></div>`;
+    }
+  });
+  return h+'</div>';
+}
+function wrongFeedback(q){
+  const steps=buildSteps(q);
+  if(steps) return `❌ 答案不对，别急～ 看看下面的思路：${steps}`;
+  return `❌ 答案不对，再想想～<span class="why">💡 提示：${q.hint||'回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
+}
+
 /** items 支持两种题型：{opts,a,why,hint} 为选择；{a:[..],why,hint} 为填空 */
 function mountQuizInto(host, items, c, prefix, offset){
   clear(host);
@@ -390,9 +648,13 @@ function mountQuizInto(host, items, c, prefix, offset){
 
   items.forEach((q,i)=>{
     const box=document.createElement('div'); box.className='q';
+    const star = q.star || 3;                       /* 星级：3 基础 / 4 拓展 / 5 浅奥 */
+    if(star>=4) box.classList.add('q-star'+star);
     const qt=document.createElement('div'); qt.className='qt';
-    qt.innerHTML=`<span class="qno">${prefix}${i+1+offset}</span>`+q.q;
-    box.appendChild(qt);
+    qt.innerHTML=`<span class="qno">${prefix}${i+1+offset}</span>`+
+      `<span class="qstars s${star}" title="${STAR_NAME[star]||''}">${STAR_ICON[star]||''}</span>`+q.q;
+    const main=document.createElement('div'); main.className='qmain';
+    main.appendChild(qt);
     const fb=document.createElement('div'); fb.className='fb';
 
     if (isChoice(q)){
@@ -403,7 +665,7 @@ function mountQuizInto(host, items, c, prefix, offset){
         d.addEventListener('click',()=>choose(k,d));
         opts.appendChild(d);
       });
-      box.appendChild(opts);
+      main.appendChild(opts);
     } else {
       const wrap=document.createElement('div'); wrap.className='controls';
       const inp=document.createElement('input'); inp.type='text'; inp.placeholder='答案填这里';
@@ -419,6 +681,7 @@ function mountQuizInto(host, items, c, prefix, offset){
           state[i].done=true; state[i].ok=true; c.ok++; updateCounter(c); inp.readOnly=true;
           fb.className='fb show good';
           fb.innerHTML=`✅ 答对了！${q.why?'<span class="why">💡 '+q.why+'</span>':''}`;
+          celebrateCorrect(q, box, {grand: hardAllDone(items, state)});
         } else {
           fb.className='fb show bad';
           fb.innerHTML=`❌ 答案不对，再想想～<span class="why">💡 提示：${q.hint||'回到上面的演示动画，把相关的那一步再看一遍。'}</span>`;
@@ -427,7 +690,11 @@ function mountQuizInto(host, items, c, prefix, offset){
       btn.addEventListener('click',check);
       inp.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
     }
-    box.appendChild(fb); host.appendChild(box);
+    main.appendChild(fb);
+    box.appendChild(main);
+    const aside=buildAside(q);
+    if(aside){ box.appendChild(aside); box.classList.add('q-has-aside'); }
+    host.appendChild(box);
 
     function choose(k, el){
       if (state[i].done) return;
@@ -438,6 +705,7 @@ function mountQuizInto(host, items, c, prefix, offset){
           if (+x.dataset.k===k) x.classList.add('right'); });
         fb.className='fb show good';
         fb.innerHTML=`✅ 答对了！${q.why?'<span class="why">💡 '+q.why+'</span>':''}`;
+        celebrateCorrect(q, box, {grand: hardAllDone(items, state)});
       } else {
         el.classList.add('wrong');
         fb.className='fb show bad';
@@ -475,6 +743,7 @@ function bootCourse(groups){
   const resets=[], answerGroups=[];
   groups.forEach(g=>{
     const items=[].concat(g.choice||[], g.fill||[]);
+    items.forEach(it=>{ if(!it.star) it.star = g.star||3; });   /* 星级：档位默认，题目可覆盖 */
     const c=makeCounter(g.score, g.total, items.length);
     const host=document.querySelector(g.host); if(!host) return;
     /* 一次性挂载全部题目：mountQuizInto 内部会 clear(host)，
@@ -500,7 +769,7 @@ bootCourse([
    choice:choiceItems, fill:fillItems,
    host:'#basicBlock', score:'#scoreBasic', total:'#totalBasic', reset:'#btnResetBasic'},
   {key:'ext',   title:'第二档 · 扩展思维', prefix:'拓',
-   choice:choiceItems, fill:fillItems,
+   choice:hardChoiceItems, fill:fillItems,
    host:'#extBlock',   score:'#scoreExt',   total:'#totalExt',   reset:'#btnResetExt'}
 ]);
 

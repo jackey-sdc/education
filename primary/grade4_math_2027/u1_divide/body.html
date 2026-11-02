@@ -1,0 +1,120 @@
+<section id="s-oral">
+  <h2 class="section"><span class="num">1</span>口算除法</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>想乘法算除法</h3>
+    <p class="lead">除数是整十数的口算，可以<b>想乘法算除法</b>：
+      算 <b>60 ÷ 20</b> 时，想"<b>20 乘几等于 60</b>"，因为 <b>20×3=60</b>，所以 60÷20=3。
+      <br><b>教学口径</b>：口算时先看<b>被除数里有几个除数</b>，商的单位是"十"或"百"要看清除数后面有几个 0。</p>
+    <div class="controls">
+      <input type="range" id="oralA" min="1" max="24" value="6">
+      <input type="range" id="oralB" min="1" max="6" value="2">
+      <span class="pill" id="oralLabel">—</span>
+      <button class="ghost" id="btnOralReset">重置</button>
+    </div>
+    <div class="stage" id="oralStage"></div>
+    <div id="oralNote" class="tip"></div>
+  </div>
+  <div class="card">
+    <h3><span class="tag">动画</span>整十数除法与几百几十除法</h3>
+    <p class="lead">点"下一步"：<b>几百几十除以几十</b>时，先看被除数和除数<b>末尾各有几个 0</b>，
+      去掉同样多的 0 再算。注意<b>去掉 0 后单位会变</b>。</p>
+    <div class="controls">
+      <button id="btnOralStep">▶ 下一步</button>
+      <button class="ghost" id="btnOralAll">完整演示</button>
+      <button class="ghost" id="btnOralR2">重置</button>
+    </div>
+    <div class="stepper" id="oralSteps"></div>
+    <div class="stage" id="oral2Stage" style="flex-direction:column"></div>
+    <div id="oral2Note" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-vertical">
+  <h2 class="section"><span class="num">2</span>笔算除法</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>除数是两位数的竖式怎么算</h3>
+    <p class="lead">点"下一步"看完整的竖式过程：
+      <b>① 从高位除起，先看被除数前两位（不够除就看前三位）→ ② 试商 → ③ 乘 → ④ 减 → ⑤ 落下一位继续除</b>。
+      <br><b>教学口径</b>：<b>除到哪一位，商就写在那一位上面</b>；<b>每次除得的余数必须比除数小</b>。</p>
+    <div class="controls">
+      <select id="divSel">
+        <option value="0">425 ÷ 25</option>
+        <option value="1">576 ÷ 18</option>
+        <option value="2">936 ÷ 24</option>
+        <option value="3">784 ÷ 28</option>
+      </select>
+      <button id="btnDivStep">▶ 下一步</button>
+      <button class="ghost" id="btnDivAll">完整演示</button>
+      <button class="ghost" id="btnDivReset">重置</button>
+    </div>
+    <div class="stepper" id="divSteps"></div>
+    <div class="stage" id="divStage"></div>
+    <div id="divNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-trial">
+  <h2 class="section"><span class="num">3</span>试商与调商</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>把除数看作接近的整十数</h3>
+    <p class="lead">除数是两位数时，把它<b>看作与它接近的整十数</b>来试商：
+      <b>24 看作 20，26 看作 30，25 看作 30</b>（四舍五入）。
+      <br><b>教学口径</b>：<b>商大了要调小，商小了要调大</b>；<b>调商只能调 1</b>，
+      调完要重新检查<b>"余数是否比除数小"</b>。</p>
+    <div class="controls">
+      <select id="trialSel">
+        <option value="0">405 ÷ 15（试商 3 → 商大了调小）</option>
+        <option value="1">630 ÷ 21（试商 3 → 正好）</option>
+        <option value="2">828 ÷ 27（试商 3 → 商小了调大）</option>
+        <option value="3">896 ÷ 28（商末尾有 0）</option>
+      </select>
+      <button id="btnTrialStep">▶ 下一步</button>
+      <button class="ghost" id="btnTrialAll">完整演示</button>
+      <button class="ghost" id="btnTrialReset">重置</button>
+    </div>
+    <div class="stepper" id="trialSteps"></div>
+    <div class="stage" id="trialStage"></div>
+    <div id="trialNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-rule">
+  <h2 class="section"><span class="num">4</span>商的变化规律</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>被除数和除数同时变了，商怎么变</h3>
+    <p class="lead">拖动滑块，看被除数和除数<b>同时乘上或除以同一个数</b>时商的变化。
+      <br><b>教学口径</b>：<b>被除数和除数同时乘或除以相同的数（0 除外），商不变</b>。</p>
+    <div class="controls">
+      <span class="pill" id="ruleLabel">×2</span>
+      <input type="range" id="ruleK" min="1" max="5" value="2">
+      <button class="ghost" id="btnRuleReset">重置</button>
+    </div>
+    <div class="stage" id="ruleStage"></div>
+    <div id="ruleNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-solve">
+  <h2 class="section"><span class="num">5</span>解决问题</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>进一法与去尾法</h3>
+    <p class="lead">点"换个情境"，看两种"余数处理"方式：
+      <b>进一法</b>（租船、装车、订餐——<b>剩下一点也要占一份</b>）与
+      <b>去尾法</b>（裁布、做衣服——<b>不够一份就不算</b>）。
+      <br><b>教学口径</b>：<b>"进一法"商上加 1，"去尾法"商去掉余数部分</b>。</p>
+    <div class="controls">
+      <button data-sc="0">🚗 租船</button>
+      <button data-sc="1">✂️ 裁布</button>
+      <button data-sc="2">🍱 订餐</button>
+      <button class="ghost" id="btnSolveReset">重置</button>
+    </div>
+    <div class="stage" id="solveStage" style="flex-direction:column"></div>
+    <div id="solveNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

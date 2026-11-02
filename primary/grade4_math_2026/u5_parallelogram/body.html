@@ -2,8 +2,9 @@
   <h2 class="section"><span class="num">1</span>平行与垂直</h2>
   <div class="card">
     <h3><span class="tag">动画</span>两条直线有几种位置关系？</h3>
-    <p class="lead">拖动滑块改变第二条直线的位置，看它和第一条直线的关系怎么变。
-      两种直线的位置关系只有三种：<b>相交</b>、<b>平行</b>、<b>垂直</b>。</p>
+    <p class="lead">拖动滑块改变第二条直线的位置，看它和第一条直线会不会碰在一起。
+      同一平面内的两条直线只有<b>两类</b>：<b>相交</b>和<b>不相交（平行）</b>；
+      相交的里面有一种特殊情况——正好交成直角，就叫<b>垂直</b>。</p>
     <div class="controls">
       <span class="pill" id="pvLabel">—</span>
       <input type="range" id="pvRange" min="0" max="100" value="0">
@@ -58,13 +59,13 @@
 <section id="s-para">
   <h2 class="section"><span class="num">4</span>平行四边形的认识</h2>
   <div class="card">
-    <h3><span class="tag">动画</span>拉动平行四边形：高会变吗？</h3>
-    <p class="lead">拖动<b>第一个滑块</b>改变倾斜程度：底和高都没变，所以<b>面积不变</b>；可是腰变长了，<b>周长变了</b>。
-      拖动<b>第二个滑块</b>改变高：<b>面积</b>就跟着变。这就是平行四边形"容易变形"的数学道理。</p>
+    <h3><span class="tag">动画</span>拉动平行四边形：什么变了，什么没变？</h3>
+    <p class="lead">底 20 厘米、腰 12 厘米。拖动<b>第一个滑块</b>改变倾斜程度：四条边长度不变，所以<b>周长不变</b>；但高变小，<b>面积跟着变小</b>。
+      拖动<b>第二个滑块</b>改变腰的长度：周长和面积都会变化。这就是平行四边形"容易变形"的数学道理。</p>
     <div class="controls">
       <span class="pill" id="paraLabel">—</span>
-      <input type="range" id="paraSkew" min="10" max="60" value="35">
-      <input type="range" id="paraH" min="40" max="140" value="100">
+      <input type="range" id="paraSkew" min="20" max="70" value="45">
+      <input type="range" id="paraSide" min="7" max="14" value="12">
       <button class="ghost" id="btnParaReset">重置</button>
     </div>
     <div class="stage" id="paraStage"></div>
@@ -76,11 +77,12 @@
   <h2 class="section"><span class="num">5</span>梯形的认识</h2>
   <div class="card">
     <h3><span class="tag">动画</span>只有一组对边平行的四边形</h3>
-    <p class="lead">点下面的按钮，看等腰梯形、直角梯形、一般梯形的样子，并找出它们的<b>上底、下底和高</b>。</p>
+    <p class="lead">点下面的按钮，看等腰梯形、直角梯形、一般梯形的样子，并找出它们的<b>上底、下底和高</b>；最后一个按钮是<b>反例</b>。</p>
     <div class="controls">
       <button data-t="0">一般梯形</button>
       <button data-t="1">等腰梯形</button>
       <button data-t="2">直角梯形</button>
+      <button class="ghost" data-t="3" title="两组对边都平行，不是梯形">平行四边形</button>
     </div>
     <div class="stage" id="trapStage"></div>
     <div id="trapNote" class="tip"></div>
@@ -91,7 +93,8 @@
   <h2 class="section"><span class="num">6</span>四边形家族图</h2>
   <div class="card">
     <h3><span class="tag">动画</span>按"对边是否平行"给四边形分家</h3>
-    <p class="lead">点一个图形，看它属于哪一类。分类要用<b>一个标准</b>，这是数学里很重要的思想。</p>
+    <p class="lead">点一个图形，看它属于哪一类：从"四边形"到它的<b>整条路径会亮起来</b>，其余变淡。
+      分类要用<b>一个标准</b>，这是数学里很重要的思想。</p>
     <div class="stage" id="treeStage" style="flex-direction:column"></div>
     <div id="treeNote" class="tip"></div>
   </div>

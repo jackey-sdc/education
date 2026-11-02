@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讲解演示 · 乘法模型二：速度 × 时间 = 路程</title>
+<style>
+:root{
+  --ink:#20304a; --ink2:#4b5f7d;
+  --accent:#2f6fd0; --accent-l:#e8f1ff; --accent-d:#1f5bb0;
+  --orange:#f08a24; --orange-l:#fff2e2;
+  --green:#1f9d6b; --green-l:#e6f7ef;
+  --purple:#7a4fd6; --purple-l:#f1ebff;
+  --red:#d94a4a; --red-l:#fdecec;
+  --line:#e3e9f2; --card:#fff; --bg:#f4f7fc;
+  --shadow:0 6px 18px rgba(31,52,90,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);line-height:1.75;font-size:16px;
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif}
+header{background:linear-gradient(135deg,var(--accent-d),var(--accent) 55%,var(--purple));
+  color:#fff;padding:26px 20px 22px;text-align:center}
+header h1{margin:0 0 6px;font-size:26px;letter-spacing:1px}
+header p{margin:0;opacity:.94;font-size:14.5px}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 70px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tabs button{font:inherit;font-size:14px;font-weight:700;padding:8px 18px;border-radius:999px;cursor:pointer;
+  border:1.5px solid var(--line);background:#fff;color:var(--ink2)}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+h2.section{font-size:21px;margin:0 0 14px;display:flex;align-items:center;gap:10px;
+  padding-left:12px;border-left:6px solid var(--accent)}
+h2.section .num{background:var(--accent);color:#fff;font-size:14px;width:26px;height:26px;
+  border-radius:8px;display:grid;place-items:center;font-weight:700;flex:0 0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;
+  box-shadow:var(--shadow);margin-bottom:18px}
+.card h3{margin:0 0 4px;font-size:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3 .tag{font-size:12px;background:var(--accent-l);color:var(--accent);padding:2px 9px;
+  border-radius:999px;font-weight:700}
+.lead{color:var(--ink2);font-size:14.5px;margin:0 0 12px}
+/* ---- 情境切换 ---- */
+.presets{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}
+.presets .chip{font:inherit;font-size:13.5px;font-weight:600;padding:5px 14px;border-radius:999px;
+  cursor:pointer;background:#fff;border:1.5px solid var(--line);color:var(--ink2)}
+.presets .chip.on{background:var(--accent-l);border-color:var(--accent);color:var(--accent)}
+/* ---- 三量条 ---- */
+.trio{display:flex;align-items:stretch;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.tq{flex:0 1 190px;background:#fbfcff;border:2px solid var(--line);border-radius:12px;
+  padding:8px 12px;text-align:center;transition:.25s}
+.tq .k{display:block;font-size:12.5px;font-weight:800;letter-spacing:1px;color:#8a97a8}
+.tq b{font-size:24px;font-variant-numeric:tabular-nums}
+.tq i{font-style:normal;font-size:13px;color:var(--ink2);margin-left:3px}
+.tq small{display:block;font-size:12px;color:#93a1b5;margin-top:-2px}
+.tq.on{border-color:var(--accent);background:var(--accent-l);box-shadow:0 0 0 4px rgba(47,111,208,.08)}
+.tq.on b{color:var(--accent)}
+.tq.on .k{color:var(--accent)}
+.tq.filled{border-color:var(--green);background:var(--green-l)}
+.tq.filled b{color:var(--green)}
+.tq.filled .k{color:var(--green)}
+.op{display:grid;place-items:center;font-size:24px;font-weight:800;color:#aab8c9;padding:0 2px}
+/* ---- 舞台 ---- */
+.stage{background:#fbfcff;border:1px dashed #cfdcee;border-radius:14px;padding:12px 14px 8px}
+.stage svg{width:100%;height:auto;display:block}
+.stage-foot{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;
+  min-height:44px;font-size:17px;font-weight:700;color:var(--ink2);padding:4px 0 2px}
+.stage-foot .agg{background:var(--purple-l);color:var(--purple);border-radius:999px;padding:4px 14px;font-size:16px}
+.stage-foot .fml{font-size:21px;color:var(--ink);font-variant-numeric:tabular-nums}
+.stage-foot .fml b{color:var(--accent)}
+.stage-foot .ok{background:var(--green-l);color:#126b47;border-radius:999px;padding:4px 14px}
+.stage-foot .hint{font-size:14px;font-weight:600;color:#8a97a8}
+/* ---- 字幕 ---- */
+.narr{margin-top:14px}
+.sub{display:flex;gap:12px;align-items:flex-start;background:#fffdf5;border-left:4px solid var(--orange);
+  border-radius:10px;padding:12px 16px;min-height:104px}
+.sub .beat-tag{flex:0 0 auto;background:var(--orange);color:#fff;font-size:12.5px;font-weight:800;
+  padding:3px 10px;border-radius:999px;margin-top:8px;white-space:nowrap;opacity:0;transition:.2s}
+.sub .beat-tag.show{opacity:1}
+.sub .sub-txt{font-size:20px;line-height:1.72;color:var(--ink)}
+.sub .sub-txt b{color:var(--accent)}
+.sub .sub-txt .k{background:#fff3c4;border-radius:4px;padding:0 3px;font-weight:700}
+.sub .sub-txt.idle{color:#93a1b5;font-size:16px}
+/* ---- 控制条 ---- */
+.narrbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.nbtn{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border:none;border-radius:10px;
+  padding:9px 16px;background:var(--accent);color:#fff;transition:.15s}
+.nbtn:hover:not(:disabled){filter:brightness(1.07)}
+.nbtn:active:not(:disabled){transform:translateY(1px)}
+.nbtn.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent)}
+.nbtn:disabled{opacity:.4;cursor:not-allowed}
+.nbtn.play{box-shadow:0 4px 12px rgba(47,111,208,.3)}
+.rate{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink2);font-weight:600}
+.rate input{width:110px;accent-color:var(--accent)}
+.rate span{font-variant-numeric:tabular-nums;min-width:34px}
+select{font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1.5px solid var(--line);
+  color:var(--ink2);background:#fff;max-width:190px}
+.status{font-size:12.5px;color:#93a1b5;margin-left:auto}
+/* ---- 节拍 ---- */
+.beats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.beat{display:flex;align-items:center;gap:6px;font:inherit;font-size:13.5px;font-weight:700;
+  padding:6px 12px;border-radius:999px;cursor:pointer;background:#fff;border:1.5px solid var(--line);
+  color:#93a1b5}
+.beat i{font-style:normal;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;
+  font-size:11.5px;background:var(--line);color:#8794a8}
+.beat:hover{border-color:var(--accent);color:var(--accent)}
+.beat.done{background:var(--green-l);border-color:var(--green);color:#126b47}
+.beat.done i{background:var(--green);color:#fff}
+.beat.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.beat.on i{background:#fff;color:var(--accent)}
+/* ---- 题目 ---- */
+.qline{display:flex;gap:10px;align-items:flex-start;background:var(--purple-l);border-radius:12px;
+  padding:12px 16px;font-size:18px;font-weight:600;margin-bottom:14px}
+.qline .qno{flex:0 0 auto;background:var(--purple);color:#fff;font-size:13px;font-weight:800;
+  border-radius:7px;padding:2px 9px;margin-top:3px}
+.barmodel{width:100%;max-width:680px;margin:6px auto 0}
+.barbrace{display:grid;gap:4px;margin-bottom:6px;visibility:hidden}
+.barbrace.show{visibility:visible}
+.barbrace .bseg{border-top:2px dashed var(--orange);border-radius:6px;font-size:12.5px;font-weight:800;
+  color:#b35c00;text-align:center;padding-top:3px;min-height:20px}
+.barbrace .bseg + .bseg{border-top:none}
+.barcells{display:flex;gap:4px}
+.bcell{flex:1 1 0;min-width:0;border:2px solid #cfdcee;border-radius:9px;background:#eef3fb;
+  text-align:center;padding:10px 2px 8px;transition:.35s}
+.bcell span{display:block;font-size:12.5px;color:#8a97a8;font-weight:700}
+.bcell b{display:block;font-size:16px;color:#b9c5d6;font-variant-numeric:tabular-nums}
+.bcell.on{border-color:var(--accent);background:var(--accent-l)}
+.bcell.on span{color:var(--accent)}
+.bcell.on b{color:var(--accent)}
+.bcell.hl{border-color:var(--orange);background:var(--orange-l)}
+.bcell.hl span{color:#b35c00}
+.bcell.hl b{color:#b35c00}
+.baraxis{display:flex;justify-content:space-between;font-size:12.5px;color:#8a97a8;padding:6px 2px 0}
+.barfoot{text-align:center;font-size:15px;font-weight:700;margin-top:8px;color:var(--ink2)}
+.barfoot em{font-style:normal;color:var(--orange)}
+/* ---- 说明 ---- */
+details.notes{margin-top:6px;background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:12px 18px;box-shadow:var(--shadow);font-size:14px;color:var(--ink2)}
+details.notes summary{cursor:pointer;font-weight:800;color:var(--accent);font-size:15px;outline:none}
+details.notes ul{margin:10px 0 0;padding-left:20px}
+details.notes li{margin:4px 0}
+@media(max-width:700px){
+  .sub .sub-txt{font-size:17px}
+  .tq{flex:1 1 40%}
+  .op{display:none}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>语音 + 动画讲解 · 演示</h1>
+  <p>第四单元 ③ 乘法模型二：速度 × 时间 = 路程　|　六拍骨架：读信息 → 提问 → 找关系 → 列式算 → 检验 → 迁移</p>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="on" data-panel="panelKp">知识点讲解</button>
+    <button data-panel="panelQ">题目讲解（同一引擎）</button>
+  </div>
+
+  <!-- ================= 知识点 ================= -->
+  <section class="panel" id="panelKp">
+    <h2 class="section"><span class="num">③</span>乘法模型二：速度 × 时间 = 路程</h2>
+    <div class="card">
+      <h3><span class="tag">动画</span>小车走多远：把「速度」看成一份</h3>
+      <p class="lead">速度是「每 1 小时走的路程」，时间就是「有几份」，路程就是「一共多少」。
+        点下面的「开始讲解」，语音、字幕、动画同步推进；老师随时可以暂停。</p>
+
+      <div class="presets" id="kpPresets">
+        <button class="chip on" data-i="0">小汽车 60 千米/时 × 3 小时</button>
+        <button class="chip" data-i="1">货车 40 千米/时 × 5 小时</button>
+        <button class="chip" data-i="2">高铁 300 千米/时 × 2 小时</button>
+      </div>
+
+      <div class="trio">
+        <div class="tq" id="tqV"><span class="k">速度</span><b>60</b><i>千米/时</i><small>每 1 小时行多远</small></div>
+        <span class="op">×</span>
+        <div class="tq" id="tqT"><span class="k">时间</span><b>3</b><i>小时</i><small>一共几份</small></div>
+        <span class="op">=</span>
+        <div class="tq" id="tqS"><span class="k">路程</span><b>？</b><i>千米</i><small>一共走多远</small></div>
+      </div>
+
+      <div class="stage">
+        <svg id="kpSvg" viewBox="0 0 760 220" role="img" aria-label="小车沿公路行驶：每小时一段，几段合起来是全程"></svg>
+        <div class="stage-foot" id="kpFoot"><span class="hint">拖不动也没关系——点「开始讲解」，跟着画面一步步看</span></div>
+      </div>
+
+      <div class="narr" id="kpNarr"></div>
+    </div>
+  </section>
+
+  <!-- ================= 题目 ================= -->
+  <section class="panel" id="panelQ" hidden>
+    <h2 class="section"><span class="num">✎</span>题目讲解：一道「归一」题</h2>
+    <div class="card">
+      <h3><span class="tag">讲解</span>选中题目 → 点「开始讲解」</h3>
+      <p class="lead">同一套引擎，只换脚本：题目级讲解把「条件 / 问题 / 每步为什么」讲清楚。</p>
+
+      <div class="qline">
+        <span class="qno">题</span>
+        <div>一辆汽车 5 小时行 300 千米，照这样计算，2 小时行多少千米？</div>
+      </div>
+
+      <div class="stage">
+        <div class="barmodel" id="qBar"></div>
+        <div class="stage-foot" id="qFoot"><span class="hint">5 个格子一样长，是「照这样计算」的意思</span></div>
+      </div>
+
+      <div class="narr" id="qNarr"></div>
+    </div>
+  </section>
+
+  <details class="notes">
+    <summary>这套讲解的设计说明（六拍骨架 · 验收标准）</summary>
+    <ul>
+      <li><b>语音与动画同源</b>：每一拍 = 一句话（朗读）+ 一个画面状态（绝对状态，可任意跳转）。</li>
+      <li><b>思维培养四落点</b>：有提问（「每小时 60 千米是什么意思？」）、有关系式（一份 × 份数）、
+        有检验（180 ÷ 3 = 60 回到速度）、有迁移（每千克 / 每分钟都是同一个模型）。</li>
+      <li><b>不剧透</b>：第 1—3 拍只出现已知的 60 与 3，答案 180 在第 4 拍才出现。</li>
+      <li><b>优雅降级</b>：系统没有中文语音时，自动改为「字幕 + 动画」按句长计时推进，讲解不中断。</li>
+      <li><b>课堂控制</b>：暂停 / 继续 / 停止 / 重播 / 语速 / 点节拍跳转；空格键暂停，Esc 停止。</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+'use strict';
+/* ==========================================================================
+   ① 讲解引擎（可整段复制到 assets/engine.js）
+   —— 只负责：语音、字幕、节拍、暂停/继续/停止/重播/语速
+   —— 业务侧只提供 steps（say + sub + act），引擎不关心学科
+   ========================================================================== */
+const Narrator = (function(){
+  const synth = (typeof window !== 'undefined' && window.speechSynthesis) ? window.speechSynthesis : null;
+  let voices = [], chosen = null, rate = 1, current = null;
+
+  function loadVoices(){
+    if (!synth){ voices = []; return; }
+    try {
+      voices = (synth.getVoices() || []).filter(v =>
+        /^(zh|cmn)/i.test(v.lang) || /Chinese|中文|普通话/i.test(v.name));
+      const score = v => (v.lang.toLowerCase().indexOf('zh-cn') === 0 ? 2 : 1)
+                       + (/Ting|婷婷|Xiao|晓晓|Mei|美佳|Hui|慧/i.test(v.name) ? 1 : 0);
+      voices.sort((a, b) => score(b) - score(a));
+    } catch (e) { voices = []; }
+  }
+  loadVoices();
+  if (synth && synth.addEventListener) {
+    synth.addEventListener('voiceschanged', () => { loadVoices(); document.dispatchEvent(new Event('voices-ready')); });
+  }
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  function mount(host, opt){
+    const steps = opt.steps || [];
+    const beats = opt.beats || steps.map(s => s.beat || '');
+    let idx = -1, state = 'idle', token = 0;
+    let timerId = null, timerResolve = null, timerRemain = 0, timerStart = 0;
+
+    /* ---- DOM ---- */
+    host.innerHTML = '';
+    const sub = document.createElement('div'); sub.className = 'sub';
+    const tagEl = document.createElement('span'); tagEl.className = 'beat-tag';
+    const txtEl = document.createElement('div'); txtEl.className = 'sub-txt idle';
+    txtEl.textContent = opt.idleText || '点「开始讲解」，跟着语音与画面一步步看。';
+    sub.append(tagEl, txtEl);
+
+    const bar = document.createElement('div'); bar.className = 'narrbar';
+    const mk = (text, cls) => {
+      const b = document.createElement('button'); b.type = 'button';
+      b.className = cls; b.textContent = text; return b;
+    };
+    const playBtn = mk('🔊 开始讲解', 'nbtn play');
+    const pauseBtn = mk('⏸ 暂停', 'nbtn ghost');
+    const stopBtn = mk('⏹ 停止', 'nbtn ghost');
+    const replayBtn = mk('↻ 重播', 'nbtn ghost');
+    const rateWrap = document.createElement('label'); rateWrap.className = 'rate';
+    rateWrap.append(document.createTextNode('语速'));
+    const rateInput = document.createElement('input');
+    rateInput.type = 'range'; rateInput.min = '0.7'; rateInput.max = '1.3'; rateInput.step = '0.05'; rateInput.value = '1';
+    const rateVal = document.createElement('span'); rateVal.textContent = '1.0×';
+    rateWrap.append(rateInput, rateVal);
+    const voiceSel = document.createElement('select');
+    const statusEl = document.createElement('span'); statusEl.className = 'status';
+    bar.append(playBtn, pauseBtn, stopBtn, replayBtn, rateWrap, voiceSel, statusEl);
+
+    const beatsEl = document.createElement('div'); beatsEl.className = 'beats';
+    const NUM = ['①','②','③','④','⑤','⑥','⑦','⑧'];
+    beats.forEach((b, i) => {
+      const c = document.createElement('button'); c.type = 'button'; c.className = 'beat';
+      const n = document.createElement('i'); n.textContent = NUM[i] || (i + 1);
+      c.append(n, document.createTextNode(b));
+      c.addEventListener('click', () => jump(i));
+      beatsEl.appendChild(c);
+    });
+
+    host.append(sub, bar, beatsEl);
+
+    /* ---- 语音 ---- */
+    function hasVoice(){ return !!(synth && voices.length); }
+    function estimate(text){ return Math.max(1900, text.length * 235 / rate + 900); }
+
+    function speak(text){
+      return new Promise(resolve => {
+        if (!hasVoice()){ resolve(); return; }
+        let settled = false;
+        const done = () => { if (settled) return; settled = true; clearTimeout(guard); resolve(); };
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'zh-CN'; u.rate = rate;
+        if (chosen) u.voice = chosen; else if (voices[0]) u.voice = voices[0];
+        u.onend = done; u.onerror = done;
+        const guard = setTimeout(done, estimate(text) * 2 + 5000);
+        try { synth.speak(u); } catch (e) { done(); }
+      });
+    }
+
+    /* 无语音时的计时等待（可暂停） */
+    function waitTimer(ms){
+      return new Promise(resolve => {
+        timerResolve = resolve; timerRemain = ms; timerStart = Date.now();
+        timerId = setTimeout(() => { timerId = null; timerResolve = null; resolve(); }, ms);
+      });
+    }
+    function freezeTimer(){
+      if (!timerId) return;
+      clearTimeout(timerId); timerId = null;
+      timerRemain = Math.max(80, timerRemain - (Date.now() - timerStart));
+    }
+    function thawTimer(){
+      if (!timerResolve || timerId) return;
+      timerStart = Date.now();
+      timerId = setTimeout(() => { timerId = null; const r = timerResolve; timerResolve = null; r && r(); }, timerRemain);
+    }
+    function gate(){ /* 暂停时卡在这里，不推进 */
+      return new Promise(resolve => {
+        const t = setInterval(() => { if (state !== 'paused'){ clearInterval(t); resolve(); } }, 100);
+      });
+    }
+
+    /* ---- 渲染 ---- */
+    function paint(i){
+      [...beatsEl.children].forEach((c, k) => {
+        c.classList.toggle('on', k === i);
+        c.classList.toggle('done', i >= 0 && k < i);
+      });
+    }
+    function setButtons(){
+      playBtn.disabled = (state === 'playing' || state === 'paused');
+      pauseBtn.disabled = (state !== 'playing' && state !== 'paused');
+      pauseBtn.textContent = state === 'paused' ? '▶ 继续' : '⏸ 暂停';
+      stopBtn.disabled = (state === 'idle');
+      replayBtn.disabled = (state === 'idle');
+      playBtn.textContent = (state === 'done') ? '↻ 再讲一遍' : '🔊 开始讲解';
+    }
+    function showStep(i){
+      idx = i;
+      const st = steps[i];
+      tagEl.textContent = st.beat || '';
+      tagEl.classList.add('show');
+      txtEl.classList.remove('idle');
+      txtEl.innerHTML = st.sub || st.say;
+      paint(i);
+    }
+    function resetView(){
+      idx = -1;
+      tagEl.classList.remove('show');
+      txtEl.classList.add('idle');
+      txtEl.textContent = opt.idleText || '点「开始讲解」，跟着语音与画面一步步看。';
+      paint(-1);
+    }
+
+    /* ---- 主循环 ---- */
+    async function run(from){
+      const my = ++token;
+      state = 'playing'; setButtons();
+      try { synth && synth.cancel(); } catch (e) {}
+      await sleep(80);
+      for (let i = from; i < steps.length; i++){
+        if (my !== token) return;
+        showStep(i);
+        if (opt.onStep) opt.onStep(i, steps[i]);
+        if (hasVoice()) await speak(steps[i].say);
+        else await waitTimer(estimate(steps[i].say));
+        if (my !== token) return;
+        await gate();
+        if (my !== token) return;
+        await waitTimer(400);
+      }
+      if (my !== token) return;
+      state = 'done'; setButtons();
+      paint(steps.length - 1);
+      [...beatsEl.children].forEach(c => c.classList.add('done'));
+    }
+
+    function play(from){
+      if (current && current !== api) current.stop(true);
+      current = api;
+      if (synth) { try { synth.cancel(); } catch (e) {} }
+      run(from || 0);
+    }
+    function stop(silent){
+      token++; state = 'idle';
+      if (synth) { try { synth.cancel(); } catch (e) {} }
+      if (timerId){ clearTimeout(timerId); timerId = null; }
+      if (timerResolve){ const r = timerResolve; timerResolve = null; r(); }
+      if (!silent) resetView();
+      setButtons();
+    }
+    function togglePause(){
+      if (state === 'playing'){
+        state = 'paused'; freezeTimer();
+        if (hasVoice()) { try { synth.pause(); } catch (e) {} }
+      } else if (state === 'paused'){
+        state = 'playing';
+        if (hasVoice()) { try { synth.resume(); } catch (e) {} }
+        thawTimer();
+      }
+      setButtons();
+    }
+    function jump(i){
+      stop(true);
+      play(i);
+    }
+
+    /* ---- 事件 ---- */
+    playBtn.addEventListener('click', () => play(0));
+    pauseBtn.addEventListener('click', togglePause);
+    stopBtn.addEventListener('click', () => stop(false));
+    replayBtn.addEventListener('click', () => play(0));
+    rateInput.addEventListener('input', () => {
+      rate = parseFloat(rateInput.value);
+      rateVal.textContent = rate.toFixed(1) + '×';
+      if (state === 'playing' && idx >= 0){ /* 语速即时生效于下一句 */ }
+    });
+    document.addEventListener('keydown', e => {
+      const panel = host.closest('.panel');
+      if (panel && panel.hidden) return;
+      if (e.code === 'Space' && (state === 'playing' || state === 'paused')){ e.preventDefault(); togglePause(); }
+      if (e.code === 'Escape' && state !== 'idle'){ stop(false); }
+    });
+
+    /* ---- 语音下拉 ---- */
+    function fillVoices(){
+      voiceSel.innerHTML = '';
+      if (!hasVoice()){
+        const o = document.createElement('option');
+        o.textContent = '无中文语音 · 字幕模式'; o.disabled = true; o.selected = true;
+        voiceSel.appendChild(o);
+        statusEl.textContent = '当前：字幕 + 动画（按句长计时）';
+        return;
+      }
+      const auto = document.createElement('option');
+      auto.value = ''; auto.textContent = '自动选择中文语音';
+      voiceSel.appendChild(auto);
+      voices.forEach((v, i) => {
+        const o = document.createElement('option');
+        o.value = String(i); o.textContent = v.name + '（' + v.lang + '）';
+        voiceSel.appendChild(o);
+      });
+      statusEl.textContent = '语音：' + (chosen ? chosen.name : voices[0].name);
+    }
+    voiceSel.addEventListener('change', () => {
+      chosen = voiceSel.value === '' ? null : voices[+voiceSel.value];
+      statusEl.textContent = '语音：' + (chosen ? chosen.name : (voices[0] ? voices[0].name : '—'));
+      if (state === 'playing'){ const at = idx; stop(true); play(Math.max(0, at)); }
+    });
+    document.addEventListener('voices-ready', fillVoices);
+    fillVoices();
+
+    const api = {
+      play, stop, jump,
+      get state(){ return state; },
+      get index(){ return idx; },
+      steps
+    };
+    setButtons();
+    return api;
+  }
+
+  return { mount, hasVoice: () => voices.length > 0, voices: () => voices.slice() };
+})();
+
+/* ==========================================================================
+   ② 知识点：速度 × 时间 = 路程
+   ========================================================================== */
+(function initKp(){
+  const PRESETS = [
+    {subject:'小汽车', v:60,  t:3, unit:'千米', kind:'car'},
+    {subject:'货车',   v:40,  t:5, unit:'千米', kind:'car'},
+    {subject:'高铁',   v:300, t:2, unit:'千米', kind:'train'}
+  ];
+  const $ = s => document.querySelector(s);
+  const svg = $('#kpSvg'), foot = $('#kpFoot');
+  const tqV = $('#tqV'), tqT = $('#tqT'), tqS = $('#tqS');
+  let d = PRESETS[0], scene = null, api = null;
+
+  /* ---- 场景：公路 + 每 1 小时一段 ---- */
+  function buildRoad(d){
+    const NS = 'http://www.w3.org/2000/svg';
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    const mk = (t, a) => {
+      const n = document.createElementNS(NS, t);
+      for (const k in a) n.setAttribute(k, a[k]);
+      svg.appendChild(n); return n;
+    };
+    const X0 = 64, X1 = 696, W = X1 - X0, T = d.t, V = d.v;
+    const ROAD_Y = 162;
+    const hx = i => X0 + W * i / T;
+
+    const hourLbl = [], segs = [], segLbl = [];
+    for (let i = 0; i < T; i++){
+      const x = hx(i), w = hx(i + 1) - x;
+      const hl = mk('text', {x: x + w / 2, y: 64, 'text-anchor': 'middle', 'font-size': 13, fill: '#a9b6c8'});
+      hl.textContent = '第 ' + (i + 1) + ' 小时';
+      hourLbl.push(hl);
+
+      const rc = mk('rect', {x: x + 4, y: 74, width: Math.max(8, w - 8), height: 44, rx: 9,
+        fill: '#eef3fb', stroke: '#cfdcee', 'stroke-width': 1.5});
+      rc.style.transition = 'fill .4s, stroke .4s';
+      segs.push(rc);
+
+      const lb = mk('text', {x: x + w / 2, y: 102, 'text-anchor': 'middle', 'font-size': 15,
+        'font-weight': 700, fill: '#9fb0c8'});
+      lb.textContent = V + ' 千米';
+      segLbl.push(lb);
+    }
+
+    mk('line', {x1: X0, y1: ROAD_Y, x2: X1, y2: ROAD_Y, stroke: '#dbe5f3', 'stroke-width': 9, 'stroke-linecap': 'round'});
+    const travel = mk('line', {x1: X0, y1: ROAD_Y, x2: X1, y2: ROAD_Y, stroke: '#f08a24', 'stroke-width': 9,
+      'stroke-linecap': 'round', 'stroke-dasharray': W, 'stroke-dashoffset': W});
+    travel.style.transition = 'stroke-dashoffset .75s ease';
+
+    const kmLabels = [];
+    for (let i = 0; i <= T; i++){
+      mk('line', {x1: hx(i), y1: ROAD_Y - 7, x2: hx(i), y2: ROAD_Y + 7, stroke: '#9fb0c8', 'stroke-width': 2});
+      const kb = mk('text', {x: hx(i), y: 190, 'text-anchor': 'middle', 'font-size': 13.5, fill: '#7a8ba5'});
+      kb.textContent = (V * i) + '';
+      kmLabels.push(kb);
+    }
+    const u = mk('text', {x: X1, y: 209, 'text-anchor': 'end', 'font-size': 12, fill: '#a9b6c8'});
+    u.textContent = '单位：千米';
+
+    /* 车辆（图形而非 emoji，方向稳定） */
+    const wrap = document.createElementNS(NS, 'g');
+    wrap.setAttribute('transform', 'translate(' + X0 + ',' + (ROAD_Y - 10) + ')');
+    const inner = document.createElementNS(NS, 'g');
+    inner.innerHTML = (d.kind === 'train')
+      ? '<rect x="-38" y="-22" width="70" height="22" rx="9" fill="#2f6fd0"></rect>' +
+        '<path d="M 32 -22 L 40 -11 L 40 0 L 32 0 Z" fill="#1f5bb0"></path>' +
+        '<rect x="-30" y="-17" width="12" height="11" rx="2" fill="#dff0ff"></rect>' +
+        '<rect x="-12" y="-17" width="12" height="11" rx="2" fill="#dff0ff"></rect>' +
+        '<rect x="6" y="-17" width="12" height="11" rx="2" fill="#dff0ff"></rect>' +
+        '<rect x="-32" y="2" width="66" height="4" rx="2" fill="#93b8ea"></rect>' +
+        '<circle cx="-22" cy="7" r="4" fill="#20304a"></circle>' +
+        '<circle cx="2" cy="7" r="4" fill="#20304a"></circle>' +
+        '<circle cx="24" cy="7" r="4" fill="#20304a"></circle>'
+      : '<rect x="-20" y="-16" width="40" height="18" rx="6" fill="#2f6fd0"></rect>' +
+        '<path d="M -9 -16 L -4 -25 L 8 -25 L 13 -16 Z" fill="#1f5bb0"></path>' +
+        '<rect x="-5" y="-14" width="11" height="8" rx="2" fill="#dff0ff"></rect>' +
+        '<circle cx="-10" cy="4" r="5" fill="#20304a"></circle>' +
+        '<circle cx="10" cy="4" r="5" fill="#20304a"></circle>';
+    inner.style.transition = 'transform .75s cubic-bezier(.4,0,.2,1)';
+    wrap.appendChild(inner);
+    svg.appendChild(wrap);
+
+    function set(reveal, opt){
+      opt = opt || {};
+      const n = Math.max(0, Math.min(T, reveal));
+      for (let i = 0; i < T; i++){
+        const on = i < n;
+        segs[i].style.transitionDelay = (on ? i * 0.28 : 0) + 's';
+        segs[i].setAttribute('fill', on ? (opt.ok ? '#e6f7ef' : '#e8f1ff') : '#eef3fb');
+        segs[i].setAttribute('stroke', on ? (opt.ok ? '#1f9d6b' : '#2f6fd0') : '#cfdcee');
+        segLbl[i].setAttribute('fill', on ? (opt.ok ? '#126b47' : '#2f6fd0') : '#9fb0c8');
+        hourLbl[i].setAttribute('fill', on ? '#4b5f7d' : '#a9b6c8');
+      }
+      travel.style.transitionDelay = '0.1s';
+      travel.setAttribute('stroke-dashoffset', W * (1 - n / T));
+      inner.style.transitionDelay = '0.18s';
+      inner.style.transform = 'translateX(' + (W * n / T) + 'px)';
+      travel.setAttribute('stroke', opt.ok ? '#1f9d6b' : '#f08a24');
+      /* 终点路程：算出来之前显示问号，不提前剧透 */
+      const last = kmLabels[kmLabels.length - 1];
+      if (last){
+        last.textContent = opt.total ? String(V * T) : '？';
+        last.setAttribute('fill', opt.total ? '#7a8ba5' : '#f08a24');
+        last.setAttribute('font-weight', opt.total ? '400' : '800');
+      }
+    }
+    set(0);
+    return {set};
+  }
+
+  /* ---- 六拍脚本（数据驱动：换情境只换 d） ---- */
+  function buildSteps(d){
+    const {v, t, subject} = d, s = v * t;
+    const setTrio = (o) => {
+      tqV.className = 'tq' + (o.v ? ' on' : '');
+      tqT.className = 'tq' + (o.t ? ' on' : '');
+      tqS.className = 'tq' + (o.s === null ? ' on' : (o.s ? ' filled' : ''));
+      tqV.querySelector('b').textContent = v;
+      tqT.querySelector('b').textContent = t;
+      tqS.querySelector('b').textContent = (o.s === null || o.s === undefined) ? '？' : o.s;
+    };
+    return [
+      { beat: '读信息',
+        say: '先别急着算。看清楚：' + subject + '每小时行 ' + v + ' 千米，一共行了 ' + t + ' 小时。要问的是，它一共走了多远，也就是路程。',
+        sub: '已知：速度 <b>' + v + ' 千米/时</b>（每小时行 ' + v + ' 千米）、时间 <b>' + t + ' 小时</b>；<br>要求：<b>路程 = ？</b>',
+        act(){
+          scene.set(0); setTrio({v: 1, t: 1, s: null});
+          foot.innerHTML = '<span class="hint">先把三个量认出来：速度、时间已知，路程是问号</span>';
+        } },
+
+      { beat: '提问',
+        say: '“每小时行 ' + v + ' 千米”这句话在说什么？它说的是：走一个小时，就走 ' + v + ' 千米。这个“每”字很关键，它告诉我们，这是一份的量。',
+        sub: '<span class="k">每小时行 ' + v + ' 千米</span> → 1 小时 = 1 份 = ' + v + ' 千米<br>所以速度的单位是「千米/时」，斜杠读作<b>“每”</b>。',
+        act(){
+          scene.set(1); setTrio({v: 1, t: 1, s: null});
+          foot.innerHTML = '<span class="fml">1 份 = 1 小时 = <b>' + v + ' 千米</b></span>';
+        } },
+
+      { beat: '找关系',
+        say: '那 ' + t + ' 小时呢？就是 ' + t + ' 个一小时。一小时走 ' + v + ' 千米，两小时就走两个 ' + v + '，' + t + ' 小时就走 ' + t + ' 个 ' + v + '。求几个几是多少，用乘法。所以，路程等于速度乘时间。',
+        sub: '1 小时 → ' + v + ' 千米；2 小时 → 2 个 ' + v + '；<br>' + t + ' 小时 → <b>' + t + ' 个 ' + v + '</b>　⇒　<b>路程 = 速度 × 时间</b>',
+        act(){
+          scene.set(t); setTrio({v: 1, t: 1, s: null});
+          foot.innerHTML = '<span class="agg">' + t + ' 个 ' + v + ' 千米</span>' +
+                           '<span class="fml">路程 = 速度 × 时间</span>';
+        } },
+
+      { beat: '列式算',
+        say: '列式：' + v + ' 乘 ' + t + ' 等于 ' + s + '，单位是千米。速度里的“每时”和时间里的“时”正好配成一对，乘完就只剩下千米。',
+        sub: '<b>' + v + ' × ' + t + ' = ' + s + '</b>（千米）　·　单位：千米/时 × 时 = 千米',
+        act(){
+          scene.set(t, {total: true}); setTrio({v: 1, t: 1, s: s});
+          foot.innerHTML = '<span class="fml">' + v + ' × ' + t + ' = <b>' + s + '</b>（千米）</span>';
+        } },
+
+      { beat: '检验',
+        say: '算完要回头看。' + s + ' 除以 ' + t + '，等于 ' + v + '，正好是我们原来的速度。再看图：' + t + ' 个格子一样长，每个 ' + v + ' 千米，合起来 ' + s + ' 千米。对上了。',
+        sub: '检验：<b>' + s + ' ÷ ' + t + ' = ' + v + '</b>（千米/时）✓ 与已知速度一致；图上 ' + t + ' 个 ' + v + ' 合起来也是 ' + s + '。',
+        act(){
+          scene.set(t, {ok: true, total: true}); setTrio({v: 1, t: 1, s: s});
+          foot.innerHTML = '<span class="ok">' + s + ' ÷ ' + t + ' = ' + v + ' ✓</span>' +
+                           '<span class="hint">除以时间，回到「每小时行多少」</span>';
+        } },
+
+      { beat: '迁移',
+        say: '记住这个方法：先找“每一份是多少”，再看“有几份”。以后遇到每分钟走多少米、每千克多少元，都是同一个模型。反过来，知道路程和时间，就用路程除以时间，求速度。',
+        sub: '<b>一份 × 份数 = 总数</b>：速度 × 时间 = 路程；路程 ÷ 时间 = 速度；路程 ÷ 速度 = 时间。<br>下次先问自己：<b>每份是多少？有几份？</b>',
+        act(){
+          scene.set(t, {ok: true, total: true}); setTrio({v: 1, t: 1, s: s});
+          foot.innerHTML = '<span class="hint">同一个模型：每千克多少元、每分钟走多少米、每盒多少支……</span>';
+        } }
+    ];
+  }
+
+  function rebuild(preset){
+    d = PRESETS[preset];
+    tqV.querySelector('i').textContent = '千米/时';
+    tqT.querySelector('i').textContent = '小时';
+    tqS.querySelector('i').textContent = '千米';
+    scene = buildRoad(d);
+    if (api) api.stop(false);
+    api = Narrator.mount($('#kpNarr'), {
+      beats: ['读信息', '提问', '找关系', '列式算', '检验', '迁移'],
+      steps: buildSteps(d),
+      idleText: '点「开始讲解」：' + d.subject + '每小时行 ' + d.v + ' 千米，行 ' + d.t + ' 小时，一共走多远？',
+      onStep(i, st){
+        st.act();
+        if (st.beat === '读信息') { /* 首次进入即恢复初始画面 */ }
+      }
+    });
+    /* 初始画面 = 第 1 拍的状态 */
+    scene.set(0);
+    tqV.querySelector('b').textContent = d.v;
+    tqT.querySelector('b').textContent = d.t;
+    tqS.querySelector('b').textContent = '？';
+    tqV.className = 'tq'; tqT.className = 'tq'; tqS.className = 'tq';
+    foot.innerHTML = '<span class="hint">一个格子 = 1 小时走的路程；几个格子，就是几份</span>';
+  }
+
+  document.querySelectorAll('#kpPresets .chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#kpPresets .chip').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      rebuild(+btn.dataset.i);
+    });
+  });
+  rebuild(0);
+  window.__kpApi = () => api;
+})();
+
+/* ==========================================================================
+   ③ 题目：归一问题（同一引擎，只换脚本）
+   ========================================================================== */
+(function initQ(){
+  const $ = s => document.querySelector(s);
+  const barEl = $('#qBar'), foot = $('#qFoot');
+  const D = {hours: 5, km: 300, ask: 2};
+  D.speed = D.km / D.hours;          // 60
+  D.ans = D.speed * D.ask;           // 120
+
+  const cells = [];
+  let braceEl = null, braceLbl = null;
+  function buildBar(){
+    barEl.innerHTML = '';
+    const brace = document.createElement('div'); brace.className = 'barbrace';
+    brace.style.gridTemplateColumns = 'repeat(' + D.hours + ',1fr)';
+    const b1 = document.createElement('span'); b1.className = 'bseg';
+    b1.style.gridColumn = 'span ' + D.ask;
+    const b2 = document.createElement('span'); b2.className = 'bseg';
+    b2.style.gridColumn = 'span ' + (D.hours - D.ask);
+    brace.append(b1, b2);
+    braceEl = brace; braceLbl = b1;
+
+    const row = document.createElement('div'); row.className = 'barcells';
+    for (let i = 0; i < D.hours; i++){
+      const c = document.createElement('div'); c.className = 'bcell';
+      const s1 = document.createElement('span'); s1.textContent = '1 小时';
+      const s2 = document.createElement('b'); s2.textContent = '？';
+      c.append(s1, s2); row.appendChild(c); cells.push(c);
+    }
+    const axis = document.createElement('div'); axis.className = 'baraxis';
+    const a1 = document.createElement('span'); a1.textContent = '0';
+    const a2 = document.createElement('span'); a2.textContent = D.km + ' 千米（' + D.hours + ' 小时）';
+    axis.append(a1, a2);
+    barEl.append(brace, row, axis);
+  }
+  buildBar();
+
+  function setBar(o){
+    o = o || {};
+    cells.forEach((c, i) => {
+      c.className = 'bcell' + (o.val ? ' on' : '') + (o.hl && i < o.hl ? ' hl' : '');
+      c.querySelector('b').textContent = o.val ? (D.speed + ' 千米') : '？';
+    });
+    if (braceEl){
+      braceEl.classList.toggle('show', !!o.hl);
+      braceLbl.textContent = o.hl ? (D.ask + ' 小时') : '';
+    }
+    foot.innerHTML = o.bf || ('5 个格子一样长：' + D.km + ' 千米 ÷ ' + D.hours + ' 小时');
+  }
+
+  const steps = [
+    { beat: '读题',
+      say: '先把题目读一遍。' + D.hours + ' 小时行 ' + D.km + ' 千米，“照这样计算”，问 ' + D.ask + ' 小时行多少千米。',
+      sub: '条件：<b>' + D.hours + ' 小时 → ' + D.km + ' 千米</b>；照这样计算；问题：<b>' + D.ask + ' 小时 → ？</b>',
+      act(){ setBar({val: false, bf: '整条是 ' + D.km + ' 千米，分成 ' + D.hours + ' 格，每格 1 小时'}); } },
+
+    { beat: '提问',
+      say: '“照这样计算”是什么意思？意思是速度不变，每个小时行的路程一样多。所以图中这五格，长度都相等。',
+      sub: '「照这样计算」= <b>速度不变</b> → 每 1 小时行的路程<b>同样多</b>',
+      act(){ setBar({val: false, bf: '5 格一样长，就是在说「每格多少」是固定的'}); } },
+
+    { beat: '找关系',
+      say: '要求 ' + D.ask + ' 小时的路程，得先知道一小时行多少。所以第一步求速度，用路程除以时间；第二步再用速度乘时间。',
+      sub: '第一步：<b>速度 = 路程 ÷ 时间</b>；第二步：<b>路程 = 速度 × 时间</b>',
+      act(){ setBar({val: true, bf: D.km + ' ÷ ' + D.hours + ' = ' + D.speed + '（千米/时）'}); } },
+
+    { beat: '列式算',
+      say: D.km + ' 除以 ' + D.hours + '，等于 ' + D.speed + '，这是速度，每小时 ' + D.speed + ' 千米。' + D.speed + ' 乘 ' + D.ask + '，等于 ' + D.ans + ' 千米。',
+      sub: '<b>' + D.km + ' ÷ ' + D.hours + ' = ' + D.speed + '</b>（千米/时）；<b>' + D.speed + ' × ' + D.ask + ' = ' + D.ans + '</b>（千米）',
+      act(){ setBar({val: true, hl: D.ask, bf: '<em>' + D.speed + ' × ' + D.ask + ' = ' + D.ans + '（千米）</em>'}); } },
+
+    { beat: '检验',
+      say: '检验：' + D.ans + ' 除以 ' + D.ask + '，等于 ' + D.speed + '，和一小时行的路程一样，说明算对了。',
+      sub: '检验：<b>' + D.ans + ' ÷ ' + D.ask + ' = ' + D.speed + '</b> ✓ 与第一步求出的速度一致',
+      act(){ setBar({val: true, hl: D.ask, bf: D.ans + ' ÷ ' + D.ask + ' = ' + D.speed + ' ✓'}); } },
+
+    { beat: '迁移',
+      say: '这类题叫归一问题。先求出一份是多少，再求几份。以后看到“照这样计算”，就是在提醒你：先求一份。',
+      sub: '<b>归一</b>：先求 1 份（速度），再求几份（路程）。见到「照这样计算」「用同样的速度」都要先求一份。',
+      act(){ setBar({val: true, hl: D.ask, bf: '一份 → 几份：先 ÷，再 ×'}); } }
+  ];
+
+  const qApi = Narrator.mount($('#qNarr'), {
+    beats: ['读题', '提问', '找关系', '列式算', '检验', '迁移'],
+    steps,
+    idleText: '这是一道「归一」题：' + D.hours + ' 小时行 ' + D.km + ' 千米，照这样计算，' + D.ask + ' 小时行多少千米？',
+    onStep(i, st){ st.act(); }
+  });
+  setBar({val: false, bf: '整条是 ' + D.km + ' 千米，分成 ' + D.hours + ' 格，每格 1 小时'});
+  window.__qApi = () => qApi;
+  window.__qD = D;
+})();
+
+/* ==========================================================================
+   ④ 面板切换（切换时停掉另一块的讲解，避免两个语音打架）
+   ========================================================================== */
+(function initTabs(){
+  const btns = [...document.querySelectorAll('.tabs button')];
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(x => x.classList.toggle('on', x === b));
+    document.querySelectorAll('.panel').forEach(p => { p.hidden = (p.id !== b.dataset.panel); });
+    if (b.dataset.panel !== 'panelKp' && window.__kpApi) window.__kpApi().stop(false);
+    if (b.dataset.panel !== 'panelQ' && window.__qApi) window.__qApi().stop(false);
+  }));
+})();
+
+/* ==========================================================================
+   ⑤ 自检（供自动化与人工核对，不改画面）
+   ========================================================================== */
+window.__demoCheck = function(){
+  const out = {ok: true, items: []};
+  const add = (name, pass, detail) => { out.items.push({name, pass, detail}); if (!pass) out.ok = false; };
+  const subText = document.querySelector('#kpNarr .sub-txt').textContent;
+  add('首屏为待机提示', /开始讲解/.test(subText), subText.slice(0, 20));
+  add('知识点 6 个节拍', document.querySelectorAll('#kpNarr .beat').length === 6,
+      document.querySelectorAll('#kpNarr .beat').length + ' 个');
+  add('题目 6 个节拍', document.querySelectorAll('#qNarr .beat').length === 6,
+      document.querySelectorAll('#qNarr .beat').length + ' 个');
+  add('题目条 5 格', document.querySelectorAll('#qBar .bcell').length === 5,
+      document.querySelectorAll('#qBar .bcell').length + ' 格');
+  add('有语音开关', !!document.querySelector('#kpNarr .nbtn.play'));
+  add('小车场景已绘制', document.querySelectorAll('#kpSvg rect').length >= 3,
+      document.querySelectorAll('#kpSvg rect').length + ' 个 rect');
+  return out;
+};
+</script>
+</body>
+</html>

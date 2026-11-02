@@ -77,6 +77,131 @@ def content_static(html: str, unit_dir: pathlib.Path):
             issues.append(f'口径关键词缺失: {kw}')
     return issues
 
+def scan_object_str(pg, unit: str):
+    """内容层：扫描页面上是否出现 "[object HTMLInputElement]" 这类**元素被当字符串拼接**的痕迹。
+    起因：u2 分配律模块写了 `lab.textContent = a + ' + ' + B`（a 是滑块元素而不是数值），
+    页面上直接显示 "[object HTMLInputElement] + 40"。
+    症状在"元素被隐式转字符串"时才会出现，静态扫描看不出来，必须**渲染后扫 DOM**。"""
+    issues = []
+    found = pg.evaluate("""()=>{
+      const out=[];
+      document.querySelectorAll('body *').forEach(el=>{
+        if(el.children.length) return;                 // 只看叶子节点
+        const t = el.textContent || '';
+        if(t.includes('[object ')) out.push((el.id || el.className || el.tagName) + ' :: ' + t.trim().slice(0,60));
+      });
+      return out;
+    }""")
+    for f in found:
+        issues.append(f'[内容] 元素被当成字符串拼接：{f}')
+    return issues
+
+
+
+def check_counts(unit_dir: pathlib.Path):
+    """**数字一致性**：徽章、总览页卡片、实际内容三者必须对得上。
+
+    起因：单元徽章写"5 个动画模块"而实际有 6 个；总览页写"35 题分三档"
+    而实际是 47 题分四档 —— 数字失真会让老师/家长对课件规模产生错误预期。"""
+    issues = []
+    meta = json.loads((unit_dir / 'meta.json').read_text(encoding='utf-8'))
+    app = (unit_dir / 'app.js').read_text(encoding='utf-8')
+    # 实际动画模块数 = nav 里 #s- 开头且在 body.html 有对应 section 的
+    body = (unit_dir / 'body.html').read_text(encoding='utf-8')
+    mods = [h for h, _ in meta['nav']
+            if h.startswith('#s-') and f'id="{h[1:]}"' in body]
+    for b in meta['badges']:
+        mm = re.match(r'(\d+) 个动画模块', b)
+        if mm and int(mm.group(1)) != len(mods):
+            issues.append(f'徽章「{b}」与实际动画模块数 {len(mods)} 不符')
+    # 徽章题数
+    nq = 0
+    for key in ['BASIC_CHOICE','BASIC_FILL','HAND_CHOICE','HAND_FILL',
+                'EXT_CHOICE','EXT_FILL','STAR5_CHOICE','STAR5_FILL']:
+        m = re.search(rf'const {key} = \[.*?\n\];', app, re.S)
+        if m:
+            nq += len(re.findall(r"\{\s*q:", m.group(0)))
+    for b in meta['badges']:
+        mm = re.search(r'分层练习 (\d+) 题', b)
+        if mm and int(mm.group(1)) != nq:
+            issues.append(f'徽章「{b}」与实际题数 {nq} 不符')
+    # 难度题必须带"数学思维提示"，五星题必须带"详细解题过程"
+    for key in ['EXT_CHOICE','EXT_FILL','STAR5_CHOICE','STAR5_FILL']:
+        m = re.search(rf'const {key} = \[(.*?)\n\];', app, re.S)
+        if not m:
+            continue
+        for blk in re.split(r"\n\s*\{q:", m.group(1))[1:]:
+            blk = '{q:' + blk          # split 把 "q:" 吃掉了，补回来
+            q = re.search(r"q:'((?:[^'\\]|\\.)*)'", blk)
+            qtxt = q.group(1) if q else '?'
+            if 'point:' not in blk:
+                issues.append(f'{key}「{qtxt[:26]}」缺 point（考点）')
+            if 'care:' not in blk:
+                issues.append(f'{key}「{qtxt[:26]}」缺 care（易错提醒）')
+            if key.startswith('STAR5') and 'steps:' not in blk:
+                issues.append(f'{key}「{qtxt[:26]}」缺 steps（详细解题过程）')
+            if 'steps:' in blk:
+                n = len(re.findall(r"'[^']*'", re.search(r"steps:\[(.*?)\]", blk, re.S).group(1)))
+                if n < 2:
+                    issues.append(f'{key}「{qtxt[:26]}」的 steps 少于 2 步')
+    return issues
+
+
+def check_overview_counts():
+    """总览页单元卡片的「模块数 / 题数 / 档位数」必须与实际一致。"""
+    issues = []
+    html = (ROOT / 'index.html').read_text(encoding='utf-8')
+    for name, meta_txt in re.findall(
+            r'href="(u\d[^"]*)/index\.html".*?<div class="meta">(.*?)</div>', html, re.S):
+        d = ROOT / name
+        if not d.exists():
+            continue
+        meta = json.loads((d / 'meta.json').read_text(encoding='utf-8'))
+        body = (d / 'body.html').read_text(encoding='utf-8')
+        mods = len([h for h, _ in meta['nav']
+                    if h.startswith('#s-') and f'id="{h[1:]}"' in body])
+        app = (d / 'app.js').read_text(encoding='utf-8')
+        nq = 0
+        for key in ['BASIC_CHOICE','BASIC_FILL','HAND_CHOICE','HAND_FILL',
+                    'EXT_CHOICE','EXT_FILL','STAR5_CHOICE','STAR5_FILL']:
+            m = re.search(rf'const {key} = \[.*?\n\];', app, re.S)
+            if m:
+                nq += len(re.findall(r"\{\s*q:", m.group(0)))
+        tiers = len(meta.get('tiers', []))
+        mm = re.search(r'(\d+) 个动画模块', meta_txt)
+        if mm and int(mm.group(1)) != mods:
+            issues.append(f'总览页 {name}「{meta_txt}」模块数与实际 {mods} 不符')
+        # 题数有两种写法：
+        #   A「5 个动画模块 · 47 题分四档」        → 直接比对
+        #   B「15 + 9 + 11 题 · 分三档」（上册）   → 各档相加后比对
+        # 题数有两种写法：
+        #   A「5 个动画模块 · 47 题分四档」        → 直接比对
+        #   B「15 + 9 + 11 + 12 题 · 分四档」     → 各档相加后比对（档数可任意）
+        total_shown = None
+        mm = re.search(r'((?:\d+\s*\+\s*)*\d+)\s*题', meta_txt)
+        if mm:
+            total_shown = sum(int(x) for x in re.findall(r'\d+', mm.group(1)))
+        if total_shown is None:
+            mm = re.search(r'(\d+) 题', meta_txt)
+            if mm:
+                total_shown = int(mm.group(1))
+        if total_shown is not None and total_shown != nq:
+            issues.append(f'总览页 {name}「{meta_txt}」题数与实际 {nq} 不符')
+        if tiers and '分三档' in meta_txt and tiers == 4:
+            issues.append(f'总览页 {name}「{meta_txt}」写成"分三档"，实际是 {tiers} 档')
+    # 顶部总览数字
+    mm = re.search(r'(\d+) 个交互动画', html)
+    if mm:
+        total = 0
+        for d in sorted(ROOT.glob('u*/meta.json')):
+            meta = json.loads(d.read_text(encoding='utf-8'))
+            body = (d.parent / 'body.html').read_text(encoding='utf-8')
+            total += len([h for h, _ in meta['nav']
+                          if h.startswith('#s-') and f'id="{h[1:]}"' in body])
+        if int(mm.group(1)) != total:
+            issues.append(f'总览页称「{mm.group(1)} 个交互动画」，实际 {total} 个')
+    return issues
+
 def run_browser(pg, unit: str):
     """交互层 + 视觉层"""
     issues = []
@@ -90,7 +215,9 @@ def run_browser(pg, unit: str):
     # —— 内容层：显示题数 == 标称总题数（LESSONS #10）
     counts = pg.evaluate("""()=>{
       const out={};
-      ['basic','hand','ext'].forEach(k=>{
+      /* 动态取档位：以后加档位不用再改审计脚本 */
+      const keys=(window.__QUIZ_DATA__||[]).map(g=>g.key);
+      (keys.length?keys:['basic','hand','ext']).forEach(k=>{
         const host=document.getElementById(k+'Block');
         const total=document.getElementById('total'+k.charAt(0).toUpperCase()+k.slice(1));
         out[k]={shown:host?host.querySelectorAll('.q').length:0, total:total?+total.textContent:0};
@@ -148,9 +275,20 @@ def run_browser(pg, unit: str):
           if(wrong===undefined) return;
           qq.querySelectorAll('.opt')[wrong].click();
           const fb=qq.querySelector('.fb');
-          const txt=fb?fb.textContent:'';
+          /* 用 innerText（= 学生**实际看到**的文字）：
+             五星题答错时给出"详细解题过程"，最后一步（真正写出答案的那步）
+             收在 <details> 里默认折叠，折叠内容不参与 innerText → 不算泄露。 */
+          const txt=fb?fb.innerText:'';
           const ansTxt=correct.map(k=>q.opts[k]).join(' ');
-          if(ansTxt && ansTxt.length>1 && txt.includes(ansTxt)) out.push(g.key+' 选择'+(i+1));
+          /* 题干里本来就写着答案（如"平均数是 24 … 去掉的数是"）时，
+             过程里出现这个数不是"泄露"。 */
+          /* 按**词边界**匹配：答案 '86' 不应被 '860' 误判成泄露 */
+          let hit=false;
+          if(ansTxt && ansTxt.length>1){
+            const esc=ansTxt.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&');
+            hit=new RegExp('(^|[^0-9A-Za-z.])'+esc+'($|[^0-9A-Za-z.])').test(txt);
+          }
+          if(hit && !q.q.includes(ansTxt)) out.push(g.key+' 选择'+(i+1));
         });
       });
       return out;
@@ -258,6 +396,7 @@ def run_browser(pg, unit: str):
     if pr['btnHidden'] is False: issues.append('打印模式下按钮未隐藏')
     if pr['headerHidden'] is False: issues.append('打印模式下页眉未隐藏')
     if pr['answersVisible'] is False: issues.append('打印模式下答案区不可见')
+    issues += scan_object_str(pg, unit)
     return issues
 
 def audit_overview(pg, browser):
@@ -316,6 +455,7 @@ def main():
             issues = []
             issues += [f'[结构] {x}' for x in structure(html, d / 'index.html')]
             issues += [f'[内容] {x}' for x in content_static(html, d)]
+            issues += [f'[数字] {x}' for x in check_counts(d)]
             pg = b.new_page(viewport={'width':1280,'height':950}, device_scale_factor=1)
             issues += [f'[运行时] {x}' for x in run_browser(pg, unit)]
             pg.close()
@@ -325,6 +465,7 @@ def main():
         # 课程总览页（单独检查：它没有练习区）
         pg = b.new_page(viewport={'width':1280,'height':950})
         ov = audit_overview(pg, b)
+        ov += [f'[数字] {x}' for x in check_overview_counts()]
         print(f"\n{'✅' if not ov else '❌'} index.html（课程总览）  ({len(ov)} 个问题)")
         for i in ov: print('   -', i)
         total_issues += len(ov)

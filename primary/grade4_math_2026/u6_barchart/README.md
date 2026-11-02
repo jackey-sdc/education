@@ -31,6 +31,7 @@
 |---|---|---|
 | 第一档 · 巩固基础 | 12 | 选择 6 + 填空 6 |
 | 第二档 · 动手操作 | 9 | 选择 3 + 填空 6 |
+| 第四档 · 五星挑战 · 浅奥思维 | 12 | 选择 6 + 填空 6 |
 | 第三档 · 扩展思维 | 10 | 选择 4 + 填空 6 |
 
 ### 三、知识点覆盖
@@ -49,3 +50,43 @@ python3 tests/test_unit.py
 ## 源码与重建
 
 源码在 `../`；本单元内容在 `body.html` 与 `app.js`。重建：`python3 ../build.py u6_barchart`。
+
+## 课程讲解（语音 + 动画）
+
+4 节课程讲解（单式条形统计图 / 复式条形统计图 / 数据的收集与整理 / 读图分析）各配一份六拍脚本：读信息 → 提问 → 找关系 → 算一算（几何课为"指认"）→ 检验 → 迁移。
+点每节的「🔊 开始讲解」播放；支持暂停/继续/停止/重播，**点任意一拍可单独重讲**。
+
+- 脚本：`narr.js`（每节一个对象），动画由 `app.js` 的 `MOD.*` 控制器驱动。
+- **设计记录：`iterations.md`**（写代码前的三轮方案评审：需求是否清晰 / 场景设计是否合理 / 通俗易懂且体现数学思维；每轮至少一条"被推翻"）。
+
+### 语音：预录讲解（已上线）
+
+本单元是「讲解音频」第一个试点：**音质与"电脑装没装中文语音"彻底脱钩**。
+
+| 项 | 值 |
+|---|---|
+| 音色 | 晓晓（`zh-CN-XiaoxiaoNeural`），语速 -10% |
+| 处理 | 口语文案 + 标点留白（逗号 300 / 顿号 280 / 句号 620ms）+ 重读片段降速 26% |
+| 规格 | 24 条 / 共 207 秒 / 1682KB / 64kbps 单声道 AAC，**内联在 `index.html` 里**（单文件 2.3MB，双击即用） |
+| 重读标记 | `narr.js` 每拍的 `emp` 字段，只标结论词、关键数字、易错点，每拍 ≤2 处 |
+
+`say` 与 `sub` 写法可以不同：`say` 里写「四一班」（念得顺），`sub` 里保留「四（1）班」（板书好看）。
+数字统一用阿拉伯数字，实测 `28`→二十八、`2.8`→二点八、`30`→三十、`103`→一百零三均正确。
+
+改文案后重做音频：
+
+```bash
+python3 ../tools/tts_build.py u6_barchart     # 只重合成改动过的
+python3 ../build.py u6_barchart                # 重新内联
+python3 ../tools/make_preview.py u6_barchart   # 出试听页（含盲听）
+```
+
+改脚本后必须重建并自检（三项都要绿）：
+
+```bash
+python3 ../build.py u6_barchart
+# 在仓库根目录执行
+python3 .workbuddy/skills/math-courseware-explainer/scripts/check_explain.py u6_barchart
+python3 primary/grade4_math_2026/tools/check_audio_play.py u6_barchart
+python3 primary/grade4_math_2026/tools/check_pron.py u6_barchart
+```

@@ -21,7 +21,7 @@
     <h3><span class="tag">动画</span>读购物小票，认出三个量</h3>
     <p class="lead">从超市小票里找出<b>单价、数量、总价</b>，再用关系式算出缺少的那个量。</p>
     <div class="stage" id="priceStage" style="flex-direction:column"></div>
-    <div class="controls">
+    <div class="controls" id="priceControls">
       <select id="priceSel" style="font-size:15px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line)">
         <option value="0">牛奶 18 元/盒 × 3 盒</option>
         <option value="1">苹果 9 元/千克 × 4 千克</option>
@@ -38,9 +38,9 @@
   <div class="card">
     <h3><span class="tag">要点</span>三个量、三个关系式</h3>
     <div class="grid3">
-      <div class="tip ok"><b>求总价</b><br>单价 × 数量 = 总价<br><span style="font-size:13.5px">例：120 × 5 = 600（元）</span></div>
-      <div class="tip ok"><b>求单价</b><br>总价 ÷ 数量 = 单价<br><span style="font-size:13.5px">例：840 ÷ 4 = 210（元）</span></div>
-      <div class="tip ok"><b>求数量</b><br>总价 ÷ 单价 = 数量<br><span style="font-size:13.5px">例：600 ÷ 120 = 5（套）</span></div>
+      <div class="tip ok" id="relTotal"><b>求总价</b><br>单价 × 数量 = 总价<br><span style="font-size:13.5px">例：120 × 5 = 600（元）</span></div>
+      <div class="tip ok" id="relUnit"><b>求单价</b><br>总价 ÷ 数量 = 单价<br><span style="font-size:13.5px">例：840 ÷ 4 = 210（元）</span></div>
+      <div class="tip ok" id="relQty"><b>求数量</b><br>总价 ÷ 单价 = 数量<br><span style="font-size:13.5px">例：600 ÷ 120 = 5（套）</span></div>
     </div>
     <div class="tip warn"><b>易错</b>：求数量时用<b>除法</b>，不要写成乘法；写答案要带<b>单位</b>（元、盒、套、千克…）。</div>
   </div>
@@ -94,6 +94,7 @@
       <button class="ghost" id="btnApplyReset">重置</button>
     </div>
     <div class="stepper" id="applySteps"></div>
+    <div class="stage" id="applyStage" style="flex-direction:column"></div>
     <div id="applyNote" class="tip"></div>
   </div>
 </section>

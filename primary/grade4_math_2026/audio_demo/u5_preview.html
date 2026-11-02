@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8">
+<title>u5 讲解音频试听</title>
+<style>
+  :root{--ink:#1a1c1f;--ink2:#5b6169;--line:#e3e6ea;--bg:#f6f7f9;--hi:#fff3c4;--acc:#2563eb}
+  *{box-sizing:border-box}
+  body{margin:0;padding:28px 20px 60px;background:var(--bg);color:var(--ink);
+    font:15px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:820px;margin:0 auto}
+  h1{font-size:21px;margin:0 0 4px}
+  .sub{color:var(--ink2);font-size:13px;margin-bottom:22px}
+  h2{font-size:15px;margin:30px 0 12px;color:var(--ink2);font-weight:600;
+    border-bottom:1px solid var(--line);padding-bottom:8px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+  .card.on{border-color:var(--acc);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .meta{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2)}
+  .meta b{color:var(--ink);font-variant-numeric:tabular-nums}
+  .beat{background:var(--bg);border-radius:4px;padding:1px 7px}
+  .dur{margin-left:auto;font-variant-numeric:tabular-nums}
+  .mini{border:1px solid var(--line);background:#fff;border-radius:6px;
+    width:30px;height:26px;cursor:pointer;font-size:12px}
+  .mini:hover{border-color:var(--acc);color:var(--acc)}
+  .say{margin:8px 0 0;font-size:14px;line-height:1.8}
+  .say mark{background:var(--hi);padding:0 2px;border-radius:3px}
+  .hidden{display:none}
+  .reveal{font-size:12px;border:1px dashed var(--line);background:#fff;border-radius:6px;
+    padding:2px 8px;cursor:pointer;color:var(--ink2)}
+  .ans{display:none;margin:6px 0 0;font-size:12px;color:var(--acc)}
+  .blind.open .ans{display:block}
+  .blind.open .say{display:block}
+  .bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 14px;
+    cursor:pointer;font-size:13px}
+  .btn:hover{border-color:var(--acc);color:var(--acc)}
+  .note{background:#fff;border-left:3px solid var(--acc);padding:10px 14px;border-radius:0 8px 8px 0;
+    font-size:13px;color:var(--ink2);margin-bottom:22px}
+</style></head><body><div class="wrap">
+<h1>u5 讲解音频试听</h1>
+<p class="sub">36 拍 / 313 秒 / 晓晓 · 口语＋留白＋数字重读（<mark>黄色</mark>为重读片段）</p>
+<div class="note">先听「盲听区」——不看文字、不看拍名，只判断一句：<b>像不像老师在讲</b>。
+这 6 条是随机抽的，听完再点「揭晓」看是哪一拍。</div>
+
+<div class="bar">
+  <button class="btn" id="playAll">▶ 连续播放全部</button>
+  <button class="btn" id="stopAll">⏹ 停止</button>
+</div>
+
+<h2>盲听区（6 条，顺序已打乱）</h2>
+
+    <div class="card blind" data-src="../assets/audio/u5/s-drawp-3.m4a">
+      <div class="meta"><b>1</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">让一条直角边贴着直线，另一条直角边自然就和它垂直了。这一步<mark>叫靠边</mark>。</p>
+        <p class="ans">找关系</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u5/s-pv-6.m4a">
+      <div class="meta"><b>2</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">黑板的上边和下边平行，相邻两边垂直。一块黑板<mark>就是一个平面</mark>；一条在桌面、一条在墙上，不算。</p>
+        <p class="ans">迁移</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u5/s-trap-3.m4a">
+      <div class="meta"><b>3</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">算。梯形只看对边平行：上底和下底平行，另一组对边不平行。<mark>标准就这一条</mark>。</p>
+        <p class="ans">找关系</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u5/s-para-5.m4a">
+      <div class="meta"><b>4</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">再压扁一点：高只剩 4，面积变成 <mark>80</mark>。周长还是 64，边没动，周长就不动。</p>
+        <p class="ans">检验</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u5/s-dist-1.m4a">
+      <div class="meta"><b>5</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">直线外面有一个点 P。从这个点向直线连了三条线，每条线旁边都标着长度。</p>
+        <p class="ans">读信息</p>
+    </div>
+    <div class="card blind" data-src="../assets/audio/u5/s-tree-5.m4a">
+      <div class="meta"><b>6</b><button class="mini">▶</button>
+        <button class="reveal">揭晓</button></div>
+        <p class="say hidden">反过来看梯形：它<mark>只有一组对边平行</mark>，它进得了平行四边形那一支吗？</p>
+        <p class="ans">检验</p>
+    </div>
+
+<h2>逐条试听（六拍骨架）</h2>
+
+    <div class="card" data-src="../assets/audio/u5/s-pv-1.m4a">
+      <div class="meta"><b>01</b><span class="beat">读信息</span>
+        <span class="dur">8.9s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">你看画面，下面这条直线画好不动，上面这条可以移。现在离得远远的，碰不到一起。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-pv-2.m4a">
+      <div class="meta"><b>02</b><span class="beat">提问</span>
+        <span class="dur">6.7s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">那要是把它转过来，它们会碰在一起吗？碰在一起的，还算平行吗？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-pv-3.m4a">
+      <div class="meta"><b>03</b><span class="beat">找关系</span>
+        <span class="dur">7.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">所以只分两类：会碰在一起的叫相交，怎么延长都不碰的，<mark>叫平行</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-pv-4.m4a">
+      <div class="meta"><b>04</b><span class="beat">算一算</span>
+        <span class="dur">9.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">相交里头还有一种特殊情况：正好交成直角，就叫<mark>互相垂直</mark>，这两条线互为垂线。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-pv-5.m4a">
+      <div class="meta"><b>05</b><span class="beat">检验</span>
+        <span class="dur">11.8s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">看这一种：交叉了，可是没有直角符号，它只是相交，还<mark>不算垂直</mark>。判断要看直角，不能光靠眼睛。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-pv-6.m4a">
+      <div class="meta"><b>06</b><span class="beat">迁移</span>
+        <span class="dur">12.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">黑板的上边和下边平行，相邻两边垂直。一块黑板<mark>就是一个平面</mark>；一条在桌面、一条在墙上，不算。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-drawp-1.m4a">
+      <div class="meta"><b>07</b><span class="beat">读信息</span>
+        <span class="dur">6.6s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">直线外面有一个点 P，要用三角尺过这个点，画一条和直线垂直的线。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-drawp-2.m4a">
+      <div class="meta"><b>08</b><span class="beat">提问</span>
+        <span class="dur">7.8s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">三角尺上本来就有一个直角。它该怎么摆，才能保证画出来的线一定垂直？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-drawp-3.m4a">
+      <div class="meta"><b>09</b><span class="beat">找关系</span>
+        <span class="dur">7.6s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">让一条直角边贴着直线，另一条直角边自然就和它垂直了。这一步<mark>叫靠边</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-drawp-4.m4a">
+      <div class="meta"><b>10</b><span class="beat">算一算</span>
+        <span class="dur">9.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">先靠边，再沿着另一直角边过 P 画线，最后在交点处标上直角符号。<mark>三步画完</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-drawp-5.m4a">
+      <div class="meta"><b>11</b><span class="beat">检验</span>
+        <span class="dur">9.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">检查一下：拐角处有没有直角符号？没有符号，这条线只是看着直，<mark>不能算垂线</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-drawp-6.m4a">
+      <div class="meta"><b>12</b><span class="beat">迁移</span>
+        <span class="dur">10.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">那要是这个点正好落在直线上呢？<mark>还是同一招</mark>，把直角顶点放在点上，靠边、画线、标直角。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-dist-1.m4a">
+      <div class="meta"><b>13</b><span class="beat">读信息</span>
+        <span class="dur">8.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">直线外面有一个点 P。从这个点向直线连了三条线，每条线旁边都标着长度。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-dist-2.m4a">
+      <div class="meta"><b>14</b><span class="beat">提问</span>
+        <span class="dur">6.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">这三条里有一条最短。它是碰巧最短，还是有什么道理在管着它？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-dist-3.m4a">
+      <div class="meta"><b>15</b><span class="beat">找关系</span>
+        <span class="dur">7.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">最短的那条，正好是<mark>垂直着落</mark>的那一条，落点处还画着一个直角符号。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-dist-4.m4a">
+      <div class="meta"><b>16</b><span class="beat">算一算</span>
+        <span class="dur">11.3s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">量一量：垂线段长 140，两条斜线分别是 184 和 178。斜着走的，<mark>都比垂直的长</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-dist-5.m4a">
+      <div class="meta"><b>17</b><span class="beat">检验</span>
+        <span class="dur">7.2s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">把这一个点挪到别处，三个数全变了，可<mark>最短的仍然</mark>是垂直那一条。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-dist-6.m4a">
+      <div class="meta"><b>18</b><span class="beat">迁移</span>
+        <span class="dur">8.6s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">所以量距离都得<mark>垂直着量</mark>。你想想，量身高为什么要站直、脚贴着墙？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-para-1.m4a">
+      <div class="meta"><b>19</b><span class="beat">读信息</span>
+        <span class="dur">7.9s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">这个平行四边形，底 20 厘米，腰 12 厘米，四条边都量好了，还画出了高。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-para-2.m4a">
+      <div class="meta"><b>20</b><span class="beat">提问</span>
+        <span class="dur">7.9s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">把它拉斜一点，四条边的长度一个都没变。那周长变不变？面积变不变？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-para-3.m4a">
+      <div class="meta"><b>21</b><span class="beat">找关系</span>
+        <span class="dur">8.8s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">周长是四条边加起来，边没变，周长就不变。面积是底乘高，<mark>得看高变了没有</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-para-4.m4a">
+      <div class="meta"><b>22</b><span class="beat">算一算</span>
+        <span class="dur">11.1s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">底 20、高 8，面积是 20 乘 8 得 <mark>160</mark> 平方厘米；周长是 20 加 12 的和乘 2，64 厘米。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-para-5.m4a">
+      <div class="meta"><b>23</b><span class="beat">检验</span>
+        <span class="dur">9.8s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">再压扁一点：高只剩 4，面积变成 <mark>80</mark>。周长还是 64，边没动，周长就不动。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-para-6.m4a">
+      <div class="meta"><b>24</b><span class="beat">迁移</span>
+        <span class="dur">10.9s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">那要是腰从 12 缩到 7 呢？周长和面积就<mark>一起变</mark>了。长方形也是平行四边形，拉一拉就懂了。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-trap-1.m4a">
+      <div class="meta"><b>25</b><span class="beat">读信息</span>
+        <span class="dur">7.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">这是一个四边形，上底 150、下底 240、高 100，都量好了。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-trap-2.m4a">
+      <div class="meta"><b>26</b><span class="beat">提问</span>
+        <span class="dur">7.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">这个图形的左下角是一个直角，看着像半个长方形。它到底还算不算梯形？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-trap-3.m4a">
+      <div class="meta"><b>27</b><span class="beat">找关系</span>
+        <span class="dur">9.6s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">算。梯形只看对边平行：上底和下底平行，另一组对边不平行。<mark>标准就这一条</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-trap-4.m4a">
+      <div class="meta"><b>28</b><span class="beat">算一算</span>
+        <span class="dur">9.2s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">再看两个特殊的：两腰一样长的，叫<mark>等腰梯形</mark>；一条腰垂直两底的，叫直角梯形。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-trap-5.m4a">
+      <div class="meta"><b>29</b><span class="beat">检验</span>
+        <span class="dur">7.4s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">反例来了：这个图形<mark>两组对边都平行</mark>。它为什么进不了梯形这一支？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-trap-6.m4a">
+      <div class="meta"><b>30</b><span class="beat">迁移</span>
+        <span class="dur">10.0s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">生活里的梯子、堤坝横截面，都做成梯形。记住，<mark>只有一组对边平行</mark>，多一组都不行。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-tree-1.m4a">
+      <div class="meta"><b>31</b><span class="beat">读信息</span>
+        <span class="dur">8.9s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">这张图是一个家族：最上面是四边形，往下分成几支。越往下，<mark>条件越多</mark>。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-tree-2.m4a">
+      <div class="meta"><b>32</b><span class="beat">提问</span>
+        <span class="dur">5.9s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">梯形和长方形都是四边形，它们为什么站在不同的两支里？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-tree-3.m4a">
+      <div class="meta"><b>33</b><span class="beat">找关系</span>
+        <span class="dur">8.5s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">标准只有一条：几组对边平行。<mark>两组都平行的</mark>，全进平行四边形这一支。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-tree-4.m4a">
+      <div class="meta"><b>34</b><span class="beat">算一算</span>
+        <span class="dur">9.2s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">比如正方形：它在<mark>最里面</mark>，上面是长方形，再上面是平行四边形，一路都成立。</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-tree-5.m4a">
+      <div class="meta"><b>35</b><span class="beat">检验</span>
+        <span class="dur">7.2s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">反过来看梯形：它<mark>只有一组对边平行</mark>，它进得了平行四边形那一支吗？</p>
+    </div>
+    <div class="card" data-src="../assets/audio/u5/s-tree-6.m4a">
+      <div class="meta"><b>36</b><span class="beat">迁移</span>
+        <span class="dur">9.8s</span>
+        <button class="mini">▶</button></div>
+      <p class="say">换个标准分呢？按有没有直角来分，结果就变了。所以分类之前，<mark>先说清</mark>用哪个标准。</p>
+    </div>
+
+<audio id="player" preload="none"></audio>
+<script>
+const player = document.getElementById('player');
+let cur = null, queue = [], qi = 0;
+
+function playCard(card){
+  document.querySelectorAll('.card.on').forEach(c=>c.classList.remove('on'));
+  card.classList.add('on');
+  player.src = card.dataset.src;
+  player.play();
+  cur = card;
+}
+document.querySelectorAll('.card').forEach(card=>{
+  card.querySelector('.mini').addEventListener('click', ()=>{
+    queue = []; playCard(card);
+  });
+  const rv = card.querySelector('.reveal');
+  if(rv) rv.addEventListener('click', ()=>{ card.classList.toggle('open'); });
+});
+document.getElementById('playAll').addEventListener('click', ()=>{
+  queue = [...document.querySelectorAll('.card:not(.blind)')];
+  qi = 0;
+  if(queue.length) playCard(queue[0]);
+});
+document.getElementById('stopAll').addEventListener('click', ()=>{
+  queue = []; player.pause(); player.removeAttribute('src');
+  document.querySelectorAll('.card.on').forEach(c=>c.classList.remove('on'));
+});
+player.addEventListener('ended', ()=>{
+  if(queue.length && qi < queue.length - 1){ qi++; playCard(queue[qi]); }
+});
+</script>
+</div></body></html>

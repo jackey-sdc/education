@@ -7,11 +7,12 @@ skill 自身健康检查（自迭代的安全网）
   2. 引用：SKILL.md 里提到的 references/ templates/ scripts/ 文件都真实存在
   3. 语法：所有 .py 能通过编译；模板 HTML 含关键标记
   4. 记忆：LESSONS.md 每条经验都带回归测试出处；CHANGELOG 有版本记录
-  5. 漂移：已安装副本（~/.codex/skills/<name>）与仓库源是否一致
+  5. 回归：对语义校验模板做植入测试（错误版必报、修正版全绿）
+  6. 漂移：已安装副本（~/.codex/skills/<name>）与仓库源是否一致
 
 运行： python3 scripts/self_check.py
 """
-import hashlib, pathlib, py_compile, re, sys, tempfile
+import hashlib, pathlib, py_compile, re, subprocess, sys, tempfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 NAME = ROOT.name
@@ -85,6 +86,16 @@ if tpl.exists():
 else:
     bad("缺少 templates/lesson-template.html")
 
+ca = ROOT / "templates" / "check_answers.py"
+if ca.exists():
+    ct = ca.read_text(encoding="utf-8")
+    for marker, desc in [("def check_semantic_rules", "L4 语义规则骨架"),
+                         ("def check_steps_consistency", "steps 一致性检查"),
+                         ("ALLOW_NEGATIVE_RESULTS", "年级约束开关")]:
+        (ok if marker in ct else bad)(f"答案校验模板含 {desc}" + ("" if marker in ct else f"（缺 {marker}）"))
+else:
+    bad("缺少 templates/check_answers.py")
+
 # ---------- 4. 经验档案 ----------
 lessons = ROOT / "LESSONS.md"
 if lessons.exists():
@@ -107,7 +118,21 @@ if chlog.exists() and re.search(r"^## \[", chlog.read_text(encoding="utf-8"), re
 else:
     bad("CHANGELOG.md 缺少版本记录")
 
-# ---------- 5. 安装副本漂移 ----------
+# ---------- 5. 语义校验模板回归 ----------
+selftest = ROOT / "scripts" / "semantic_selftest.py"
+if selftest.exists():
+    r = subprocess.run([sys.executable, str(selftest)], cwd=str(ROOT),
+                       text=True, capture_output=True)
+    if r.returncode == 0:
+        ok("语义校验模板植入测试通过")
+    else:
+        bad("语义校验模板植入测试失败")
+        print(r.stdout)
+        print(r.stderr)
+else:
+    bad("缺少 scripts/semantic_selftest.py")
+
+# ---------- 6. 安装副本漂移 ----------
 def digest(root: pathlib.Path):
     out = {}
     for p in sorted(root.rglob("*")):

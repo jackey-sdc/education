@@ -1,6 +1,10 @@
 /* ==========================================================================
    第七单元 复习与关联 —— 交互模块
+
+   每个模块在末尾暴露 MOD.xxx 控制器，给讲解脚本一个「绝对状态」入口。
    ========================================================================== */
+
+window.MOD = window.MOD || {};
 
 /* ==========================================================================
    ① 全册知识地图
@@ -17,13 +21,18 @@
     {t:'⑦ 复习与关联', c:'#6366f1', items:['整理复习','应用提升','数学广角：鸡兔同笼']}
   ];
   const stage = $('#mapStage'), note = $('#mapNote');
+  /* hi：讲解时"现在讲哪一块"。亮起来的那块加粗边框，并在下方写一行标题，
+     这样讲哪一块，屏幕上就看得出是哪一块。 */
+  let hi = -1;
   function render(){
     stage.innerHTML = '';
     const grid = document.createElement('div');
     grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;width:100%';
-    MAP.forEach(m => {
+    MAP.forEach((m, mi) => {
       const card = document.createElement('div');
-      card.style.cssText = `border:2px solid ${m.c};border-radius:12px;padding:12px 14px;background:#fff;cursor:pointer`;
+      const on = mi === hi;
+      card.style.cssText = `border:${on ? 3 : 2}px solid ${m.c};border-radius:12px;padding:12px 14px;` +
+        `background:${on ? '#fff8ec' : '#fff'};cursor:pointer;${on ? 'box-shadow:0 0 0 5px rgba(240,138,36,.14)' : ''}`;
       const h = document.createElement('div');
       h.textContent = m.t;
       h.style.cssText = `color:${m.c};font-weight:800;font-size:15px;margin-bottom:6px`;
@@ -38,8 +47,19 @@
       grid.appendChild(card);
     });
     stage.appendChild(grid);
+    if (hi >= 0 && MAP[hi]){
+      const cap = document.createElement('div');
+      cap.style.cssText = 'margin-top:10px;font-size:16px;font-weight:700;color:var(--orange);text-align:center';
+      cap.textContent = `现在看：${MAP[hi].t} —— 共 ${MAP[hi].items.length} 个知识点`;
+      stage.appendChild(cap);
+    }
   }
   render();
+
+  /* 讲解入口：set(第几块, -1 表示都不亮) */
+  MOD.map = {
+    set(i){ hi = (i == null ? -1 : i); render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -129,6 +149,11 @@
   $('#btnRvReset').addEventListener('click', () => { step = 0; inp.value = '48609230'; render(); });
   inp.addEventListener('input', () => { step = 0; render(); });
   render();
+
+  /* 讲解入口：set(第几步, 数) —— 0 分级 / 1 读数 / 2 改写 / 3 求近似数 */
+  MOD.rv = {
+    set(s, num){ if (num != null) inp.value = String(num); step = s || 0; render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -136,7 +161,9 @@
    ========================================================================== */
 (function initGeo(){
   const stage = $('#geoStage'), note = $('#geoNote');
-  let g = 0;
+  /* cap：讲解时把"这一张图要看的那句话"写在图下面。
+     三种图只有三个状态，不够讲六拍，靠这句话把状态区分开。 */
+  let g = 0, cap = '';
   function render(){
     stage.innerHTML = '';
     const svg = s('svg', {viewBox:'0 0 480 260', width:480, height:260});
@@ -184,9 +211,20 @@
       note.innerHTML = '<b>平行四边形和梯形</b>：平行四边形两组对边分别平行且相等；梯形只有一组对边平行。' +
         '正方形是特殊的长方形，长方形是特殊的平行四边形。';
     }
+    if (cap){
+      const d = document.createElement('div');
+      d.style.cssText = 'margin-top:8px;font-size:16.5px;font-weight:800;color:var(--orange);text-align:center';
+      d.textContent = cap;
+      stage.appendChild(d);
+    }
   }
-  document.querySelectorAll('button[data-g]').forEach(b => b.addEventListener('click', () => { g = +b.dataset.g; render(); }));
+  document.querySelectorAll('button[data-g]').forEach(b => b.addEventListener('click', () => { g = +b.dataset.g; cap = ''; render(); }));
   render();
+
+  /* 讲解入口：set(0 线与角 / 1 平行与垂直 / 2 平行四边形与梯形, 图下那句话) */
+  MOD.geo = {
+    set(i, c){ g = i || 0; cap = c || ''; render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -196,6 +234,8 @@
   const stage = $('#statStage'), note = $('#statNote');
   const CATS = ['足球', '篮球', '跳绳', '毽子'];
   const DATA = [26, 20, 18, 12];
+  /* hi：讲解时"现在讲统计四步的哪一步"，让这一行在画面上亮起来 */
+  let hi = -1;
   function render(){
     stage.innerHTML = '';
     const wrap = document.createElement('div');
@@ -215,19 +255,75 @@
       haloText(svg, x + 16, yOf(DATA[i]) - 9, String(DATA[i]), null, {size:12.5, fill:'#0e8fa8', rot:false});
       haloText(svg, 56 + cw * i + cw / 2, 300 - 52 + 18, c, null, {size:13, rot:false});
     });
+    /* 讲解推进时在图上加临时标注：画一条参考线 / 一个相差箭头，让每拍画面都不同 */
+    if (hi === 2){
+      s('line', {x1:56, y1:yOf(26), x2:540, y2:yOf(26), stroke:'#e8560f',
+        'stroke-width':1.4, 'stroke-dasharray':'6 5'}, svg);
+      haloText(svg, 300, yOf(26) - 10, '26 人 ≈ 5 格多一点', null,
+        {size:12.5, fill:'#e8560f', rot:false});
+      for (let k = 1; k <= 6; k++){
+        s('line', {x1:60, y1:yOf(k * 5), x2:540, y2:yOf(k * 5), stroke:'#f7c9ad',
+          'stroke-width':0.8, 'stroke-dasharray':'2 6'}, svg);
+      }
+    }
+    if (hi === 3){
+      s('line', {x1:524, y1:yOf(26), x2:524, y2:yOf(12), stroke:'#c2410c', 'stroke-width':1.6}, svg);
+      s('line', {x1:518, y1:yOf(26), x2:530, y2:yOf(26), stroke:'#c2410c', 'stroke-width':1.6}, svg);
+      s('line', {x1:518, y1:yOf(12), x2:530, y2:yOf(12), stroke:'#c2410c', 'stroke-width':1.6}, svg);
+      haloText(svg, 500, (yOf(26) + yOf(12)) / 2, '差 14 人', null,
+        {size:12.5, fill:'#c2410c', rot:false});
+    }
+    if (hi === 0){
+      CATS.forEach((c, i) => {
+        const cx = 56 + cw * i + cw / 2;
+        haloText(svg, cx, yOf(DATA[i]) - 26, '✓', null, {size:14, fill:'#159957', rot:false});
+      });
+    }
+    if (hi === 1){
+      CATS.forEach((c, i) => {
+        const cx = 56 + cw * i + cw / 2;
+        s('rect', {x:cx - 22, y:34, width:44, height:18, rx:4, fill:'#eaf4ff',
+          stroke:'#5b8def', 'stroke-width':1}, svg);
+        haloText(svg, cx, 47, '已填', null, {size:11.5, fill:'#2b5fbf', rot:false});
+      });
+    }
+
     const flow = document.createElement('div');
     flow.style.cssText = 'text-align:left;font-size:16px;line-height:2.1';
-    flow.innerHTML = '<b>统计四步走</b><br>' +
-      '① <b>收集</b>数据（问卷、举手、记录）<br>' +
-      '② <b>整理</b>成统计表<br>' +
-      '③ <b>画</b>条形统计图（单式 / 复式）<br>' +
-      '④ <b>分析</b>并提出建议<br>' +
+    const STEP_TXT = [
+      '① <b>收集</b>数据（问卷、举手、记录）',
+      '② <b>整理</b>成统计表',
+      '③ <b>画</b>条形统计图（单式 / 复式）',
+      '④ <b>分析</b>并提出建议'
+    ];
+    flow.innerHTML = '<b>统计四步走</b><br>' + STEP_TXT.map((t, i) =>
+      `<span style="display:inline-block;width:100%;padding:1px 6px;border-radius:8px;` +
+      `${i === hi ? 'background:var(--orange-l);font-weight:800' : ''}">${t}</span>`).join('') +
       '<span style="color:var(--ink2);font-size:14px">本册重点：条形统计图的四要素、1 格代表几、直条宽窄与间隔。</span>';
     wrap.appendChild(flow);
+
+    /* 当前这一拍的补充说明：一句一行，讲哪步写哪步 */
+    const CAP = [
+      '收集：一个一个数出来 —— 足球 26、篮球 20、跳绳 18、毽子 12。',
+      '整理：把四个数填进统计表，类别与人数一一对应。',
+      '画图：纵轴 0～30，1 格代表 5 人；26 人画到 5 格多一点。',
+      '分析：足球最多 26 人，毽子最少 12 人，相差 14 人。'
+    ];
+    const cap = document.createElement('div');
+    cap.style.cssText = 'width:100%;margin-top:10px;padding:10px 14px;border-radius:10px;' +
+      'background:' + (hi >= 0 ? 'var(--orange-l)' : 'var(--bg2)') +
+      ';color:var(--ink1);font-size:16.5px;font-weight:700;line-height:1.6';
+    cap.textContent = hi >= 0 ? CAP[hi] : '四个数 → 一张表 → 一幅图 → 一句话结论。';
+    wrap.appendChild(cap);
     stage.appendChild(wrap);
     note.innerHTML = '统计图的价值：<b>一眼看出多少</b>、<b>方便比较</b>、<b>帮助决策</b>。';
   }
   render();
+
+  /* 讲解入口：set(0~3 对应统计四步，-1 都不亮) */
+  MOD.stat = {
+    set(i){ hi = (i == null ? -1 : i); render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -287,6 +383,11 @@
   $('#btnCkStep').addEventListener('click', () => { step = (step + 1) % 4; render(); });
   $('#btnCkReset').addEventListener('click', () => { step = 0; heads.value = 8; feet.value = 26; render(); });
   render();
+
+  /* 讲解入口：set(头数, 脚数, 第几步) —— 0 读条件 / 1 假设 / 2 对比 / 3 答案 */
+  MOD.ck = {
+    set(h, f, s){ if (h != null) heads.value = h; if (f != null) feet.value = f; step = s || 0; render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -363,6 +464,11 @@
   $('#btnTrAll').addEventListener('click', () => { pos = ROUTES[route].cmds.length; render(); });
   $('#btnTrReset').addEventListener('click', () => { pos = 0; route = 0; render(); });
   render();
+
+  /* 讲解入口：set(第几条路线, 走到第几步) */
+  MOD.tr = {
+    set(r, p){ if (r != null) route = r; pos = p || 0; render(); }
+  };
 })();
 
 /* ==========================================================================
@@ -375,8 +481,8 @@ const BASIC_CHOICE = [
    opts:['3500000','5300000','3050000','3000500'], a:0,
    why:'把大数字放高位：3 5 0 0 0 0 0 = 3500000。'},
   {q:'把 396000 改写成用"万"作单位的数是（　）。',
-   opts:['39.6 万','396 万','39 万','约 40 万'], a:1,
-   why:'396000 末四位是 0，可以用等号改写成 396 万。'},
+   opts:['39.6 万','396 万','39 万','约 40 万'], a:0,
+   why:'396000 ÷ 10000 = 39.6，所以 396000 = 39.6 万。'},
   {q:'一个角是 135°，它是（　）。', opts:['锐角','直角','钝角','平角'], a:2,
    why:'大于 90° 小于 180° 是钝角。'},
   {q:'480 × 25 的积是（　）。', opts:['1200','12000','120000','9600'], a:1,
@@ -384,7 +490,7 @@ const BASIC_CHOICE = [
   {q:'下面说法正确的是（　）。',
    opts:['垂直的两条直线一定相交','两条直线不相交就一定垂直',
          '平行四边形的对边一定相等','梯形有两组对边平行'], a:0,
-   why:'垂直一定相交；不相交是平行；梯形只有一组对边平行。'}
+   why:'垂直一定相交；不相交是平行；梯形只有一组对边平行。', point:'角的辨析：周角最大但仍是角；平角 = 2 个直角', care:'角的大小与边画多长**无关**；一个周角正好分成两个平角'}
 ];
 
 const BASIC_FILL = [
@@ -426,42 +532,128 @@ const HAND_FILL = [
 const EXT_CHOICE = [
   {q:'鸡兔同笼共有 35 个头、94 只脚，鸡有（　）只。',
    opts:['12','23','24','30'], a:1,
-   why:'假设全是鸡：35 × 2 = 70，少 24 只脚，24 ÷ 2 = 12 只兔，鸡 35 − 12 = 23。'},
+   why:'假设全是鸡：35 × 2 = 70，少 24 只脚，24 ÷ 2 = 12 只兔，鸡 35 − 12 = 23。', point:'**假设法**：先假设全是鸡，算出脚的总数，再看差多少只脚', care:'假设全是鸡：35 × 2 = 70 只脚，实际 94 只，多 24 只；每换一只兔多 2 只脚，所以兔 12 只、鸡 35 − 12 = 23 只', steps:['假设 35 只全是鸡：脚数 = 35 × 2 = 70（只）', '实际有 94 只脚，比假设多 94 − 70 = 24（只）', '每把 1 只鸡换成 1 只兔，脚就多 4 − 2 = 2（只）', '兔的只数：24 ÷ 2 = 12（只）', '鸡的只数：35 − 12 = 23（只）']},
   {q:'一个数近似到万位是 8 万，这个数最大是（　）。',
-   opts:['74999','79999','84999','80000'], a:1,
-   why:'约 8 万的数范围是 75000 ~ 79999，最大 79999。'},
+   opts:['74999','79999','84999','80000'], a:2,
+   why:'四舍五入到万位得 8 万，这个数的范围是 75000 ~ 84999，最大是 84999。', point:'四舍五入的逆向：最大取 84999', care:'千位最多取 4，后面三位都取 9；到 85000 就会近似成 9 万'},
   {q:'下面说法正确的是（　）。',
    opts:['周角是最大的角','平角比直角大，所以平角是特殊直角',
          '角的大小与边画多长有关','一个周角可以分成两个平角'], a:3,
-   why:'周角 360° 是最大的角，但比周角大的角在本单元不研究；平角 = 2 个直角，但不是直角。'},
+   why:'周角 360° 是最大的角，但比周角大的角在本单元不研究；平角 = 2 个直角，但不是直角。', point:'角的辨析：周角最大但仍是角；平角 = 2 个直角', care:'角的大小与边画多长**无关**；一个周角正好分成两个平角'},
   {q:'两个完全一样的梯形可以拼成一个平行四边形，这是利用了（　）。',
    opts:['平行四边形的对称性','平移与旋转','三角形的稳定性','周角是 360°'], a:1,
-   why:'拼图题的本质是平移、旋转、轴对称等图形的运动。'}
+   why:'拼图题的本质是平移、旋转、轴对称等图形的运动。', point:'图形的**平移与旋转**：平移不改变形状和大小', care:'完全一样的图形才能这样拼；靠的是平移（和旋转），不是对称性'}
 ];
 
 const EXT_FILL = [
   {q:'笼子里鸡兔共 20 只，共有 54 只脚，鸡比兔多（　）只。', a:'6',
-   why:'假设全是鸡：20 × 2 = 40 只脚，少 14 只；14 ÷ 2 = 7 只兔，鸡 13 只，13 − 7 = 6（只）。'},
+   why:'假设全是鸡：20 × 2 = 40 只脚，少 14 只；14 ÷ 2 = 7 只兔，鸡 13 只，13 − 7 = 6（只）。', point:'**假设法 + 列方程式的思路**：先求鸡兔各几只', care:'假设全是鸡：20 × 2 = 40 只脚，实际 54 只，多 14 只；兔 = 14 ÷ 2 = 7 只，鸡 = 13 只，鸡比兔多 13 − 7 = 6 只', steps:['假设 20 只全是鸡：脚数 = 20 × 2 = 40（只）', '实际 54 只脚，多出 54 − 40 = 14（只）', '每把 1 只鸡换成 1 只兔多 2 只脚 → 兔 = 14 ÷ 2 = 7（只）', '鸡 = 20 − 7 = 13（只）', '鸡比兔多：13 − 7 = 6（只）']},
   {q:'一个数省略万位后面的尾数约是 6 万，这个数最大是（　）。', a:'64999',
-   why:'约 6 万的数范围 55000 ~ 64999。'},
+   why:'约 6 万的数范围 55000 ~ 64999。', point:'四舍五入的逆向', care:'最大取 64999（千位上是 4）'},
   {q:'商店运来 8 箱苹果，每箱 35 千克，卖出 126 千克后还剩（　）千克。', a:'154',
-   why:'35 × 8 = 280，280 − 126 = 154。'},
+   why:'35 × 8 = 280，280 − 126 = 154。', point:'先求总数，再减', care:'8 × 35 = 280，280 − 126 = 154'},
   {q:'一个平行四边形的底扩大到原来的 2 倍，高缩小到原来的 1/2，面积（　）（填"不变"）。',
-   a:'不变', why:'2 × 1/2 = 1，面积不变。'},
+   a:'不变', why:'2 × 1/2 = 1，面积不变。', point:'面积 = 底 × 高，两变化相乘', care:'2 × 1/2 = 1，面积**不变**'},
   {q:'用 1、2、3、4、5 五个数字组成一个最大的五位数（　）。', a:'54321',
-   why:'大的数字放高位。'},
+   why:'大的数字放高位。', point:'组数最大：**大的数放高位**，从高位到低位降序排列', care:'54321；最高位不能是 0，但这里没有 0'},
   {q:'一个长方形长 15 厘米、宽 8 厘米，把长缩短到 12 厘米后，面积是（　）平方厘米。',
-   a:'96', why:'12 × 8 = 96。'}
+   a:'96', why:'12 × 8 = 96。', point:'面积 = 长 × 宽，长变了要**用新的长**', care:'12 × 8 = 96；别还用 15 × 8 = 120'}
+];
+
+const STAR5_CHOICE = [
+  {q:'鸡兔同笼，共有 24 个头、68 只脚，兔有（　）只。', opts:['10 只', '14 只', '12 只', '8 只'], a:0,
+   why:'<b>假设法</b>：先假设 24 只全是鸡，脚数 = 24 × 2 = 48（只）。' +
+       '实际 68 只脚，比假设多 68 − 48 = 20（只）。' +
+       '每把 1 只鸡换成 1 只兔，脚就多 4 − 2 = 2（只）。' +
+       '兔的只数 = 20 ÷ 2 = <b>10</b>（只）。',
+   point:'**假设法**：先假设全是鸡，比出脚的差，再看每换一只多几只脚',
+   care:'鸡 2 只脚、兔 4 只脚，每换 1 只多 **2** 只脚',
+   steps:['假设 24 只全是鸡：脚 = 24 × 2 = 48（只）', '实际 68 只，多 68 − 48 = 20（只）', '每换 1 只兔多 2 只脚 → 兔 = 20 ÷ 2 = 10（只）']},
+  {q:'笼子里有鸡和兔共 30 只，脚 88 只。把其中 8 只鸡换成 8 只兔，脚数会（　）。', opts:['增加 16 只', '减少 16 只', '不变', '增加 8 只'], a:0,
+   why:'每把 1 只鸡换成 1 只兔，脚数就多 4 − 2 = 2（只）。' +
+       '换 8 只，脚数就多 2 × 8 = <b>16</b>（只）。',
+   point:'**只算变化量**：不用求出鸡兔各多少',
+   care:'每换 1 只，脚数多 4 − 2 = 2 只',
+   steps:['每把 1 只鸡换成 1 只兔，脚多 2 只', '换 8 只，脚多 2 × 8 = 16（只）']},
+  {q:'一个数除以 15 余 3，这个数除以 5 的余数是（　）。', opts:['3', '2', '0', '1'], a:0,
+   why:'这个数 = 15 × 商 + 3，而 15 是 5 的倍数。' +
+       '所以这个数除以 5，余数就等于它除以 15 的余数 <b>3</b>。' +
+       '（如 48 ÷ 15 = 3……3，48 ÷ 5 = 9……3 ✓）',
+   point:'15 是 5 的倍数，余数不变',
+   care:'如 48：48 ÷ 15 = 3……3，48 ÷ 5 = 9……3',
+   steps:['这个数 = 15 × 商 + 3', '除以 5 的余数仍是 3']},
+  {q:'下面各数中，与 60 万最接近的是（　）。', opts:['599999', '590000', '610000', '500000'], a:0,
+   why:'60 万 = 600000。' +
+       '599999 与 600000 只差 <b>1</b>，最近。' +
+       '590000 差 10000，610000 差 10000，都远得多。',
+   point:'比较与一个数的**接近程度**：先看差多少',
+   care:'60 万 = 600000，599999 与它只差 1',
+   steps:['60 万 = 600000', '599999 与 600000 相差 1，最接近', '590000、610000 都差 10000']},
+  {q:'一个长方形的长是 25 厘米，宽是 12 厘米，把它拉成一个平行四边形（长和宽不变），它的面积（　）。', opts:['一定还是 300 平方厘米', '一定小于 300 平方厘米', '一定大于 300 平方厘米', '可能是 300 平方厘米'], a:1,
+   why:'长方形拉成平行四边形后，周长不变，但平行四边形的高小于长方形的宽 12 厘米，' +
+       '所以面积一定小于原来的 25 × 12 = <b>300</b>（cm²）。',
+   point:'长方形拉成平行四边形：周长不变，面积变小',
+   care:'底仍是 25 厘米，但高小于 12 厘米，不能继续用 25 × 12 算面积',
+   steps:['原长方形面积 = 25 × 12 = 300（cm²）', '拉斜后底仍是 25 厘米，但高小于 12 厘米', '所以面积一定小于 300 平方厘米']},
+  {q:'下面说法<b>错误</b>的是（　）。', opts:['周角是最大的角', '平角比直角大', '角的大小与边画多长有关', '一个周角可以分成两个平角'], a:2,
+   why:'C 错：角的大小只与两条边<b>张开的程度</b>有关，与边画多长无关。' +
+       'A、B、D 都是本册的正确结论。',
+   point:'辨析角的概念：大小只与**张口程度**有关',
+   care:'边画多长与角的大小**无关**',
+   steps:['C 错：角的大小与边画多长无关，只与张口程度有关', 'A、B、D 都正确']},
+];
+
+const STAR5_FILL = [
+  {q:'鸡兔同笼，共有 35 个头、94 只脚，兔有（　）只。', a:'12',
+   why:'假设全是鸡：35 × 2 = 70（只）脚。' +
+       '实际多 94 − 70 = 24（只）脚。' +
+       '每换 1 只多 2 只脚 → 兔 = 24 ÷ 2 = <b>12</b>（只）。',
+   point:'假设法',
+   care:'每换 1 只多 2 只脚',
+   steps:['假设全是鸡：35 × 2 = 70（只）脚', '多 94 − 70 = 24（只）', '兔 = 24 ÷ 2 = 12（只）']},
+  {q:'一个数近似到万位是 8 万，这个数最小是（　）。', a:'75000',
+   why:'近似数是 8 万 → 千位上的数必须 ≥ 5（要向万位进位）' +
+       '要最小，取千位刚好是 5、后面全取 0 的数：<b>75000</b>' +
+       '检验：75000 近似到万位 → 8 万 ✓',
+   point:'四舍五入逆向：千位必须 ≥ 5，最小取 75000',
+   care:'70000 只能近似成 7 万；最小是千位刚好为 5 的 75000',
+   steps:['近似数是 8 万 → 这个数在 75000 ~ 84999 之间', '取下界 75000', '检验：75000 近似到万位 → 8 万 ✓']},
+  {q:'鸡兔同笼共 20 只、54 只脚，兔比鸡少（　）只。', a:'6',
+   why:'假设全是鸡：20 × 2 = 40（只）脚，多 54 − 40 = 14（只）。' +
+       '兔 = 14 ÷ 2 = 7（只），鸡 = 20 − 7 = 13（只）。' +
+       '兔比鸡少：13 − 7 = <b>6</b>（只）。',
+   point:'假设法：先求鸡兔各多少，再比',
+   care:'假设全是鸡时脚少 54 − 40 = 14，兔 = 14 ÷ 2 = 7',
+   steps:['假设全是鸡：20 × 2 = 40（只）脚', '多 54 − 40 = 14（只）', '兔 = 14 ÷ 2 = 7（只），鸡 = 13（只）', '兔比鸡少 13 − 7 = 6（只）']},
+  {q:'一个数除以 15 余 3，这个数除以 3 的余数是（　）。', a:'0',
+   why:'这个数 = 15 × 商 + 3，而 15 是 3 的倍数，所以这个数除以 3 <b>正好除尽</b>，余数是 <b>0</b>。',
+   point:'15 是 3 的倍数，所以这个数除以 3 能整除，余数是 0',
+   care:'如 48：48 ÷ 15 = 3……3，48 ÷ 3 = 16 正好除尽',
+   steps:['这个数 = 15 × 商 + 3', '15 是 3 的倍数，3 也是 3 的倍数', '所以这个数 = 3 × (5 × 商 + 1)，除以 3 正好除尽，余数是 0']},
+  {q:'下面各数中，最接近 10 万且比 10 万小的是（　）。', a:'99999',
+   why:'10 万 = 100000，比它小的数里最大的就是 99999，差 <b>1</b>。',
+   point:'在限制条件下找最接近的数',
+   care:'题目限定"比 10 万小"，所以只能取 99999',
+   steps:['10 万 = 100000', '比它小且最接近的数是 99999（差 1）']},
+  {q:'一组数据 12、15、18、15、20 的平均数是（　）。', a:'16',
+   why:'总和 = 12 + 15 + 18 + 15 + 20 = 80。' +
+       '平均数 = 80 ÷ 5 = <b>16</b>。',
+   point:'总和 ÷ 份数',
+   care:'份数是 5',
+   steps:['总和 = 80', '80 ÷ 5 = 16']},
 ];
 
 bootCourse([
-  {key:'basic', title:'第一档 · 巩固基础（全册基础知识点过关）', prefix:'基',
+  {key:'basic', star:3, title:'第一档 · 巩固基础（全册基础知识点过关）', prefix:'基',
    choice:BASIC_CHOICE, fill:BASIC_FILL,
    host:'#basicBlock', score:'#scoreBasic', total:'#totalBasic', reset:'#btnResetBasic'},
-  {key:'hand', title:'第二档 · 动手操作（鸡兔同笼、藏宝图、统计与图形）', prefix:'动',
+  {key:'hand', star:3, title:'第二档 · 动手操作（鸡兔同笼、藏宝图、统计与图形）', prefix:'动',
    choice:HAND_CHOICE, fill:HAND_FILL,
    host:'#handBlock', score:'#scoreHand', total:'#totalHand', reset:'#btnResetHand'},
-  {key:'ext', title:'第三档 · 扩展思维（综合应用、易错辨析、思维提升）', prefix:'拓',
+  {key:'ext', star:4, title:'第三档 · 扩展思维（综合应用、易错辨析、思维提升）', prefix:'拓',
    choice:EXT_CHOICE, fill:EXT_FILL,
-   host:'#extBlock', score:'#scoreExt', total:'#totalExt', reset:'#btnResetExt'}
+   host:'#extBlock', score:'#scoreExt', total:'#totalExt', reset:'#btnResetExt'},
+  {key:'star5', title:'第四档 · 五星挑战 · 浅奥思维（全册综合 · 鸡兔同笼 · 思维拓展）', prefix:'奥', star:5,
+   choice:STAR5_CHOICE, fill:STAR5_FILL,
+   host:'#star5Block', score:'#scoreStar5', total:'#totalStar5', reset:'#btnResetStar5'}
 ]);

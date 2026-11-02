@@ -1,0 +1,119 @@
+<section id="s-add">
+  <h2 class="section"><span class="num">1</span>小数加法</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>小数加法竖式：先对齐小数点</h3>
+    <p class="lead">点"下一步"，看小数的加法竖式怎么列、怎么算。
+      <br><b>教学口径</b>：<b>小数点对齐（即相同数位对齐）</b>再计算；
+      <b>得数的小数点要和上面的小数点对齐</b>；<b>整数部分相加时，相同数位上的数相加</b>。</p>
+    <div class="controls">
+      <select id="addSel">
+        <option value="0">3.2 + 2.8</option>
+        <option value="1">5.6 + 3.7</option>
+        <option value="2">12.5 + 7.35</option>
+        <option value="3">0.9 + 0.15</option>
+      </select>
+      <button id="btnAddStep">▶ 下一步</button>
+      <button class="ghost" id="btnAddAll">完整演示</button>
+      <button class="ghost" id="btnAddReset">重置</button>
+    </div>
+    <div class="stepper" id="addSteps"></div>
+    <div class="stage" id="addStage"></div>
+    <div id="addNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-sub">
+  <h2 class="section"><span class="num">2</span>小数减法</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>位数不同的减法：不够减要退位</h3>
+    <p class="lead">点"下一步"，看 20 − 0.35 是怎么算的。
+      <br><b>教学口径</b>：<b>位数不同时，位数少的前面可以补 0</b>（20 可以看成 20.00）；
+      <b>哪一位不够减，就从前一位退 1 当 10</b>；
+      <b>得数的小数点同样要和上面的小数点对齐</b>。</p>
+    <div class="controls">
+      <select id="subSel">
+        <option value="0">20 - 0.35</option>
+        <option value="1">5 - 3.68</option>
+        <option value="2">7.5 - 2.75</option>
+        <option value="3">10 - 0.06</option>
+      </select>
+      <button id="btnSubStep">▶ 下一步</button>
+      <button class="ghost" id="btnSubAll">完整演示</button>
+      <button class="ghost" id="btnSubReset">重置</button>
+    </div>
+    <div class="stepper" id="subSteps"></div>
+    <div class="stage" id="subStage"></div>
+    <div id="subNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-align">
+  <h2 class="section"><span class="num">3</span>小数点对齐（高频易错）</h2>
+  <div class="card">
+    <h3><span class="tag">核心动画</span>末位对齐错在哪</h3>
+    <p class="lead">点"对比"，看两种列法算出的结果差多少。
+      <br><b>教学口径</b>：小数加减法<b>必须小数点对齐</b>（也就是相同数位对齐），
+      <b>不能末位对齐</b>。因为小数的计数单位不同，只有相同数位才能直接相加减。</p>
+    <div class="controls">
+      <button id="btnAlignStep">▶ 对比</button>
+      <button class="ghost" id="btnAlignReset">重置</button>
+    </div>
+    <div class="stepper" id="alignSteps"></div>
+    <div class="stage" id="alignStage"></div>
+    <div id="alignNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-mixed">
+  <h2 class="section"><span class="num">4</span>小数加减混合运算</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>先算什么，后算什么</h3>
+    <p class="lead">点"下一步"，看混合算式的计算顺序。
+      <br><b>教学口径</b>：<b>没有括号时，先算乘除后算加减</b>；
+      <b>有括号先算括号里面的</b>；同级运算<b>从左往右</b>。</p>
+    <div class="controls">
+      <select id="mixSel">
+        <option value="0">3.6 + 0.4 × 2.5</option>
+        <option value="1">(7.5 - 2.3) × 2</option>
+        <option value="2">12.5 - 2.5 × 4</option>
+        <option value="3">8.4 ÷ 2 + 3.6</option>
+      </select>
+      <button id="btnMixStep">▶ 下一步</button>
+      <button class="ghost" id="btnMixAll">完整演示</button>
+      <button class="ghost" id="btnMixReset">重置</button>
+    </div>
+    <div class="stepper" id="mixSteps"></div>
+    <div class="stage" id="mixStage" style="flex-direction:column"></div>
+    <div id="mixNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="s-law">
+  <h2 class="section"><span class="num">5</span>运算律推广到小数</h2>
+  <div class="card">
+    <h3><span class="tag">动画</span>整数运算律对小数同样适用</h3>
+    <p class="lead">点"下一步"，看怎样用运算律把小数算简便。
+      <br><b>教学口径</b>：<b>整数加法、乘法的运算律，对小数同样适用</b>。
+      例如 <b>0.7 + 3.9 + 0.3 = (0.7 + 0.3) + 3.9 = 4.9</b>。</p>
+    <div class="controls">
+      <select id="lawSel">
+        <option value="0">0.7 + 3.9 + 0.3</option>
+        <option value="1">1.25 × 3.6 × 8</option>
+        <option value="2">4.5 + 3.7 + 5.5</option>
+        <option value="3">2.5 × 1.3 × 4</option>
+      </select>
+      <button id="btnLawStep">▶ 下一步</button>
+      <button class="ghost" id="btnLawAll">完整演示</button>
+      <button class="ghost" id="btnLawReset">重置</button>
+    </div>
+    <div class="stepper" id="lawSteps"></div>
+    <div class="stage" id="lawStage" style="flex-direction:column"></div>
+    <div id="lawNote" class="tip"></div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2 class="section"><span class="num">✎</span>分层练习</h2>
+  <!--QUIZ-->
+</section>
+<!--ANSWERS-->

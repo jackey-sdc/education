@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """单元课件构建器：把 assets/ 的共享样式与引擎 + 各单元的 body/app 合成
 单个零依赖、可离线双击打开的 index.html。"""
-import json, pathlib, re, sys
+import base64, json, pathlib, re, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
 CSS  = (ROOT / 'assets/style.css').read_text(encoding='utf-8')
@@ -48,7 +48,7 @@ FOOT = """
   display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px">
   <div>{footleft}</div>
   <div class="hstack">{prev}{next}</div>
-</footer>
+</footer>{audio}
 <script>
 {engine}
 </script>
@@ -56,7 +56,7 @@ FOOT = """
 (function(){{
 {app}
 }})();
-</script>
+</script>{narr}
 </body>
 </html>
 """
@@ -64,7 +64,7 @@ FOOT = """
 TIER = """
   <div class="card">
     <div class="card-title-row">
-      <h3><span class="tag">{tag}</span>{title}</h3>
+      <h3><span class="tag">{tag}</span><span class="tierstars s{star}">{stars}</span>{title}</h3>
       <span class="note">{desc}</span>
     </div>
     <div class="score">已答对 <b id="score{Key}">0</b> / <span id="total{Key}">0</span> 题
@@ -106,17 +106,50 @@ def side_nav_html(body: str):
     return ('    <div class="side-group">本单元章节</div>\n' + '\n'.join(items)) if items else ''
 
 
+def audio_block(unit_dir: pathlib.Path):
+    """把 assets/audio/<短名>/ 下的预生成音频打成 base64 表，内联进页面。
+
+    返回 (注入片段, 音频字节数)。没有音频目录就返回空串，老单元不受影响。
+    必须注入在 engine 之前——Narrator 挂载时要读 window.NARR_AUDIO。
+    """
+    m = re.match(r'(u\d+)', unit_dir.name)
+    sn = m.group(1) if m else unit_dir.name
+    d = ROOT / 'assets' / 'audio' / sn
+    man = d / 'manifest.json'
+    if not man.exists():
+        return '', 0
+    items = json.loads(man.read_text(encoding='utf-8'))
+    parts, total = [], 0
+    for key, meta in items.items():
+        p = d / meta['file']
+        if not p.exists():
+            continue
+        total += p.stat().st_size
+        parts.append('"%s":"data:audio/mp4;base64,%s"' % (
+            key, base64.b64encode(p.read_bytes()).decode('ascii')))
+    if not parts:
+        return '', 0
+    return ('\n<script>window.NARR_AUDIO={%s};</script>' % ','.join(parts)), total
+
+
 def build(unit_dir: pathlib.Path):
     meta = json.loads((unit_dir / 'meta.json').read_text(encoding='utf-8'))
     body = (unit_dir / 'body.html').read_text(encoding='utf-8')
     app  = (unit_dir / 'app.js').read_text(encoding='utf-8')
+    # 讲解脚本（可选）：每个单元一份 narr.js，构建时内联，保持"零依赖、可离线"
+    narr_path = unit_dir / 'narr.js'
+    narr = ('\n<script>\n' + narr_path.read_text(encoding='utf-8') + '\n</script>') if narr_path.exists() else ''
+    # 讲解音频（可选）：预生成后内联成 data URI，音质不再依赖学生电脑装没装中文语音
+    audio, audio_bytes = audio_block(unit_dir)
     accents = ':root{\n' + '\n'.join(f'    {k}:{v};' for k, v in meta['accent'].items()) + '\n}\n'
     nav = '\n'.join(f'    <a href="{href}">{text}</a>' for href, text in meta['nav'])
     badges = '\n    '.join(f'<span>{b}</span>' for b in meta.get('badges', []))
     tiers = ''
+    STAR_ICON = {3:'★★★', 4:'★★★★', 5:'★★★★★'}
     for t in meta['tiers']:
         tiers += TIER.format(tag=t['tag'], title=t['title'], desc=t['desc'],
-                              Key=t['key'].capitalize(), key=t['key'])
+                              Key=t['key'].capitalize(), key=t['key'],
+                              star=t.get('star', 3), stars=STAR_ICON.get(t.get('star', 3), '★★★'))
     body = body.replace('<!--QUIZ-->', tiers + '<!--ANSWERS-->')
     body = body.replace('<!--ANSWERS-->', ANSWERS)
     prev = f'<a class="chip" href="{meta["prev"]}">← 上一单元</a>' if meta.get('prev') else ''
@@ -128,16 +161,18 @@ def build(unit_dir: pathlib.Path):
                         unit_title=meta['title'], side_nav=side_nav_html(body),
                         prev_side=prev_side, next_side=next_side)
             + body
-            + FOOT.format(engine=ENG, app=app,
+            + FOOT.format(engine=ENG, app=app, narr=narr, audio=audio,
                           footleft=meta.get('foot', '人教版（2024年审定）四年级数学上册 · 动画课件'),
                           prev=prev, next=next_))
     out = unit_dir / 'index.html'
     out.write_text(html, encoding='utf-8')
-    return out, len(html.splitlines())
+    return out, len(html.splitlines()), audio_bytes
 
 
 if __name__ == '__main__':
     units = sys.argv[1:] or [p.parent.name for p in sorted(ROOT.glob('u*/meta.json'))]
     for u in units:
-        out, n = build(ROOT / u)
-        print(f'✅ {out.relative_to(ROOT)}  ({n} 行)')
+        out, n, ab = build(ROOT / u)
+        size = out.stat().st_size / 1024
+        extra = f'，含讲解音频 {ab/1024:.0f}KB' if ab else ''
+        print(f'✅ {out.relative_to(ROOT)}  ({n} 行，{size:.0f}KB{extra})')
